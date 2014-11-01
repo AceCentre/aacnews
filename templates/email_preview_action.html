@@ -28,7 +28,9 @@
 				url: "{{ url_for('emailview.email_send_action') }}",
 				data: { spoiler: "{{ spoiler }}", title: "{{ title }}", preamble : "{{ preamble }}", content : $("#email_cancel_form input[name='content']").val(), cid : "{{ cid }}", ids : "{{ ids }}" },
 				success: function(msg) {
-                    $('#notificationSuccessModal').modal('show')
+                    $('#notificationSuccessModal').modal({
+                      backdrop: 'static'
+                    })
 				},
                 error: function() {
 
@@ -49,10 +51,10 @@
             <h4 class="modal-title">Message</h4>
           </div>
           <div class="modal-body">
-            <p>Notification was sent successful</p>
+            <p>Notification was sent successfully</p>
           </div>
           <div class="modal-footer">
-            <a href="" class="btn btn-primary" onclick="cancel_email();">Ok</a>
+            <a href="{{ url_for('emailview.index_view') }}" class="btn btn-primary">Ok</a>
           </div>
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
