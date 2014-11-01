@@ -179,10 +179,6 @@ class EmailPreview(sqla.ModelView):
 
     list_template = 'email_preview_list.html'
 
-    @action('preview', '')
-    def action_preview(self, ids):
-        pass
-
     can_create = False
     can_edit = False
     can_delete = False

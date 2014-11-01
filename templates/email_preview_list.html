@@ -51,7 +51,12 @@
 
                 return false;
         }
+
+        function rowtoggle_change(){
+            $('input.action-checkbox').prop('checked', $('.action-rowtoggle').is( ":checked" ));
+        }
     </script>
+
     {% block list_row_actions_header %}
     {% endblock %}
 
@@ -60,4 +65,20 @@
 
     {{ super() }}
 
+{% endblock %}
+
+ {% block list_header scoped %}
+    <th class="list-checkbox-column">
+        <input type="checkbox" name="rowtoggle" onclick="rowtoggle_change();" class="action-rowtoggle" title="{{ _gettext('Select all records') }}" />
+    </th>
+
+    {{ super() }}
+{% endblock %}
+
+{% block list_row scoped %}
+    <td>
+        <input type="checkbox" name="rowid" class="action-checkbox" value="{{ get_pk_value(row) }}" title="{{ _gettext('Select record') }}" />
+    </td>
+
+    {{ super() }}
 {% endblock %}
