@@ -1,10 +1,7 @@
+{% extends 'admin/master.html' %}
+{% block body %}
+{{ super() }}
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title></title>
-</head>
-<body>
     <div>
         {{ template_content|safe }}
     </div>
@@ -12,5 +9,5 @@
         <a id="email_send" href="" class="btn btn-success pull-left" onclick="emails_send(); return false;">Send</a>
         <a href="" class="btn btn-danger pull-left">Cancel</a>
     </div>
-</body>
-</html>
+
+{% endblock body %}

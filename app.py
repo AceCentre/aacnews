@@ -273,6 +273,51 @@ class MyAdminIndexView(admin.AdminIndexView):
         login.logout_user()
         return redirect(url_for('.index'))
 
+    @expose('/preview/', methods=('GET', 'POST'))
+    def email_preview_action(self):
+        title = request.form['title']
+        spoiler = request.form['spoiler']
+        preamble = request.form['preamble']
+        ids = request.form.getlist('rowid')
+
+        models = Post.query.filter(Post.id.in_(ids)).all()
+
+        groups = defaultdict(list)
+        for obj in models:
+            groups[obj.type.name].append( obj )
+
+        print groups
+
+        posts_map = []
+        for key in groups:
+            entry = {}
+            entry['type'] = key
+            entry['posts'] = groups[key]
+            posts_map.append(entry)
+
+
+        m = get_mailchimp_api()
+        elem = m.campaigns.list({ 'title' : app.config['MAILCHIMP_CAMPAIGN_NAME'], 'exact' : True })
+
+        assert elem['total'] == 1
+
+        cid = elem['data'][0]['id']
+
+        c = m.campaigns.replicate(cid)
+
+        html = m.campaigns.content(c['id'])['html']
+
+        template = Template(html)
+        html = template.render(preamble = preamble, title = title, spoiler = spoiler,
+            posts_map = posts_map)
+
+        m.campaigns.update(c['id'], 'content', {'html' : html})
+
+        # move to cancel action
+        m.campaigns.delete(c['id'])
+
+        return self.render('email_preview_action.html', template_content = html)
+
 
 
 # Create admin
@@ -285,44 +330,6 @@ admin.add_view(NewsletterAdmin(db.session))
 admin.add_view(PostAdmin(db.session))
 admin.add_view(EmailPreview(Post, db.session, endpoint="email_preview", name='Email Preview'))
 
-
-@app.route('/admin/email_preview_action', methods=['POST'])
-def email_preview_action():
-    title = request.form['title']
-    spoiler = request.form['spoiler']
-    preamble = request.form['preamble']
-    ids = request.form.getlist('rowid')
-
-    models = Post.query.filter(Post.id.in_(ids)).all()
-
-    groups = defaultdict(list)
-    for obj in models:
-        groups[obj.type.name].append( obj )
-
-    print groups
-
-    posts_map = []
-    for key in groups:
-        entry = {}
-        entry['type'] = key
-        entry['posts'] = groups[key]
-        posts_map.append(entry)
-
-
-    m = get_mailchimp_api()
-    elem = m.campaigns.list({ 'title' : app.config['MAILCHIMP_CAMPAIGN_NAME'], 'exact' : True })
-
-    assert elem['total'] == 1
-
-    cid = elem['data'][0]['id']
-    html = m.campaigns.content(cid)['html']
-
-    template = Template(html)
-    html = template.render(preamble = preamble, title = title, spoiler = spoiler,
-        posts_map = posts_map).replace('View this email in your browser', '')
-
-
-    return render_template('email_preview_action.html', template_content = html)
 
 
 def build_sample_db():
