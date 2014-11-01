@@ -1,7 +1,9 @@
 import os
 import os.path as op
 import datetime
+from time import gmtime, strftime
 import mailchimp
+
 from dateutil.relativedelta import relativedelta
 from flask import Flask, request, render_template, redirect, request, url_for
 from flask.ext.sqlalchemy import SQLAlchemy
@@ -44,12 +46,6 @@ login_manager.init_app(app)
 def load_user(user_id):
     return db.session.query(User).get(user_id)
 
-#Other
-def dump_datetime(value):
-    """Deserialize datetime object into string form for JSON processing."""
-    if value is None:
-        return None
-    return value.strftime("%Y-%m-%d")
 
 def get_mailchimp_api():
     return mailchimp.Mailchimp('03af8993cd1ecfb5db51d7f4e38eef26-us9') 
@@ -90,15 +86,6 @@ class Post(db.Model):
     def __unicode__(self):
         return self.title
 
-    @property
-    def serialize(self):
-       return {
-           'title': self.title,
-           'date': dump_datetime(self.date),
-           'author': self.author,
-           'text': self.text,
-           'url': self.url
-       }
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -268,7 +255,38 @@ class EmailPreview(sqla.ModelView):
         # move to cancel action
         m.campaigns.delete(c['id'])
 
-        return self.render('email_preview_action.html', template_content = html)
+        return self.render('email_preview_action.html', template_content = html, title = title,
+            spoiler = spoiler, preamble = preamble, cid = c['id'])
+
+    @expose('/send/', methods = ['GET', 'POST'])
+    def email_send_action(self):
+        title = request.form['title']
+        spoiler = request.form['spoiler']
+        preamble = request.form['preamble']
+        content = request.form['content']
+        cid = request.form['cid']
+
+        time_string = strftime("%Y-%m-%d %H:%M:%S", gmtime())
+
+        #m = get_mailchimp_api()
+        #m.campaigns.update(cid, 'options', {'title' : 'New template ' + time_string})
+        #m.campaigns.send(cid)
+
+
+        newsletter = Newsletter()
+        newsletter.title = title
+        newsletter.date = datetime.datetime.now()
+        newsletter.preamble = preamble
+        newsletter.spoiler = spoiler
+
+        #TODO save html content in db
+        #newsletter.html = buffer(content)
+
+        self.session.add(newsletter)
+        self.session.commit()
+
+        return redirect(url_for('.index_view'))
+
 
 
 class TypeAdmin(sqla.ModelView):

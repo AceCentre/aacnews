@@ -13,7 +13,20 @@
     </div>
     <div class="buttons-email-preview">
         <a href="{{ url_for('emailview.index_view') }}" class="btn btn-danger pull-right">Cancel</a>
-        <a id="email_send" class="btn btn-success pull-right" onclick="emails_send(); return false;">Send</a>
+        <a class="btn btn-success pull-right" onclick="send_email(); return false;">Send</a>
     </div>
+    <form id="email_send_form" method="post" action="{{ url_for('emailview.email_send_action') }}">
+    	<input type="hidden" name="spoiler" value="{{ spoiler }}"/>
+    	<input type="hidden" name="title" value="{{ title }}"/>
+    	<input type="hidden" name="preamble" value="{{ preamble }}"/>
+    	<input type="hidden" name="content" value="{{ template_content }}"/>
+    	<input type="hidden" name="cid" value="{{ cid }}"/>
+    </form>
+
+	<script type="text/javascript">
+		function send_email() {
+			$("#email_send_form").submit();
+		}
+	</script>
 
 {% endblock body %}
