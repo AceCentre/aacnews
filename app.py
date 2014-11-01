@@ -216,7 +216,7 @@ class EmailPreview(sqla.ModelView):
         title = request.form['title']
         spoiler = request.form['spoiler']
         preamble = request.form['preamble']
-        ids = request.form.getlist('rowid')
+        ids = [int(i) for i in request.form.getlist('rowid')]
 
         models = Post.query.filter(Post.id.in_(ids)).all()
 
@@ -252,7 +252,7 @@ class EmailPreview(sqla.ModelView):
         m.campaigns.update(c['id'], 'content', {'html' : html})
 
         return self.render('email_preview_action.html', template_content = html, title = title,
-            spoiler = spoiler, preamble = preamble, cid = c['id'])
+            spoiler = spoiler, preamble = preamble, cid = c['id'], ids = ids)
 
     @expose('/send/', methods = ['GET', 'POST'])
     def email_send_action(self):
@@ -261,6 +261,7 @@ class EmailPreview(sqla.ModelView):
         preamble = request.form['preamble']
         content = request.form['content']
         cid = request.form['cid']
+        ids = [int(i) for i in request.form['ids'].encode('utf').replace("[","").replace("]","").split(",")]
 
         time_string = strftime("%Y-%m-%d %H:%M:%S", gmtime())
 
@@ -268,6 +269,10 @@ class EmailPreview(sqla.ModelView):
         m.campaigns.update(cid, 'options', {'title' : 'New template ' + time_string})
         m.campaigns.send(cid)
 
+        posts = self.session.query(Post).filter(Post.id.in_(ids)).all()
+
+        for post in posts:
+            post.publish = False
 
         newsletter = Newsletter()
         newsletter.title = title

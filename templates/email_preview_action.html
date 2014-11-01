@@ -24,7 +24,7 @@
 			$.ajax({
 				type: "POST",
 				url: "{{ url_for('emailview.email_send_action') }}",
-				data: { spoiler: "{{ spoiler }}", title: "{{ title }}", preamble : "{{ preamble }}", content : "{{ content }}", cid : "{{ cid }}" },
+				data: { spoiler: "{{ spoiler }}", title: "{{ title }}", preamble : "{{ preamble }}", content : "{{ content }}", cid : "{{ cid }}", ids : "{{ ids }}" },
 				success: function(msg) {
                     
 				},
