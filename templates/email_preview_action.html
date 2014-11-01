@@ -12,7 +12,7 @@
         {{ template_content|safe }}
     </div>
     <div class="buttons-email-preview">
-        <a href="{{ url_for('email_preview.index_view') }}" class="btn btn-danger pull-right">Cancel</a>
+        <a href="{{ url_for('emailview.index_view') }}" class="btn btn-danger pull-right">Cancel</a>
         <a id="email_send" class="btn btn-success pull-right" onclick="emails_send(); return false;">Send</a>
     </div>
 
