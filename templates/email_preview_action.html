@@ -17,6 +17,8 @@
     </div>
     <form id="email_cancel_form" method="post" action="{{ url_for('emailview.email_cancel_action') }}">
     	<input type="hidden" name="cid" value="{{ cid }}"/>
+        <input type="hidden" name="content" value="{{ template_content }}"/>
+
     </form>
 
 	<script type="text/javascript">
@@ -24,7 +26,7 @@
 			$.ajax({
 				type: "POST",
 				url: "{{ url_for('emailview.email_send_action') }}",
-				data: { spoiler: "{{ spoiler }}", title: "{{ title }}", preamble : "{{ preamble }}", content : "{{ content }}", cid : "{{ cid }}", ids : "{{ ids }}" },
+				data: { spoiler: "{{ spoiler }}", title: "{{ title }}", preamble : "{{ preamble }}", content : $("#email_cancel_form input[name='content']").val(), cid : "{{ cid }}", ids : "{{ ids }}" },
 				success: function(msg) {
                     
 				},

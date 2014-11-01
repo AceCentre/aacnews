@@ -24,10 +24,6 @@ from wtforms.validators import Required, Email, Length
 from collections import defaultdict
 from jinja2 import Template
 
-import sys
-reload(sys)
-sys.setdefaultencoding("utf-8")
-
 # Create application
 app = Flask(__name__)
 
@@ -63,11 +59,11 @@ class Type(db.Model):
 
 class Newsletter(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.Unicode(128), unique=True)
+    title = db.Column(db.Unicode(128))
     date = db.Column(db.DateTime)
-    preamble = db.Column(db.Text, nullable=False)
-    spoiler = db.Column(db.Unicode(255), unique=True)
-    html = db.Column(db.LargeBinary)
+    preamble = db.Column(db.Text)
+    spoiler = db.Column(db.Unicode(255))
+    html = db.Column(db.Text)
     
     def __unicode__(self):
         return self.title
@@ -280,7 +276,7 @@ class EmailPreview(sqla.ModelView):
         newsletter.preamble = preamble
         newsletter.spoiler = spoiler
 
-        newsletter.html = content.encode('utf8')
+        newsletter.html = content
 
         self.session.add(newsletter)
         self.session.commit()
