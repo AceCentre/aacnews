@@ -42,7 +42,9 @@
 
                 $('input.action-checkbox', form).remove();
                 $('input.action-checkbox:checked').each(function() {
-                    form.append($(this).clone());
+                    var $action_checkbox = $(this).clone()
+                    $action_checkbox.css('visibility', 'hidden')
+                    form.append($action_checkbox);
                 });
 
                 form.submit();
