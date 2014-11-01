@@ -1,0 +1,61 @@
+{% extends 'admin/model/list.html' %}
+
+{% block model_list_table %}
+    <form id="email_preview_form" method="post" action="/admin/email_preview_action">
+        <div class="pull-left">
+            <input type="text" name="title" placeholder="title"/>
+            <input type="text" name="spoiler" placeholder="spoiler"/>
+            <input type="text" name="preamble" placeholder="preamble"/>
+        </div>
+        <a id="email_preview_link" href="" class="btn btn-success pull-right" onclick="email_preview_click(); return false;">Preview</a>
+    </form>
+    <script type="text/javascript">
+        function email_preview_click(){
+            var selected = $('input.action-checkbox:checked').size();
+
+                if (selected === 0) {
+                    alert("Please select at least one model.");
+                    return false;
+                }
+
+                var title =  $("input[name='title']").val()
+                if (!title.trim()) {
+                    alert("Please enter title.");
+                    return false;                
+                }
+
+                var title =  $("input[name='spoiler']").val()
+                if (!title.trim()) {
+                    alert("Please enter spoiler.");
+                    return false;                
+                }
+
+                var title =  $("input[name='preamble']").val()
+                if (!title.trim()) {
+                    alert("Please enter preamble.");
+                    return false;                
+                }
+
+                // Update hidden form and submit it
+                var form = $('#email_preview_form');
+                $(form).val();
+
+                $('input.action-checkbox', form).remove();
+                $('input.action-checkbox:checked').each(function() {
+                    form.append($(this).clone());
+                });
+
+                form.submit();
+
+                return false;
+        }
+    </script>
+    {% block list_row_actions_header %}
+    {% endblock %}
+
+    {% block list_row_actions_column %}
+    {% endblock %}
+
+    {{ super() }}
+
+{% endblock %}
