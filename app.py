@@ -248,9 +248,6 @@ class EmailPreview(sqla.ModelView):
 
         m.campaigns.update(c['id'], 'content', {'html' : html})
 
-        # move to cancel action
-        m.campaigns.delete(c['id'])
-
         return self.render('email_preview_action.html', template_content = html, title = title,
             spoiler = spoiler, preamble = preamble, cid = c['id'])
 
@@ -283,7 +280,14 @@ class EmailPreview(sqla.ModelView):
 
         return redirect(url_for('.index_view'))
 
+    @expose('/cancel/', methods = ['GET', 'POST'])
+    def email_cancel_action(self):
+        cid = request.form['cid']
 
+        m = get_mailchimp_api()
+        m.campaigns.delete(cid)
+
+        return redirect(url_for('.index_view'))
 
 class TypeAdmin(sqla.ModelView):
 
