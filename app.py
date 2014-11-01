@@ -24,6 +24,9 @@ from wtforms.validators import Required, Email, Length
 from collections import defaultdict
 from jinja2 import Template
 
+import sys
+reload(sys)
+sys.setdefaultencoding("utf-8")
 
 # Create application
 app = Flask(__name__)
@@ -273,7 +276,8 @@ class EmailPreview(sqla.ModelView):
         newsletter.spoiler = spoiler
 
         #TODO save html content in db
-        #newsletter.html = buffer(content)
+        #newsletter.html = content
+        newsletter.html = content.encode('utf8')
 
         self.session.add(newsletter)
         self.session.commit()
