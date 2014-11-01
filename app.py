@@ -264,9 +264,9 @@ class EmailPreview(sqla.ModelView):
 
         time_string = strftime("%Y-%m-%d %H:%M:%S", gmtime())
 
-        #m = get_mailchimp_api()
-        #m.campaigns.update(cid, 'options', {'title' : 'New template ' + time_string})
-        #m.campaigns.send(cid)
+        m = get_mailchimp_api()
+        m.campaigns.update(cid, 'options', {'title' : 'New template ' + time_string})
+        m.campaigns.send(cid)
 
 
         newsletter = Newsletter()
@@ -275,8 +275,6 @@ class EmailPreview(sqla.ModelView):
         newsletter.preamble = preamble
         newsletter.spoiler = spoiler
 
-        #TODO save html content in db
-        #newsletter.html = content
         newsletter.html = content.encode('utf8')
 
         self.session.add(newsletter)
