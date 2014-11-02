@@ -15,10 +15,11 @@
         <a class="btn btn-danger pull-right" onclick="cancel_email(); return false;">Cancel</a>
         <a class="btn btn-success pull-right" onclick="send_email(); return false;">Send</a>
     </div>
+
+    <input id="content_html" type="hidden" name="content" value="{{ template_content }}"/>
+
     <form id="email_cancel_form" method="post" action="{{ url_for('emailview.email_cancel_action') }}">
     	<input type="hidden" name="cid" value="{{ cid }}"/>
-        <input type="hidden" name="content" value="{{ template_content }}"/>
-
     </form>
 
 	<script type="text/javascript">
@@ -26,7 +27,7 @@
 			$.ajax({
 				type: "POST",
 				url: "{{ url_for('emailview.email_send_action') }}",
-				data: { spoiler: "{{ spoiler }}", title: "{{ title }}", preamble : "{{ preamble }}", content : $("#email_cancel_form input[name='content']").val(), cid : "{{ cid }}", ids : "{{ ids }}" },
+				data: { spoiler: "{{ spoiler }}", title: "{{ title }}", preamble : "{{ preamble }}", content : $("#content_html").val(), cid : "{{ cid }}", ids : "{{ ids }}" },
 				success: function(msg) {
                     $('#notificationSuccessModal').modal({
                       backdrop: 'static'
