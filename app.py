@@ -259,7 +259,8 @@ class EmailPreview(sqla.ModelView):
         time_string = strftime("%Y-%m-%d %H:%M:%S", gmtime())
 
         m = get_mailchimp_api()
-        m.campaigns.update(cid, 'options', {'title' : 'New template ' + time_string})
+        campaign_name = '[' + app.config['MAILCHIMP_CAMPAIGN_NAME'] + '] - ' + title
+        m.campaigns.update(cid, 'options', {'title' : campaign_name, 'subject' : campaign_name})
         m.campaigns.send(cid)
 
         posts = self.session.query(Post).filter(Post.id.in_(ids)).all()
