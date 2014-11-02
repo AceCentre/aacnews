@@ -32,6 +32,7 @@ app.config['DATABASE_FILE'] = 'aacnews_db.sqlite'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + app.config['DATABASE_FILE']
 app.config['SQLALCHEMY_ECHO'] = True
 app.config['MAILCHIMP_CAMPAIGN_NAME'] = 'Dear friends'
+app.config['MAILCHIMP_APIKEY'] = '03af8993cd1ecfb5db51d7f4e38eef26-us9'
 db = SQLAlchemy(app)
 
 
@@ -44,7 +45,7 @@ def load_user(user_id):
 
 
 def get_mailchimp_api():
-    return mailchimp.Mailchimp('03af8993cd1ecfb5db51d7f4e38eef26-us9') 
+    return mailchimp.Mailchimp(app.config['MAILCHIMP_APIKEY']) 
 
 # Create models
 class Type(db.Model):
@@ -339,6 +340,15 @@ class MyAdminIndexView(admin.AdminIndexView):
         login.logout_user()
         return redirect(url_for('.index'))
 
+    @expose('/error/')
+    def internal_server_error_view(self):
+        return self.render("500.html")
+
+
+
+@app.errorhandler(Exception)
+def internal_server_error(self):
+    return redirect(url_for('admin.internal_server_error_view'))
 
 # Create admin
 admin = admin.Admin(app, name='AACNews', index_view=MyAdminIndexView(), base_template='my_master.html')
@@ -350,9 +360,7 @@ admin.add_view(NewsletterAdmin(db.session))
 admin.add_view(PostAdmin(db.session))
 admin.add_view(EmailPreview(Post, db.session, endpoint="emailview", name='Email'))
 
-@app.errorhandler(Exception)
-def page_not_found(e):
-    return render_template('500.html'), 500
+
 
 def build_sample_db():
     """
