@@ -21,18 +21,18 @@ from wtforms import form, fields
 from collections import defaultdict
 from jinja2 import Template
 
+
 # Create application
 app = Flask(__name__)
 
-# Create dummy secrey key so we can use sessions
 app.config['SECRET_KEY'] = '123456790'
-
-# Create in-memory database
 app.config['DATABASE_FILE'] = 'aacnews_db.sqlite'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + app.config['DATABASE_FILE']
 app.config['SQLALCHEMY_ECHO'] = True
-app.config['MAILCHIMP_CAMPAIGN_NAME'] = 'Dear friends'
-app.config['MAILCHIMP_APIKEY'] = '03af8993cd1ecfb5db51d7f4e38eef26-us9'
+app.config['MAILCHIMP_CAMPAIGN_NAME'] = 'AACNews Monthly'
+app.config['MAILCHIMP_APIKEY'] = '1425524e7dfb0509136e310f1edbed7f-us7'
+app.config['USERNAME'] = 'willwade@gmail.com'
+app.config['PASSWORD'] = 'pass'
 db = SQLAlchemy(app)
 
 
@@ -69,7 +69,7 @@ class Newsletter(db.Model):
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(120))
+    title = db.Column(db.String(120), nullable=False)
     text = db.Column(db.Text, nullable=False)
     date = db.Column(db.DateTime)
     url = db.Column(db.Text, nullable=True)
@@ -133,14 +133,10 @@ def index():
 
 # Customized Post model admin
 class PostAdmin(sqla.ModelView):
-    # Visible columns in the list view
+ 
+
     column_exclude_list = ['text']
-
-    # List of columns that can be sorted. For 'user' column, use User.username as
-    # a column.
     column_sortable_list = ('title', 'author', 'publish', 'date')
-
-    # Rename 'title' columns to 'Post Title' in list view
     column_labels = dict(title='Post Title')
 
     column_searchable_list = ('title', Type.name)
@@ -150,8 +146,6 @@ class PostAdmin(sqla.ModelView):
                       'date',
                       filters.FilterLike(Post.title, 'Fixed Title', options=(('test1', 'Test 1'), ('test2', 'Test 2'))))
 
-    # Pass arguments to WTForms. In this case, change label for text field to
-    # be 'Big Text' and add required() validator.
     form_args = dict(
                     text=dict(label='Big Text', validators=[validators.required()])
                 )
@@ -159,8 +153,8 @@ class PostAdmin(sqla.ModelView):
 
 
     def __init__(self, session):
-        # Just call parent class with predefined model.
         super(PostAdmin, self).__init__(Post, session)
+
 
 class EmailPreview(sqla.ModelView):
     def get_query(self):
@@ -182,16 +176,9 @@ class EmailPreview(sqla.ModelView):
     list_row_actions_header = None
     column_descriptions = None
 
-    # Visible columns in the list view
     column_exclude_list = ['text', 'publish', 'edit']
-
-    # List of columns that can be sorted. For 'user' column, use User.username as
-    # a column.
     column_sortable_list = ('type', 'title', 'author', 'date')
-
-    # Rename 'title' columns to 'Post Title' in list view
     column_labels = dict(title='Post Title')
-
     column_searchable_list = ('title', Type.name)
 
     column_filters = ('author',
@@ -199,8 +186,6 @@ class EmailPreview(sqla.ModelView):
                       'date',
                       filters.FilterLike(Post.title, 'Fixed Title', options=(('test1', 'Test 1'), ('test2', 'Test 2'))))
 
-    # Pass arguments to WTForms. In this case, change label for text field to
-    # be 'Big Text' and add required() validator.
     form_args = dict(
                     text=dict(label='Big Text', validators=[validators.required()])
                 )
@@ -217,8 +202,6 @@ class EmailPreview(sqla.ModelView):
         groups = defaultdict(list)
         for obj in models:
             groups[obj.type.name].append( obj )
-
-        print groups
 
         posts_map = []
         for key in groups:
@@ -312,7 +295,7 @@ class NewsletterAdmin(sqla.ModelView):
         super(NewsletterAdmin, self).__init__(Newsletter, session)
 
 
-# Create customized index view class that handles login & registration
+# Customized index view class that handles login & registration
 class MyAdminIndexView(admin.AdminIndexView):
 
     @expose('/')
@@ -323,7 +306,6 @@ class MyAdminIndexView(admin.AdminIndexView):
 
     @expose('/login/', methods=('GET', 'POST'))
     def login_view(self):
-        # handle user login
         form = LoginForm(request.form)
         if helpers.validate_form_on_submit(form):
             user = form.get_user()
@@ -350,15 +332,14 @@ class MyAdminIndexView(admin.AdminIndexView):
 def internal_server_error(self):
     return redirect(url_for('admin.internal_server_error_view'))
 
+
 # Create admin
 admin = admin.Admin(app, name='AACNews', index_view=MyAdminIndexView(), base_template='my_master.html')
 
-
-# Add views
 admin.add_view(TypeAdmin(db.session))
 admin.add_view(NewsletterAdmin(db.session))
 admin.add_view(PostAdmin(db.session))
-admin.add_view(EmailPreview(Post, db.session, endpoint="emailview", name='Email'))
+admin.add_view(EmailPreview(Post, db.session, endpoint='emailview', name='Email'))
 
 
 
@@ -373,7 +354,7 @@ def build_sample_db():
     db.drop_all()
     db.create_all()
 
-    # Create sample Tags
+    # Create sample Types
     type_list = []
     for tmp in ["Videos", "Training", "Projects", "Software Updates", "Other"]:
         type = Type()
@@ -432,8 +413,8 @@ def build_sample_db():
         db.session.add(post)
 
     user = User()
-    user.login = "willwade@gmail.com"
-    user.password = "pass"
+    user.login = app.config['USERNAME']
+    user.password = app.config['PASSWORD']
 
     db.session.add(user)
     
@@ -441,6 +422,7 @@ def build_sample_db():
     return
 
 if __name__ == '__main__':
+
     # Build a sample db on the fly, if one does not exist yet.
     app_dir = op.realpath(os.path.dirname(__file__))
     database_path = op.join(app_dir, app.config['DATABASE_FILE'])
