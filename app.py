@@ -301,6 +301,8 @@ class TypeAdmin(sqla.ModelView):
 
 class NewsletterAdmin(sqla.ModelView):
 
+    column_exclude_list = ['html']
+
     def is_accessible(self):
         return login.current_user.is_authenticated()
 
