@@ -5,7 +5,7 @@ from time import gmtime, strftime
 import mailchimp
 
 from dateutil.relativedelta import relativedelta
-from flask import Flask, redirect, request, url_for
+from flask import Flask, redirect, request, url_for, render_template
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.admin import expose, helpers
 
@@ -349,7 +349,9 @@ admin.add_view(NewsletterAdmin(db.session))
 admin.add_view(PostAdmin(db.session))
 admin.add_view(EmailPreview(Post, db.session, endpoint="emailview", name='Email'))
 
-
+@app.errorhandler(Exception)
+def page_not_found(e):
+    return render_template('500.html'), 500
 
 def build_sample_db():
     """
