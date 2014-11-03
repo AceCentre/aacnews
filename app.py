@@ -380,7 +380,14 @@ def post():
         db.session.add(post)
         db.session.commit()
 
-    return render_template('post.html')
+    types = []
+    types.append({"id":"", "name":"-"})
+    for obj in Type.query.all():
+        entry = {}
+        entry['id'] = obj.id
+        entry['name'] = obj.name
+        types.append(entry)
+    return render_template('post.html', types = types)
 
 
 def build_sample_db():

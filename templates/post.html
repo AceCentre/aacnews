@@ -26,7 +26,11 @@
             </div>
             <div class="controls">
             <div>
-              <select data-allow-blank="1" data-role="select2" id="type" name="type" tabindex="-1" class="select2-offscreen"><option selected="" value="__None"></option><option value="1">Videos</option><option value="2">Training</option><option value="3">Projects</option><option value="4">Software Updates</option><option value="5">Other</option></select>
+              <select data-allow-blank="1" data-role="select2" id="type" name="type" tabindex="-1" class="select2-offscreen">
+                  {% for type in types %}
+                     <option value="{{ type.id }}">{{ type.name }}</option>
+                  {% endfor %}
+              </select>
             </div>
             </div>
           </div>
