@@ -155,6 +155,7 @@ class PostAdmin(sqla.ModelView):
                     text=dict(label='Big Text', validators=[validators.required()])
                 )
 
+
     def get_edit_form(self, is_accessible = None):
         form = self.scaffold_form()
         if not is_accessible:
@@ -274,7 +275,7 @@ class EmailPreview(sqla.ModelView):
         newsletter = Newsletter()
         newsletter.title = title
         newsletter.date = datetime.datetime.now()
-        newsletter.preamble = preamble
+        newsletter.preamble = preamble.replace('<br>','')
         newsletter.spoiler = spoiler
 
         newsletter.html = content
@@ -306,6 +307,8 @@ class TypeAdmin(sqla.ModelView):
 class NewsletterAdmin(sqla.ModelView):
 
     column_exclude_list = ['html']
+
+
 
     def is_accessible(self):
         return login.current_user.is_authenticated()
@@ -349,7 +352,6 @@ class MyAdminIndexView(admin.AdminIndexView):
 
 @app.errorhandler(Exception)
 def internal_server_error(e):
-    print e
     return redirect(url_for('admin.internal_server_error_view'))
 
 
