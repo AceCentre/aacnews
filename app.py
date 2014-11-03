@@ -72,7 +72,7 @@ class Post(db.Model):
     title = db.Column(db.String(120), nullable=False)
     text = db.Column(db.Text, nullable=False)
     date = db.Column(db.Date, default=datetime.date.today())
-    url = db.Column(db.Text, nullable=True)
+    link = db.Column(db.Text, nullable=True)
     publish = db.Column(db.Boolean, default=False)
 
     author = db.Column(db.String(120))
@@ -138,11 +138,13 @@ class PostAdmin(sqla.ModelView):
         is_accessible = login.current_user and login.current_user.is_authenticated()
         self._create_form_class = self.get_create_form(is_accessible)
         self._edit_form_class = self.get_edit_form(is_accessible)
+
         return True;
- 
+
+    list_template = 'post_action.html' 
     column_exclude_list = ['text']
     column_sortable_list = ('title', 'author', 'publish', 'date')
-    column_labels = dict(title='Post Title')
+    column_labels = dict(title='Post Title', link='URL')
 
     column_searchable_list = ('title', Type.name)
 
@@ -152,7 +154,8 @@ class PostAdmin(sqla.ModelView):
                       filters.FilterLike(Post.title, 'Fixed Title', options=(('test1', 'Test 1'), ('test2', 'Test 2'))))
 
     form_args = dict(
-                    text=dict(label='Big Text', validators=[validators.required()])
+                    text=dict(label='Big Text', validators=[validators.required()]),
+                    url=dict(label='URL')
                 )
 
 
@@ -170,7 +173,6 @@ class PostAdmin(sqla.ModelView):
             delattr(form, 'date')
             delattr(form, 'publish')
         return form
-
 
     def __init__(self, session):
         super(PostAdmin, self).__init__(Post, session)
