@@ -58,7 +58,7 @@ class Type(db.Model):
 class Newsletter(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.Unicode(128))
-    date = db.Column(db.DateTime)
+    date = db.Column(db.Date)
     preamble = db.Column(db.Text)
     spoiler = db.Column(db.Unicode(255))
     html = db.Column(db.Text)
@@ -71,9 +71,9 @@ class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(120), nullable=False)
     text = db.Column(db.Text, nullable=False)
-    date = db.Column(db.DateTime)
+    date = db.Column(db.Date, default=datetime.date.today())
     url = db.Column(db.Text, nullable=True)
-    publish = db.Column(db.Boolean)
+    publish = db.Column(db.Boolean, default=False)
 
     author = db.Column(db.String(120))
         
@@ -133,8 +133,13 @@ def index():
 
 # Customized Post model admin
 class PostAdmin(sqla.ModelView):
- 
 
+    def is_accessible(self):
+        is_accessible = login.current_user and login.current_user.is_authenticated()
+        self._create_form_class = self.get_create_form(is_accessible)
+        self._edit_form_class = self.get_edit_form(is_accessible)
+        return True;
+ 
     column_exclude_list = ['text']
     column_sortable_list = ('title', 'author', 'publish', 'date')
     column_labels = dict(title='Post Title')
@@ -150,6 +155,20 @@ class PostAdmin(sqla.ModelView):
                     text=dict(label='Big Text', validators=[validators.required()])
                 )
 
+    def get_edit_form(self, is_accessible = None):
+        form = self.scaffold_form()
+        if not is_accessible:
+            delattr(form, 'date')
+            delattr(form, 'publish')
+
+        return form
+
+    def get_create_form(self, is_accessible = None):
+        form = self.scaffold_form()
+        if not is_accessible:
+            delattr(form, 'date')
+            delattr(form, 'publish')
+        return form
 
 
     def __init__(self, session):
@@ -158,9 +177,9 @@ class PostAdmin(sqla.ModelView):
 
 class EmailPreview(sqla.ModelView):
     def get_query(self):
-        now = datetime.datetime.now()
-        last_month = now - relativedelta(months=1)
-        return self.session.query(self.model).filter(and_(Post.publish, Post.date <= now, Post.date >= last_month))
+        today = datetime.date.today()
+        last_month = today - relativedelta(months=1)
+        return self.session.query(self.model).filter(and_(Post.publish, Post.date <= today, Post.date >= last_month))
 
     def get_count_query(self):
         return self.session.query(func.count('*')).filter(Post.publish)
@@ -329,7 +348,8 @@ class MyAdminIndexView(admin.AdminIndexView):
 
 
 @app.errorhandler(Exception)
-def internal_server_error(self):
+def internal_server_error(e):
+    print e
     return redirect(url_for('admin.internal_server_error_view'))
 
 
