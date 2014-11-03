@@ -213,7 +213,7 @@ class EmailPreview(sqla.ModelView):
     def email_preview_action(self):
         title = request.form['title']
         spoiler = request.form['spoiler']
-        preamble = request.form['preamble']
+        preamble = request.form['preamble'].replace('\n','<br>')
         ids = [int(i) for i in request.form.getlist('rowid')]
 
         models = Post.query.filter(Post.id.in_(ids)).all()

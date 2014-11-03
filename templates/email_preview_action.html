@@ -8,6 +8,30 @@
 {% block body %}
 {{ super() }}
 
+    <script type="text/javascript">
+      function send_email() {
+        $.ajax({
+          type: "POST",
+          url: "{{ url_for('emailview.email_send_action') }}",
+          data: { spoiler: "{{ spoiler }}", title: "{{ title }}", preamble : $("#preamble").val(), content : $("#content_html").val(), cid : "{{ cid }}", ids : "{{ ids }}" },
+          success: function(msg) {
+                      $('#notificationSuccessModal').modal({
+                        backdrop: 'static'
+                      })
+          },
+          error: function() {
+              $('#notificationErrorModal').modal({
+                backdrop: 'static'
+              })
+          }
+        });
+      }
+      function cancel_email() {
+        $("#email_cancel_form").submit();
+      }
+
+    </script>
+
     <div>
         {{ template_content|safe }}
     </div>
@@ -17,34 +41,11 @@
     </div>
 
     <input id="content_html" type="hidden" name="content" value="{{ template_content }}"/>
+    <input id="preamble" type="hidden" name="preamble" value="{{ preamble }}"/>
 
     <form id="email_cancel_form" method="post" action="{{ url_for('emailview.email_cancel_action') }}">
     	<input type="hidden" name="cid" value="{{ cid }}"/>
     </form>
-
-	<script type="text/javascript">
-		function send_email() {
-			$.ajax({
-				type: "POST",
-				url: "{{ url_for('emailview.email_send_action') }}",
-				data: { spoiler: "{{ spoiler }}", title: "{{ title }}", preamble : "{{ preamble }}", content : $("#content_html").val(), cid : "{{ cid }}", ids : "{{ ids }}" },
-				success: function(msg) {
-                    $('#notificationSuccessModal').modal({
-                      backdrop: 'static'
-                    })
-				},
-                error: function() {
-                    $('#notificationErrorModal').modal({
-                      backdrop: 'static'
-                    })
-                }
-			});
-		}
-		function cancel_email() {
-			$("#email_cancel_form").submit();
-		}
-
-	</script>
 
     <div id="notificationSuccessModal" class="modal fade">
       <div class="modal-dialog">
@@ -59,9 +60,9 @@
           <div class="modal-footer">
             <a href="{{ url_for('emailview.index_view') }}" class="btn btn-primary">Ok</a>
           </div>
-        </div><!-- /.modal-content -->
-      </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
+        </div>
+      </div>
+    </div>
 
     <div id="notificationErrorModal" class="modal fade">
       <div class="modal-dialog">
@@ -76,8 +77,8 @@
           <div class="modal-footer">
             <a href="{{ url_for('emailview.index_view') }}" class="btn btn-primary">Ok</a>
           </div>
-        </div><!-- /.modal-content -->
-      </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
+        </div>
+      </div>
+    </div>
 
 {% endblock body %}

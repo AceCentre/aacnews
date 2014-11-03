@@ -4,8 +4,8 @@
     <form id="email_preview_form" method="post" action="{{ url_for('emailview.email_preview_action') }}">
         <div class="pull-left">
             <input type="text" name="title" placeholder="title"/>
-            <input type="text" name="spoiler" placeholder="spoiler"/>
-            <input type="text" name="preamble" placeholder="preamble"/>
+            <input type="text" name="spoiler" placeholder="spoiler"/><br>
+            <textarea name="preamble" rows="4" placeholder="preamble"></textarea>
         </div>
         <a id="email_preview_link" href="" class="btn btn-success pull-right" onclick="email_preview_click(); return false;">Preview</a>
     </form>
@@ -30,7 +30,7 @@
                     return false;                
                 }
 
-                var title =  $("input[name='preamble']").val()
+                var title =  $("textarea[name='preamble']").val()
                 if (!title.trim()) {
                     alert("Please enter preamble.");
                     return false;                
