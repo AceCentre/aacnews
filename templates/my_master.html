@@ -12,3 +12,29 @@
 </div>
 {% endif %}
 {% endblock %}
+
+
+{% block main_menu %}
+	{% if current_user.is_authenticated() %}
+		{{ super() }}
+	{% else %}
+	<ul class="nav">
+	  {% for item in admin_view.admin.menu() %}
+	      {% if item.is_accessible() and item.is_visible() %}
+	        {% if item.is_active(admin_view) %}
+	        	<li class="active">
+	        {% else %}
+	        	<li>
+	        {% endif %}
+	        {% set link = item.get_url() %}
+	        {% set postview = url_for('postview.index_view') %}
+	        {% if link == postview %}
+	        	{% set link = '/post' %}
+	        {% endif %}
+          	<a href="{{ link }}">{{ item.name }}</a>
+        	</li>
+	      {% endif %}
+	  {% endfor %}
+	</ul>
+	{% endif %}
+{% endblock %}

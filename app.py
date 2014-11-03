@@ -141,9 +141,6 @@ class PostAdmin(sqla.ModelView):
 
         return True;
 
-    list_template = 'post_action.html'
-    create_template = 'post_create_action.html'
-
     column_exclude_list = ['text']
     column_sortable_list = ('title', 'author', 'publish', 'date')
     column_labels = dict(title='Post Title', link='URL')
@@ -379,6 +376,7 @@ def post():
         post.text = request.form["text"]
         db.session.add(post)
         db.session.commit()
+        return redirect(url_for('admin.index'))
 
     types = []
     types.append({"id":"", "name":"-"})
