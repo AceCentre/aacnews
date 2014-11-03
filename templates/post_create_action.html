@@ -1,0 +1,14 @@
+{% extends 'admin/model/create.html' %}
+
+{% block navlinks %}
+	{% if current_user.is_authenticated() %}
+		{{ super() }}
+	{% else %}
+		<ul class="nav nav-tabs">
+	        <li class="active">
+	        	<a href="javascript:void(0)">{{ _gettext('Create') }}</a>
+	        </li>
+		</ul>
+	{% endif %}
+
+{% endblock %}
