@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Post - AACNews</title>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+
+        <link href="/admin/static/bootstrap/css/bootstrap.css" rel="stylesheet">
+        <link href="/admin/static/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+        <link href="/admin/static/admin/css/admin.css" rel="stylesheet">
+        <link href="/admin/static/datetimepicker/bootstrap-datetimepicker.css" rel="stylesheet">
+
+  </head>
+<body>
+<div style="width:600px; margin: 0 auto; margin-top: 40px;">
+    <form action="{{ url_for('post') }}" method="POST" class="form-horizontal" enctype="multipart/form-data">
+      <fieldset>
+          <div class="control-group">
+            <div class="control-label">
+              <label for="s2id_autogen1">Type
+                  &nbsp;
+              </label>
+            </div>
+            <div class="controls">
+            <div>
+              <select data-allow-blank="1" data-role="select2" id="type" name="type" tabindex="-1" class="select2-offscreen"><option selected="" value="__None"></option><option value="1">Videos</option><option value="2">Training</option><option value="3">Projects</option><option value="4">Software Updates</option><option value="5">Other</option></select>
+            </div>
+            </div>
+          </div>
+          <div class="control-group">
+            <div class="control-label">
+              <label for="title">Post Title
+
+                    <strong style="color: red">*</strong>
+              </label>
+            </div>
+            <div class="controls">
+            <div>
+              <input id="title" name="title" type="text" value="">
+            </div>
+            </div>
+          </div>
+          <div class="control-group">
+            <div class="control-label">
+              <label for="text">Big Text
+                <strong style="color: red">*</strong>
+              </label>
+            </div>
+            <div class="controls">
+              <div>
+                <textarea id="text" name="text"></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="control-group">
+            <div class="control-label">
+              <label for="link">URL
+                  &nbsp;
+              </label>
+            </div>
+            <div class="controls">
+              <div>
+                <textarea id="link" name="link"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <div class="control-label">
+              <label for="author">Author
+                  &nbsp;
+              </label>
+            </div>
+            <div class="controls">
+              <div>
+                <input id="author" name="author" type="text" value="">
+              </div>
+            </div>
+          </div>
+          <div class="control-group">
+              <div class="controls">
+                <input type="submit" class="btn btn-primary btn-large" value="Submit">
+                <a href="{{ url_for('index') }}" class="btn btn-large">Cancel</a>
+              </div>
+          </div>
+
+
+      </fieldset>
+    </form>
+</div>
+</body>
+</html>

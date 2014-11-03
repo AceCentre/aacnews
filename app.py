@@ -368,6 +368,20 @@ admin.add_view(PostAdmin(db.session))
 admin.add_view(EmailPreview(Post, db.session, endpoint='emailview', name='Email'))
 
 
+@app.route('/post', methods=['GET', 'POST'])
+def post():
+    if(len(request.form) > 0):
+        post = Post()
+        post.type_id = request.form["type"]
+        post.author = request.form["author"]
+        post.title = request.form["title"]
+        post.link = request.form["link"]
+        post.text = request.form["text"]
+        db.session.add(post)
+        db.session.commit()
+
+    return render_template('post.html')
+
 
 def build_sample_db():
     """
