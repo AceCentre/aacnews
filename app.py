@@ -24,15 +24,8 @@ from jinja2 import Template
 
 # Create application
 app = Flask(__name__)
+app.config.from_object('config')
 
-app.config['SECRET_KEY'] = '123456790'
-app.config['DATABASE_FILE'] = 'aacnews_db.sqlite'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + app.config['DATABASE_FILE']
-app.config['SQLALCHEMY_ECHO'] = True
-app.config['MAILCHIMP_CAMPAIGN_NAME'] = 'AACNews Monthly'
-app.config['MAILCHIMP_APIKEY'] = '1425524e7dfb0509136e310f1edbed7f-us7'
-app.config['USERNAME'] = 'willwade@gmail.com'
-app.config['PASSWORD'] = 'pass'
 db = SQLAlchemy(app)
 
 

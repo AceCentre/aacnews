@@ -1,6 +1,6 @@
 ## AACNews Monthly
 
-This is a flask-admin based system to manage posted, short news pieces across the web and generate a mailchimp newsletter.
+This is a flask-admin based system to manage posted, short news pieces across the web and generate a mailchimp newsletter. Its really quite basic. 
 
 ## To Install and run
 
