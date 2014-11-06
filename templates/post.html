@@ -1,22 +1,48 @@
+
 <!DOCTYPE html>
-<html>
-<head>
-    <title>Post - AACNews</title>
+<html lang="en">
+  <head>  
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
 
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="description" content="">
-        <meta name="author" content="">
+    <title>AACNews Monthly</title>
 
+    <!-- Bootstrap core CSS -->
+  <link href="/admin/static/bootstrap/css/bootstrap.css" rel="stylesheet">
+  <link href="/admin/static/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+  <link href="/admin/static/admin/css/admin.css" rel="stylesheet">
+  <link href="/admin/static/datetimepicker/bootstrap-datetimepicker.css" rel="stylesheet">
 
-        <link href="/admin/static/bootstrap/css/bootstrap.css" rel="stylesheet">
-        <link href="/admin/static/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
-        <link href="/admin/static/admin/css/admin.css" rel="stylesheet">
-        <link href="/admin/static/datetimepicker/bootstrap-datetimepicker.css" rel="stylesheet">
-
+    <!-- Custom styles for this template -->
+    <link href="/static/jumbotron-narrow.css" rel="stylesheet">
   </head>
-<body>
+
+  <body>
+
+    <div class="container">
+      <div class="header">
+        <ul class="nav nav-pills pull-right" role="tablist">
+          <li role="presentation"><a href="/">Home</a></li>
+          <li role="presentation"><a href="/subscribe">Subscribe</a></li>
+          <li role="presentation"><a href="http://us7.campaign-archive2.com/home/?u=d05eb11e79c97878b9f10fd9c&id=93471cc66buk">Archives</a></li>
+          <li role="presentation" class="active"><a href="/post">Post an item</a></li>
+          <li role="presentation"><a href="/about">About</a></li>
+        </ul>
+        <h3 class="text-muted">AACNews</h3>
+      </div>
+
+      <div class="jumbotron">
+        <a href="/" title="Return to the homepage" id="logo">
+        <img src="/static/AACNews.png" width="200px" />
+        </a>
+        
 <div style="width:600px; margin: 0 auto; margin-top: 40px;">
-    <form action="{{ url_for('post') }}" method="POST" class="form-horizontal" enctype="multipart/form-data">
+
+        <form action="{{ url_for('post') }}" method="POST" class="form-horizontal" enctype="multipart/form-data">
       <fieldset>
           <div class="control-group">
             <div class="control-label">
@@ -94,6 +120,20 @@
 
       </fieldset>
     </form>
-</div>
-</body>
+    </div>
+
+      </div>
+
+     
+
+      <div class="footer">
+        <p>&copy; ACE Centre 2014</p>
+      </div>
+
+    </div> <!-- /container -->
+
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+  </body>
 </html>

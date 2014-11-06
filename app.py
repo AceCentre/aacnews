@@ -120,9 +120,16 @@ class LoginForm(form.Form):
 
 # Flask views
 @app.route('/')
-def index():
-    return '<a href="/admin/">Click me to get to Admin!</a>'
+def index(posted=False):
+    return render_template('index.html',posted=posted)
 
+@app.route('/subscribe')
+def subscribe():
+    return render_template('subscribe.html')
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
 
 # Customized Post model admin
 class PostAdmin(sqla.ModelView):
@@ -369,7 +376,7 @@ def post():
         post.text = request.form["text"]
         db.session.add(post)
         db.session.commit()
-        return redirect(url_for('admin.index'))
+        return redirect(url_for('index',True))
 
     types = []
     types.append({"id":"", "name":"-"})
