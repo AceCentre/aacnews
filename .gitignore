@@ -2,3 +2,6 @@ venv/
 *.pyc
 config.py
 *.sqlite
+*.sqlite
+
+config.py
