@@ -1,43 +1,67 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>AACNews Monthly</title>
+<link rel="stylesheet" href="/static/fonts/fonts.css">
+<link rel="stylesheet" href="/static/style/font-awesome.css">
+<link rel="stylesheet" href="/static/style/bootstrap-theme.css">
+<link rel="stylesheet" href="/static/style/bootstrap.css">
+<link rel="stylesheet" href="/static/style/style.css">
+<link rel="stylesheet" href="/static/style/responsive.css">
+<script type="text/javascript" src="/static/js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="/static/js/bootstrap.js"></script>
+<script type="text/javascript">
+  $(document).ready(function () {
+  
+  $("#nav a.menu_res").click(function (e) {
+    e.preventDefault();
+    
+    if($("#nav").find('.activemenu').length > 0){
+      $(".nav_inner").css("left","-200px");
+      $(this).removeClass("activemenu");
+    } else {
+      $(".nav_inner").css("left","0");
+      $(this).addClass("activemenu");
+    }     
+    $(".nav_inner").addClass("done");
+    $("body").addClass("bigsize");
+    
+  });
+  
+  
+});
+</script>
+</head>
 
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <link rel="icon" href="../../favicon.ico">
-
-    <title>AACNews Monthly</title>
-
-    <!-- Bootstrap core CSS -->
-  <link href="/admin/static/bootstrap/css/bootstrap.css" rel="stylesheet">
-        <link href="/admin/static/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
-        <link href="/admin/static/admin/css/admin.css" rel="stylesheet">
-
-    <!-- Custom styles for this template -->
-    <link href="/static/jumbotron-narrow.css" rel="stylesheet">
-  </head>
-
-  <body>
-
-    <div class="container">
-      <div class="header">
-        <ul class="nav nav-pills pull-right" role="tablist">
-          <li role="presentation"><a href="/">Home</a></li>
-          <li role="presentation" class="active"><a href="/subscribe">Subscribe</a></li>
-          <li role="presentation"><a href="http://us7.campaign-archive2.com/home/?u=d05eb11e79c97878b9f10fd9c&id=93471cc66b">Archives</a></li>
-          <li role="presentation"><a href="/post">Post an item</a></li>
-          <li role="presentation"><a href="/about">About</a></li>
-        </ul>
-        <h3 class="text-muted">AACNews</h3>
+<body>
+  <div id="header">
+      <div class="container">     
+          <div class="logo"><a href="#"><img src="/static/images/AACNews.png" width="200px" alt=""></a>
       </div>
-
-      <div class="jumbotron">
-        <p><a href="/" title="Return to the homepage" id="logo">
-        <img src="/static/AACNews.png" width="200px" />
-        </a> </p>
+            <div id="nav">
+              <a href="#" class="menu_res"><span></span><span></span><span></span></a>
+              <div class="nav_inner clearfix">
+                    <ul>
+                      <li><a href="/">Home</a></li>
+                      <li class="active"><a href="/subscribe">Subscribe</a></li>
+                      <li><a href="http://us7.campaign-archive2.com/home/?u=d05eb11e79c97878b9f10fd9c&id=93471cc66buk">Archives</a></li>
+                      <li><a href="/post">Post</a></li>
+                      <li><a href="/about">About</a></li>
+                    
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="content">
+      <div class="container">
+            <div class="row">
+            <div class="col-2 col-md-2 col-sm-2 col-xs-2"></div>
+                <div class="col-9 col-md-9 col-sm-9 col-xs-12">
+                  <div class="rightbar">
+                      <div class="top_c">
         <!-- Begin MailChimp Signup Form -->
 <link href="//cdn-images.mailchimp.com/embedcode/slim-081711.css" rel="stylesheet" type="text/css">
 <style type="text/css">
@@ -58,18 +82,32 @@
 </div>
 
 <!--End mc_embed_signup-->
+      </div>  
+                               
+                    </div>
+                </div>
+            <div class="col-2 col-md-2 col-sm-2 col-xs-2"></div>
+                
+            </div>
+
+            <div class="ace_logo"><a href="#"><img src="/static/images/ace_logo.png" alt=""></a></div>
       </div>
-
-
-
-      <div class="footer">
-        <p>&copy; ACE Centre 2014</p>
-      </div>
-
-    </div> <!-- /container -->
-
-
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
-  </body>
+    </div>
+    <div id="footer">
+      <div class="container">
+          <div class="f_links">
+              <ul class="clearfix">
+                    <li><a href="#">Pricacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="social">
+              <ul class="clearfix">
+                  <li><a href="#"><span class="fa fa-facebook"></span></a></li>
+                    <li><a href="#"><span class="fa fa-twitter"></span></a></li>
+                </ul>
+            </div>
+            <p>Copyright &copy; 2014 ACE Centre. ACE Centre is a registered charity no. 1089313. Registered as a company limited by guarantee no. 04268143 (England & Wales). Registered office: SpeechBubble, Hollinwood Business Centre, Albert Street, Oldham, OL8 3QL. VAT registration number 785728278  </p>
+        </div>
+    </div>
+</body>
 </html>

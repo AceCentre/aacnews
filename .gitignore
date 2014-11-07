@@ -5,3 +5,7 @@ config.py
 *.sqlite
 
 config.py
+
+config.live.py
+
+config.py
