@@ -5,5 +5,6 @@ This is a flask-admin based system to manage posted, short news pieces across th
 ## To Install and run
 
 1. pip install -r requirements.txt
-2. python example.py
+2. mv config.live.py config.py
+3. python app.py
 
