@@ -9,3 +9,5 @@ config.py
 config.live.py
 
 config.py
+
+*.sqlite
