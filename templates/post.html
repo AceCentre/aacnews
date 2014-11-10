@@ -46,7 +46,7 @@
                     <ul>
                       <li><a href="/">Home</a></li>
                       <li><a href="/subscribe">Subscribe</a></li>
-                      <li><a href="http://us7.campaign-archive2.com/home/?u=d05eb11e79c97878b9f10fd9c&id=93471cc66buk">Archives</a></li>
+                      <li><a href="http://us7.campaign-archive2.com/home/?u=d05eb11e79c97878b9f10fd9c&id=93471cc66b">Archives</a></li>
                       <li class="active"x><a href="/post">Post</a></li>
                       <li><a href="/about">About</a></li>
                     
@@ -62,6 +62,9 @@
                 <div class="col-9 col-md-9 col-sm-9 col-xs-12">
                 	<div class="rightbar">
                     	<div class="top_c">
+    	 {% if posted %}
+        <p>Many thanks for adding your news item!</p>
+        {% else %}        
 <div style="width:600px; margin: 0 auto; margin-bottom: 40px;">
 
         <form action="{{ url_for('post') }}" method="POST" class="form-horizontal" enctype="multipart/form-data">
@@ -143,7 +146,7 @@
 
       </fieldset>
     </form>
-    </div>
+    </div> {% endif %}
 
                        </div>  
                                

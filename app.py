@@ -120,8 +120,8 @@ class LoginForm(form.Form):
 
 # Flask views
 @app.route('/')
-def index(posted=False):
-    return render_template('index.html',posted=posted)
+def index():
+    return render_template('index.html',posted=False)
 
 @app.route('/subscribe')
 def subscribe():
@@ -376,7 +376,9 @@ def post():
         post.text = request.form["text"]
         db.session.add(post)
         db.session.commit()
-        return redirect(url_for('index',True))
+        #return redirect(url_for('index',True))
+        return render_template('post.html',posted=True)
+
 
     types = []
     types.append({"id":"", "name":"-"})
