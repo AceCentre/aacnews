@@ -389,6 +389,15 @@ def post():
         types.append(entry)
     return render_template('post.html', types = types)
 
+@app.route('/isurlvalid', methods=['GET', 'POST'])
+def isurlvalid():
+    url = request.args.get('link', '', type=str)
+    posts = Post.query.filter(and_(Post.link == url, Post.publish == True)).all()
+
+    result = 'true' if len(posts) == 0 else 'false'
+    return result
+
+
 
 def build_sample_db():
     """

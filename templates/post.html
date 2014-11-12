@@ -10,7 +10,9 @@
 <link rel="stylesheet" href="/static/style/bootstrap.css">
 <link rel="stylesheet" href="/static/style/style.css">
 <link rel="stylesheet" href="/static/style/responsive.css">
+<link rel="stylesheet" href="/static/styles.css">
 <script type="text/javascript" src="/static/js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery.validate.min.js"></script>
 <script type="text/javascript" src="/static/js/bootstrap.js"></script>
 <script type="text/javascript">
   $(document).ready(function () {
@@ -29,8 +31,27 @@
 		$("body").addClass("bigsize");
 		
 	});
-	
-	
+
+     $("#postForm").validate({
+        rules: {
+            link: {
+                url: true,
+                remote: {
+                    type: "GET",
+                    url: "{{ url_for('isurlvalid') }}",
+                    data: { url: $("#link").val() },
+                    async: false,
+                    dataType: 'json'
+                }
+            }
+        },
+        messages: {
+            link: {
+                remote: "URL is already taken."
+            }
+        }
+      });
+
 });
 </script>
 </head>
@@ -67,7 +88,7 @@
         {% else %}        
 <div style="width:600px; margin: 0 auto; margin-bottom: 40px;">
 
-        <form action="{{ url_for('post') }}" method="POST" class="form-horizontal" enctype="multipart/form-data">
+        <form id="postForm" action="{{ url_for('post') }}" method="POST" class="form-horizontal" enctype="multipart/form-data">
       <fieldset>
           <div class="control-group">
             <div class="control-label">
@@ -94,7 +115,7 @@
             </div>
             <div class="controls">
             <div>
-              <input id="title" name="title" type="text" value="" required>
+              <input id="title" name="title" type="text" value=""  maxlength="450" required>
             </div>
             </div>
           </div>
@@ -106,7 +127,7 @@
             </div>
             <div class="controls">
               <div>
-                <textarea id="text" name="text" required></textarea>
+                <textarea id="text" name="text" maxlength="350" required></textarea>
               </div>
             </div>
           </div>
@@ -118,7 +139,7 @@
             </div>
             <div class="controls">
               <div>
-                <textarea id="link" name="link"></textarea>
+                <textarea id="link" name="link" maxlength="450"></textarea>
               </div>
             </div>
           </div>
@@ -131,7 +152,7 @@
             </div>
             <div class="controls">
               <div>
-                <input id="author" name="author" type="text" value="">
+                <input id="author" name="author" type="text" value="" maxlength="450">
               </div>
             </div>
           </div>
