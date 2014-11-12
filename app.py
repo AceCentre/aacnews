@@ -139,7 +139,7 @@ class PostAdmin(sqla.ModelView):
         self._create_form_class = self.get_create_form(is_accessible)
         self._edit_form_class = self.get_edit_form(is_accessible)
 
-        return True;
+        return is_accessible;
 
     column_exclude_list = ['text']
     column_sortable_list = ('title', 'author', 'publish', 'date')
@@ -232,25 +232,31 @@ class EmailPreview(sqla.ModelView):
             posts_map.append(entry)
 
 
-        m = get_mailchimp_api()
-        elem = m.campaigns.list({ 'title' : app.config['MAILCHIMP_CAMPAIGN_NAME'], 'exact' : True })
+        campaign_name = app.config['MAILCHIMP_CAMPAIGN_NAME']
+        backup_campaign_name = app.config['MAILCHIMP_BACKUP_CAMPAIGN_NAME']
+        mailchimp_client = get_mailchimp_api()
 
-        assert elem['total'] == 1
+        campaign = mailchimp_client.campaigns.list({ 'title' : campaign_name, 'exact' : True })
+        backup_campaign = mailchimp_client.campaigns.list({ 'title' : backup_campaign_name, 'exact' : True })
 
-        cid = elem['data'][0]['id']
+        if backup_campaign['data']:
+            backup_cid = backup_campaign['data'][0]['id']
+            mailchimp_client.campaigns.delete(backup_cid)
 
-        c = m.campaigns.replicate(cid)
+        cid = campaign['data'][0]['id']
+        backup_campaign = mailchimp_client.campaigns.replicate(cid)
+        mailchimp_client.campaigns.update(backup_campaign['id'], 'options', {'title' : backup_campaign_name})
 
-        html = m.campaigns.content(c['id'])['html']
+        html = mailchimp_client.campaigns.content(backup_campaign['id'])['html']
 
         template = Template(html)
         html = template.render(preamble = preamble, title = title, spoiler = spoiler,
             posts_map = posts_map)
 
-        m.campaigns.update(c['id'], 'content', {'html' : html})
+        mailchimp_client.campaigns.update(backup_campaign['id'], 'content', {'html' : html})
 
         return self.render('email_preview_action.html', template_content = html, title = title,
-            spoiler = spoiler, preamble = preamble, cid = c['id'], ids = ids)
+            spoiler = spoiler, preamble = preamble, cid = backup_campaign['id'], ids = ids)
 
     @expose('/send/', methods = ['GET', 'POST'])
     def email_send_action(self):
@@ -263,10 +269,10 @@ class EmailPreview(sqla.ModelView):
 
         time_string = strftime("%Y-%m-%d %H:%M:%S", gmtime())
 
-        m = get_mailchimp_api()
+        mailchimp_client = get_mailchimp_api()
         campaign_name = '[' + app.config['MAILCHIMP_CAMPAIGN_NAME'] + '] - ' + title
-        m.campaigns.update(cid, 'options', {'title' : campaign_name, 'subject' : campaign_name})
-        m.campaigns.send(cid)
+        mailchimp_client.campaigns.update(cid, 'options', {'title' : campaign_name, 'subject' : campaign_name})
+        mailchimp_client.campaigns.send(cid)
 
         posts = self.session.query(Post).filter(Post.id.in_(ids)).all()
 
@@ -290,8 +296,8 @@ class EmailPreview(sqla.ModelView):
     def email_cancel_action(self):
         cid = request.form['cid']
 
-        m = get_mailchimp_api()
-        m.campaigns.delete(cid)
+        mailchimp_client = get_mailchimp_api()
+        mailchimp_client.campaigns.delete(cid)
 
         return redirect(url_for('.index_view'))
 
