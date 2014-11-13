@@ -4,6 +4,7 @@ import datetime
 from time import gmtime, strftime
 import mailchimp
 import markdown
+import re
 
 from dateutil.relativedelta import relativedelta
 from flask import Flask, redirect, request, url_for, render_template
@@ -29,6 +30,7 @@ app.config.from_object('config')
 
 db = SQLAlchemy(app)
 
+EMAIL_REGEX = '\w[\w\.-]*@\w[\w\.-]+\.\w+'
 
 login_manager = login.LoginManager()
 login_manager.init_app(app)
@@ -228,6 +230,16 @@ class EmailPreview(sqla.ModelView):
         groups = defaultdict(list)
         for obj in models:
             obj.text = markdown.markdown(obj.text)
+            if obj.author is None:
+                obj.author = ''
+            print obj.link
+            if obj.link is None:
+                obj.link = ''
+            author = obj.author
+            if author.startswith('@'):
+                obj.author = '<a href="http://twitter.com/%s">%s</a>' % (author[1:],author)
+            elif re.match(EMAIL_REGEX, author):
+                obj.author = '<a href="mailto:%s">%s</a>' % (author,author)
             groups[obj.type.name].append( obj )
 
         posts_map = []
