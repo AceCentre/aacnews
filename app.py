@@ -3,7 +3,7 @@ import os.path as op
 import datetime
 from time import gmtime, strftime
 import mailchimp
-import markdown2
+import markdown
 
 from dateutil.relativedelta import relativedelta
 from flask import Flask, redirect, request, url_for, render_template
@@ -227,7 +227,7 @@ class EmailPreview(sqla.ModelView):
 
         groups = defaultdict(list)
         for obj in models:
-            obj.text = markdown2.markdown(obj.text)
+            obj.text = markdown.markdown(obj.text)
             groups[obj.type.name].append( obj )
 
         posts_map = []
@@ -256,7 +256,7 @@ class EmailPreview(sqla.ModelView):
         html = mailchimp_client.campaigns.content(backup_campaign['id'])['html']
 
         template = Template(html)
-        html = template.render(preamble = markdown2.markdown(preamble), title = title, spoiler = spoiler,
+        html = template.render(preamble = markdown.markdown(preamble), title = title, spoiler = spoiler,
             posts_map = posts_map)
 
         mailchimp_client.campaigns.update(backup_campaign['id'], 'content', {'html' : html})
