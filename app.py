@@ -3,6 +3,7 @@ import os.path as op
 import datetime
 from time import gmtime, strftime
 import mailchimp
+import markdown2
 
 from dateutil.relativedelta import relativedelta
 from flask import Flask, redirect, request, url_for, render_template
@@ -67,6 +68,7 @@ class Post(db.Model):
     date = db.Column(db.Date, default=datetime.date.today())
     link = db.Column(db.Text, nullable=True)
     publish = db.Column(db.Boolean, default=False)
+    promoted = db.Column(db.Boolean, default=False)
 
     author = db.Column(db.String(120))
         
@@ -142,7 +144,7 @@ class PostAdmin(sqla.ModelView):
         return is_accessible;
 
     column_exclude_list = ['text']
-    column_sortable_list = ('title', 'author', 'publish', 'date')
+    column_sortable_list = ('title', 'author', 'publish', 'date', 'promoted')
     column_labels = dict(title='Post Title', link='URL')
 
     column_searchable_list = ('title', Type.name)
@@ -163,6 +165,7 @@ class PostAdmin(sqla.ModelView):
         if not is_accessible:
             delattr(form, 'date')
             delattr(form, 'publish')
+            delattr(form, 'promoted')
 
         return form
 
@@ -184,7 +187,9 @@ class EmailPreview(sqla.ModelView):
         return self.session.query(self.model).filter(and_(Post.publish, Post.date <= today, Post.date >= last_month))
 
     def get_count_query(self):
-        return self.session.query(func.count('*')).filter(Post.publish)
+        today = datetime.date.today()
+        last_month = today - relativedelta(months=1)
+        return self.session.query(func.count('*')).filter(and_(Post.publish, Post.date <= today, Post.date >= last_month))
 
     def is_accessible(self):
         return login.current_user.is_authenticated()
@@ -197,7 +202,7 @@ class EmailPreview(sqla.ModelView):
     list_row_actions_header = None
     column_descriptions = None
 
-    column_exclude_list = ['text', 'publish', 'edit']
+    column_exclude_list = ['text', 'publish', 'edit', 'promoted']
     column_sortable_list = ('type', 'title', 'author', 'date')
     column_labels = dict(title='Post Title')
     column_searchable_list = ('title', Type.name)
@@ -222,6 +227,7 @@ class EmailPreview(sqla.ModelView):
 
         groups = defaultdict(list)
         for obj in models:
+            obj.text = markdown2.markdown(obj.text)
             groups[obj.type.name].append( obj )
 
         posts_map = []
@@ -250,7 +256,7 @@ class EmailPreview(sqla.ModelView):
         html = mailchimp_client.campaigns.content(backup_campaign['id'])['html']
 
         template = Template(html)
-        html = template.render(preamble = preamble, title = title, spoiler = spoiler,
+        html = template.render(preamble = markdown2.markdown(preamble), title = title, spoiler = spoiler,
             posts_map = posts_map)
 
         mailchimp_client.campaigns.update(backup_campaign['id'], 'content', {'html' : html})

@@ -8,3 +8,4 @@ Flask-WTF
 SQLAlchemy
 mailchimp
 python-dateutil
+markdown2
