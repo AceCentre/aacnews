@@ -308,7 +308,7 @@ class EmailPreview(sqla.ModelView):
         self.session.add(newsletter)
         self.session.commit()
 
-        return redirect(url_for('.index_view'))
+        return "completed"
 
     @expose('/cancel/', methods = ['GET', 'POST'])
     def email_cancel_action(self):

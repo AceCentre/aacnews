@@ -15,19 +15,28 @@
           url: "{{ url_for('emailview.email_send_action') }}",
           data: { spoiler: "{{ spoiler }}", title: "{{ title }}", preamble : $("#preamble").val(), content : $("#content_html").val(), cid : "{{ cid }}", ids : "{{ ids }}" },
           success: function(msg) {
-                      $('#notificationSuccessModal').modal({
-                        backdrop: 'static'
-                      })
+                      if (msg == "completed"){
+                          $('#notificationSuccessModal').modal({
+                            backdrop: 'static'
+                          })
+                      }
+                      else{
+                        show_error_modal();
+                      }
           },
           error: function() {
-              $('#notificationErrorModal').modal({
-                backdrop: 'static'
-              })
+              show_error_modal();
           }
         });
       }
       function cancel_email() {
         $("#email_cancel_form").submit();
+      }
+
+      function show_error_modal() {
+        $('#notificationErrorModal').modal({
+            backdrop: 'static'
+          })
       }
 
     </script>
