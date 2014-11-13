@@ -220,7 +220,7 @@ class EmailPreview(sqla.ModelView):
     def email_preview_action(self):
         title = request.form['title']
         spoiler = request.form['spoiler']
-        preamble = request.form['preamble'].replace('\n','<br>')
+        preamble = request.form['preamble']
         ids = [int(i) for i in request.form.getlist('rowid')]
 
         models = Post.query.filter(Post.id.in_(ids)).all()
@@ -256,7 +256,7 @@ class EmailPreview(sqla.ModelView):
         html = mailchimp_client.campaigns.content(backup_campaign['id'])['html']
 
         template = Template(html)
-        html = template.render(preamble = markdown.markdown(preamble), title = title, spoiler = spoiler,
+        html = template.render(preamble  = markdown.markdown(preamble), title = title, spoiler = spoiler,
             posts_map = posts_map)
 
         mailchimp_client.campaigns.update(backup_campaign['id'], 'content', {'html' : html})
