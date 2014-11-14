@@ -47,6 +47,7 @@ def get_mailchimp_api():
 class Type(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Unicode(64), unique=True)
+    priority = db.Column(db.Integer, default=0)
 
     def __unicode__(self):
         return self.name
@@ -71,6 +72,7 @@ class Post(db.Model):
     link = db.Column(db.Text, nullable=True)
     publish = db.Column(db.Boolean, default=False)
     promoted = db.Column(db.Boolean, default=False)
+    priority = db.Column(db.Integer, default=0)
 
     author = db.Column(db.String(120))
         
@@ -146,7 +148,7 @@ class PostAdmin(sqla.ModelView):
         return is_accessible;
 
     column_exclude_list = ['text']
-    column_sortable_list = ('title', 'author', 'publish', 'date', 'promoted')
+    column_sortable_list = ('title', 'author', 'publish', 'date', 'promoted', ('priority', Post.priority))
     column_labels = dict(title='Post Title', link='URL')
 
     column_searchable_list = ('title', Type.name)
@@ -168,6 +170,7 @@ class PostAdmin(sqla.ModelView):
             delattr(form, 'date')
             delattr(form, 'publish')
             delattr(form, 'promoted')
+            delattr(form, 'priority')
 
         return form
 
@@ -176,6 +179,8 @@ class PostAdmin(sqla.ModelView):
         if not is_accessible:
             delattr(form, 'date')
             delattr(form, 'publish')
+            delattr(form, 'promoted')
+            delattr(form, 'priority')
         return form
 
     def __init__(self, session):
@@ -204,7 +209,7 @@ class EmailPreview(sqla.ModelView):
     list_row_actions_header = None
     column_descriptions = None
 
-    column_exclude_list = ['text', 'publish', 'edit', 'promoted']
+    column_exclude_list = ['text', 'publish', 'edit', 'promoted', 'priority']
     column_sortable_list = ('type', 'title', 'author', 'date')
     column_labels = dict(title='Post Title')
     column_searchable_list = ('title', Type.name)
@@ -225,7 +230,7 @@ class EmailPreview(sqla.ModelView):
         preamble = request.form['preamble']
         ids = [int(i) for i in request.form.getlist('rowid')]
 
-        models = Post.query.filter(Post.id.in_(ids)).all()
+        models = Post.query.filter(Post.id.in_(ids)).join(Post.type).order_by(Type.priority.desc()).order_by(Post.priority.desc()).all()
 
         groups = defaultdict(list)
         for obj in models:
