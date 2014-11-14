@@ -230,9 +230,10 @@ class EmailPreview(sqla.ModelView):
         preamble = request.form['preamble']
         ids = [int(i) for i in request.form.getlist('rowid')]
 
-        models = Post.query.filter(Post.id.in_(ids)).join(Post.type).order_by(Type.priority.desc()).order_by(Post.priority.desc()).all()
+        models = Post.query.filter(Post.id.in_(ids)).join(Post.type).order_by(Type.priority.desc()).order_by(Post.priority.desc()).order_by(Post.date.desc()).all()
 
         groups = defaultdict(list)
+        priorityList = []
         for obj in models:
             obj.text = markdown.markdown(obj.text)
             if obj.author is None:
@@ -246,9 +247,10 @@ class EmailPreview(sqla.ModelView):
             elif re.match(EMAIL_REGEX, author):
                 obj.author = '<a href="mailto:%s">%s</a>' % (author,author)
             groups[obj.type.name].append( obj )
+            priorityList.append(obj.type.name)
 
         posts_map = []
-        for key in groups:
+        for key in priorityList:
             entry = {}
             entry['type'] = key
             entry['posts'] = groups[key]
