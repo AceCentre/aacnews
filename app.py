@@ -238,7 +238,6 @@ class EmailPreview(sqla.ModelView):
             obj.text = markdown.markdown(obj.text)
             if obj.author is None:
                 obj.author = ''
-            print obj.link
             if obj.link is None:
                 obj.link = ''
             author = obj.author
@@ -247,7 +246,8 @@ class EmailPreview(sqla.ModelView):
             elif re.match(EMAIL_REGEX, author):
                 obj.author = '<a href="mailto:%s">%s</a>' % (author,author)
             groups[obj.type.name].append( obj )
-            priorityList.append(obj.type.name)
+            if obj.type.name not in priorityList:
+                priorityList.append(obj.type.name)
 
         posts_map = []
         for key in priorityList:
