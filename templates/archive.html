@@ -1,3 +1,4 @@
+
 <!DOCTYPE HTML>
 <html>
 <head>
@@ -10,6 +11,7 @@
 <link rel="stylesheet" href="/static/style/bootstrap.css">
 <link rel="stylesheet" href="/static/style/style.css">
 <link rel="stylesheet" href="/static/style/responsive.css">
+<link rel="stylesheet" href="/static/styles.css">
 <script type="text/javascript" src="/static/js/jquery-1.11.1.min.js"></script>
 <script type="text/javascript" src="/static/js/bootstrap.js"></script>
 <script type="text/javascript">
@@ -45,8 +47,8 @@
               <div class="nav_inner clearfix">
                     <ul>
                       <li><a href="/">Home</a></li>
-                      <li class="active"><a href="/subscribe">Subscribe</a></li>
-                      <li><a href="/archive">Archives</a></li>
+                      <li><a href="/subscribe">Subscribe</a></li>
+                      <li class="active"><a href="/archive">Archives</a></li>
                       <li><a href="/post">Post</a></li>
                       <li><a href="/about">About</a></li>
                     
@@ -61,29 +63,16 @@
             <div class="col-2 col-md-2 col-sm-2 col-xs-2"></div>
                 <div class="col-9 col-md-9 col-sm-9 col-xs-12">
                   <div class="rightbar">
-                      <div class="top_c">
-        <!-- Begin MailChimp Signup Form -->
-<link href="//cdn-images.mailchimp.com/embedcode/slim-081711.css" rel="stylesheet" type="text/css">
-<style type="text/css">
-  #mc_embed_signup{background:#fff; clear:left; font:14px Helvetica,Arial,sans-serif; }
-  /* Add your own MailChimp form style overrides in your site stylesheet or in this style block.
-     We recommend moving this block and the preceding CSS link to the HEAD of your HTML file. */
-</style>
-<div id="mc_embed_signup">
-<form action="//acecentre.us7.list-manage.com/subscribe/post?u=d05eb11e79c97878b9f10fd9c&amp;id=93471cc66b" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
-    <div id="mc_embed_signup_scroll">
-  <label for="mce-EMAIL">Subscribe to our mailing list</label>
-  <input type="email" value="" name="EMAIL" class="email" id="mce-EMAIL" placeholder="email address" required>
-    <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
-    <div style="position: absolute; left: -5000px;"><input type="text" name="b_d05eb11e79c97878b9f10fd9c_93471cc66b" tabindex="-1" value=""></div>
-    <div class="clear"><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button"></div>
-    </div>
-</form>
-</div>
-
-<!--End mc_embed_signup-->
-      </div>  
-                               
+                      <div class="top_c bodyContent">
+                        <ul id="archive-list">
+                            {% for campaign in campaign_list %}
+                            <div class="display_archive">
+                              <li class="campaign">{{ campaign.date }} - <a target="_blank" title="[AACNews Monthly] - Title" href="{{ campaign.archive_url }}">{{ campaign.title }}</a>
+                              </li>
+                            </div>
+                            {% endfor %}
+                        </ul>
+                      </div>  
                     </div>
                 </div>
             <div class="col-2 col-md-2 col-sm-2 col-xs-2"></div>

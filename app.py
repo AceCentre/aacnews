@@ -1,12 +1,13 @@
 import os
 import os.path as op
 import datetime
-from time import gmtime, strftime
+from time import strftime
 import mailchimp
 import markdown
 import re
 
 from dateutil.relativedelta import relativedelta
+from dateutil import parser
 from flask import Flask, redirect, request, url_for, render_template
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.admin import expose, helpers
@@ -132,6 +133,23 @@ def index():
 @app.route('/subscribe')
 def subscribe():
     return render_template('subscribe.html')
+
+@app.route('/archive')
+def archive():
+    mailchimp_client = get_mailchimp_api()
+    campaigns = mailchimp_client.campaigns.list({ 'status' : 'sent'})
+
+    campaign_list = []
+    for i in range(0, campaigns['total'] - 1):
+        campaign_template_obj = {}
+        campaign = campaigns['data'][i]
+        campaign_template_obj['archive_url'] = campaign['archive_url_long']
+        date = parser.parse(campaign['send_time'])
+        campaign_template_obj['date'] = date.strftime('%Y-%m-%d')
+        campaign_template_obj['title'] = campaign['title']
+        campaign_list.append(campaign_template_obj)
+
+    return render_template('archive.html', campaign_list = campaign_list)
 
 @app.route('/about')
 def about():
@@ -291,8 +309,6 @@ class EmailPreview(sqla.ModelView):
         content = request.form['content']
         cid = request.form['cid']
         ids = [int(i) for i in request.form['ids'].encode('utf').replace("[","").replace("]","").split(",")]
-
-        time_string = strftime("%Y-%m-%d %H:%M:%S", gmtime())
 
         mailchimp_client = get_mailchimp_api()
         campaign_name = '[' + app.config['MAILCHIMP_CAMPAIGN_NAME'] + '] - ' + title
