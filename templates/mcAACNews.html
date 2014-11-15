@@ -624,17 +624,31 @@
         <tr>
             <td valign="top" class="mcnTextBlockInner">
                 
-                <table align="left" border="0" cellpadding="0" cellspacing="0" width="600" class="mcnTextContentContainer">
+                <table align="left" border="1" cellpadding="0" cellspacing="0" width="600" class="mcnTextContentContainer">
                     <tbody><tr>
                         
                         <td valign="top" class="mcnTextContent" style="padding-top:9px; padding-right: 18px; padding-bottom: 9px; padding-left: 18px;">
                         
                             <h1>{{ title }}</h1>
 
-<h3><span style="font-size:13px; line-height:1.6em">{{ preamble }}</span></h3>
-
-<p>&nbsp;</p>
-
+<h3><span style="font-size:13px; line-height:1.6em">{{ preamble }}</span></h3><br>
+<hr>
+{% for section in posts_map %}
+ <h2 style="margin: 0;padding: 0;display: block;font-family: Helvetica;font-size: 26px;font-style: normal;font-weight: bold;line-height: 125%;letter-spacing: -.75px;text-align: left;color: #404040 !important;">{{ section.type }}</h2>
+        <br>
+        {% for post in section.posts %}
+        <a href="{{ post.url }}" style="color: #AAAAAA;font-weight: normal;text-decoration: none;word-wrap: break-word;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;" target="_blank"><span style="font-family:georgia,serif; font-size:20px; line-height:1.2">{{ post.title }}</span> </a><br>
+        
+        <span style="font-family:georgia,serif; font-size:16px; line-height:1.2">{{ post.text }}</span>
+        <a href="{{ post.link }}">{{post.link}}</a><br>
+        Shared by {{ post.author }}
+        {% if post.promoted == True %}
+<a style="vertical-align: middle;border-radius: 3px;background: #eee;font-size: 10px;text-transform: uppercase;font-weight: regular;color: #3399CC;padding: 1px 5px;display: inline-block;text-decoration: none;word-wrap: break-word;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">Promoted</a>
+		{% endif %}
+        <br>
+        &nbsp;<br>
+        {% endfor %}
+{% endfor %}
                         </td>
                     </tr>
                 </tbody></table>
