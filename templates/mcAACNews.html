@@ -596,9 +596,9 @@
     <tbody class="mcnImageBlockOuter">
             <tr>
                 <td valign="top" style="padding:9px" class="mcnImageBlockInner">
-                    <table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" class="mcnImageContentContainer">
+                    <table align="left" width="100%" border="0" cellpadding="0" cellspacing="0" class="mcnImageContentContainer">
                         <tbody><tr>
-                            <td class="mcnImageContent" align="center" valign="top" style="padding-right: 9px; padding-left: 9px; padding-top: 0; padding-bottom: 0; align: center"><img src="https://gallery.mailchimp.com/d05eb11e79c97878b9f10fd9c/images/5179076b-42fd-4637-b90a-aeda2f63de68.png" width="150" height="103">
+                            <td class="mcnImageContent" valign="top" style="padding-right: 9px; padding-left: 9px; padding-top: 0; padding-bottom: 0;">
                                 
                                 <table style="width:564px;" class="mcpreview-image-uploader"></table>
                                 
@@ -639,8 +639,13 @@
         {% for post in section.posts %}
         <a href="{{ post.url }}" style="color: #AAAAAA;font-weight: normal;text-decoration: none;word-wrap: break-word;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;" target="_blank"><span style="font-family:georgia,serif; font-size:20px; line-height:1.2">{{ post.title }}</span> </a><br>
         
-        <span style="font-family:georgia,serif; font-size:16px; line-height:1.2">{{ post.text }}</span><br>
-        Shared by {{ post.author }}<br>
+        <span style="font-family:georgia,serif; font-size:16px; line-height:1.2">{{ post.text }}</span>
+        <a href="{{ post.link }}">{{post.link}}</a><br>
+        Shared by {{ post.author }}
+        {% if post.promoted == True %}
+<a style="vertical-align: middle;border-radius: 3px;background: #eee;font-size: 10px;text-transform: uppercase;font-weight: regular;color: #3399CC;padding: 1px 5px;display: inline-block;text-decoration: none;word-wrap: break-word;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">Promoted</a>
+		{% endif %}
+        <br>
         &nbsp;<br>
         {% endfor %}
 {% endfor %}
