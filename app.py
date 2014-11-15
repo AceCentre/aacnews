@@ -138,10 +138,10 @@ def subscribe():
 @app.route('/archive')
 def archive():
     mailchimp_client = get_mailchimp_api()
-    campaigns = mailchimp_client.campaigns.list({ 'status' : 'sent'})
+    campaigns = mailchimp_client.campaigns.list({ 'status' : 'sent', 'title' : 'AACNews', 'exact' : False})
 
     campaign_list = []
-    for i in range(0, campaigns['total'] - 1):
+    for i in range(0, campaigns['total']):
         campaign_template_obj = {}
         campaign = campaigns['data'][i]
         campaign_template_obj['archive_url'] = campaign['archive_url_long']
