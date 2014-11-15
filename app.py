@@ -13,6 +13,7 @@ from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.admin import expose, helpers
 
 from wtforms import validators
+from wtforms.fields import SelectField
 
 from flask.ext import admin, login
 from flask.ext.admin.contrib import sqla
@@ -162,7 +163,6 @@ class PostAdmin(sqla.ModelView):
         is_accessible = login.current_user and login.current_user.is_authenticated()
         self._create_form_class = self.get_create_form(is_accessible)
         self._edit_form_class = self.get_edit_form(is_accessible)
-
         return is_accessible;
 
     column_exclude_list = ['text']
@@ -181,9 +181,9 @@ class PostAdmin(sqla.ModelView):
                     url=dict(label='URL')
                 )
 
-
     def get_edit_form(self, is_accessible = None):
         form = self.scaffold_form()
+        form.priority = SelectField(u'Priority', coerce = int, choices = [(i, i) for i in range(0, 11) ])
         if not is_accessible:
             delattr(form, 'date')
             delattr(form, 'publish')
@@ -194,6 +194,7 @@ class PostAdmin(sqla.ModelView):
 
     def get_create_form(self, is_accessible = None):
         form = self.scaffold_form()
+        form.priority = SelectField(u'Priority', coerce = int, choices = [(i, i) for i in range(0, 11) ])
         if not is_accessible:
             delattr(form, 'date')
             delattr(form, 'publish')
@@ -343,6 +344,16 @@ class EmailPreview(sqla.ModelView):
         return redirect(url_for('.index_view'))
 
 class TypeAdmin(sqla.ModelView):
+
+    def get_edit_form(self, is_accessible = None):
+        form = self.scaffold_form()
+        form.priority = SelectField(u'Priority', coerce = int, choices = [(i, i) for i in range(0, 11) ])
+        return form
+
+    def get_create_form(self, is_accessible = None):
+        form = self.scaffold_form()
+        form.priority = SelectField(u'Priority', coerce = int, choices = [(i, i) for i in range(0, 11) ])
+        return form
 
     def is_accessible(self):
         return login.current_user.is_authenticated()
