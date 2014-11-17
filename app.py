@@ -350,6 +350,8 @@ class EmailPreview(sqla.ModelView):
 
 class TypeAdmin(sqla.ModelView):
 
+    column_default_sort = ('priority', True)
+
     def get_edit_form(self, is_accessible = None):
         form = self.scaffold_form()
         form.priority = SelectField(u'Priority', coerce = int, choices = [(i, i) for i in range(0, 11) ])
