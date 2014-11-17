@@ -212,7 +212,9 @@ class EmailPreview(sqla.ModelView):
         today = datetime.date.today()
         # chamge this if you want weekly.. 
         last_month = today - relativedelta(months=1)
-        return self.session.query(self.model).filter(and_(Post.publish, Post.date <= today, Post.date >= last_month))
+        query = self.session.query(Post)
+        query = query.join(Type, Type.id == Post.type_id)
+        return query.filter(and_(Post.publish, Post.date <= today, Post.date >= last_month)).order_by(Type.priority.desc()).order_by(Post.priority.desc()).order_by(Post.date.desc())
 
     def get_count_query(self):
         today = datetime.date.today()
@@ -418,7 +420,7 @@ class MyAdminIndexView(admin.AdminIndexView):
 
 @app.errorhandler(Exception)
 def internal_server_error(e):
-	return redirect(url_for('admin.internal_server_error_view'))
+    return redirect(url_for('admin.internal_server_error_view'))
 
 
 # Create admin
