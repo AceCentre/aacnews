@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-    	<!-- NAME: 1 COLUMN -->
+    	<!-- NAME: 1 COLUMN - BANDED -->
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>*|MC:SUBJECT|*</title>
@@ -56,7 +56,7 @@
 			-webkit-text-size-adjust:100%;
 		}
 		#bodyCell{
-			padding:20px;
+			padding:0;
 		}
 		.mcnImage{
 			vertical-align:bottom;
@@ -70,7 +70,7 @@
 	@tip Set the background color and top border for your email. You may want to choose colors that match your company's branding.
 	*/
 		body,#bodyTable{
-			/*@editable*/background-color:#F2F2F2;
+			/*@editable*/background-color:#f0f0f0;
 		}
 	/*
 	@tab Page
@@ -79,14 +79,6 @@
 	*/
 		#bodyCell{
 			/*@editable*/border-top:0;
-		}
-	/*
-	@tab Page
-	@section email border
-	@tip Set the border for your email.
-	*/
-		#templateContainer{
-			/*@editable*/border:0;
 		}
 	/*
 	@tab Page
@@ -166,7 +158,7 @@
 	@tip Set the background color and borders for your email's preheader area.
 	*/
 		#templatePreheader{
-			/*@editable*/background-color:#FFFFFF;
+			/*@editable*/background-color:#f5f5f5;
 			/*@editable*/border-top:0;
 			/*@editable*/border-bottom:0;
 		}
@@ -230,7 +222,7 @@
 	@tip Set the background color and borders for your email's body area.
 	*/
 		#templateBody{
-			/*@editable*/background-color:#FFFFFF;
+			/*@editable*/background-color:#f0f0f0;
 			/*@editable*/border-top:0;
 			/*@editable*/border-bottom:0;
 		}
@@ -262,7 +254,7 @@
 	@tip Set the background color and borders for your email's footer area.
 	*/
 		#templateFooter{
-			/*@editable*/background-color:#FFFFFF;
+			/*@editable*/background-color:#89898d;
 			/*@editable*/border-top:0;
 			/*@editable*/border-bottom:0;
 		}
@@ -272,9 +264,9 @@
 	@tip Set the styling for your email's footer text. Choose a size and color that is easy to read.
 	*/
 		.footerContainer .mcnTextContent,.footerContainer .mcnTextContent p{
-			/*@editable*/color:#606060;
+			/*@editable*/color:#ffffff;
 			/*@editable*/font-family:Helvetica;
-			/*@editable*/font-size:11px;
+			/*@editable*/font-size:9px;
 			/*@editable*/line-height:125%;
 			/*@editable*/text-align:left;
 		}
@@ -284,7 +276,7 @@
 	@tip Set the styling for your email's footer links. Choose a color that helps them stand out from your text.
 	*/
 		.footerContainer .mcnTextContent a{
-			/*@editable*/color:#606060;
+			/*@editable*/color:#bebcbc;
 			/*@editable*/font-weight:normal;
 			/*@editable*/text-decoration:underline;
 		}
@@ -297,11 +289,6 @@
 		body{
 			width:100% !important;
 			min-width:100% !important;
-		}
-
-}	@media only screen and (max-width: 480px){
-		td[id=bodyCell]{
-			padding:10px !important;
 		}
 
 }	@media only screen and (max-width: 480px){
@@ -419,7 +406,7 @@
 	@section template width
 	@tip Make the template fluid for portrait or landscape view adaptability. If a fluid layout doesn't work for you, set the width to 300px instead.
 	*/
-		table[id=templateContainer],table[id=templatePreheader],table[id=templateHeader],table[id=templateBody],table[id=templateFooter]{
+		table[class=templateContainer]{
 			/*@tab Mobile Styles
 @section template width
 @tip Make the template fluid for portrait or landscape view adaptability. If a fluid layout doesn't work for you, set the width to 300px instead.*/max-width:600px !important;
@@ -547,13 +534,16 @@
                 <tr>
                     <td align="center" valign="top" id="bodyCell">
                         <!-- BEGIN TEMPLATE // -->
-                        <table border="0" cellpadding="0" cellspacing="0" width="600" id="templateContainer">
+                        <table border="0" cellpadding="0" cellspacing="0" width="100%">
                             <tr>
                                 <td align="center" valign="top">
                                     <!-- BEGIN PREHEADER // -->
-                                    <table border="0" cellpadding="0" cellspacing="0" width="600" id="templatePreheader">
+                                    <table border="0" cellpadding="0" cellspacing="0" width="100%" id="templatePreheader">
                                         <tr>
-                                        	<td valign="top" class="preheaderContainer" style="padding-top:9px;"><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnTextBlock">
+                                        	<td align="center" valign="top">
+                                                <table border="0" cellpadding="0" cellspacing="0" width="600" class="templateContainer">
+                                                    <tr>
+                                                        <td valign="top" class="preheaderContainer" style="padding-top:9px;"><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnTextBlock">
     <tbody class="mcnTextBlockOuter">
         <tr>
             <td valign="top" class="mcnTextBlockInner">
@@ -582,6 +572,9 @@
         </tr>
     </tbody>
 </table></td>
+                                                    </tr>
+                                                </table>
+                                            </td>                                            
                                         </tr>
                                     </table>
                                     <!-- // END PREHEADER -->
@@ -590,17 +583,22 @@
                             <tr>
                                 <td align="center" valign="top">
                                     <!-- BEGIN HEADER // -->
-                                    <table border="0" cellpadding="0" cellspacing="0" width="600" id="templateHeader">
+                                    <table border="0" cellpadding="0" cellspacing="0" width="100%" id="templateHeader">
                                         <tr>
-                                            <td valign="top" class="headerContainer"><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnImageBlock">
+                                            <td align="center" valign="top">
+                                                <table border="0" cellpadding="0" cellspacing="0" width="600" class="templateContainer">
+                                                    <tr>
+                                                        <td valign="top" class="headerContainer" style="padding-top:10px; padding-bottom:10px;"><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnImageBlock">
     <tbody class="mcnImageBlockOuter">
             <tr>
                 <td valign="top" style="padding:9px" class="mcnImageBlockInner">
                     <table align="left" width="100%" border="0" cellpadding="0" cellspacing="0" class="mcnImageContentContainer">
                         <tbody><tr>
-                            <td class="mcnImageContent" align="center" valign="top" style="padding-right: 9px; padding-left: 9px; padding-top: 0; padding-bottom: 0; align: center"><img src="https://gallery.mailchimp.com/d05eb11e79c97878b9f10fd9c/images/bae2c1a5-ee93-4b3b-8357-7380a6fad39d.png" height="120" width="145">
+                            <td class="mcnImageContent" valign="top" style="padding-right: 9px; padding-left: 9px; padding-top: 0; padding-bottom: 0; text-align:center;">
                                 
-                                <table style="width:564px;" class="mcpreview-image-uploader"></table>
+                                    
+                                        <img align="center" alt="" src="https://gallery.mailchimp.com/d05eb11e79c97878b9f10fd9c/images/8d761b77-41e7-4d97-947a-8bfdce1bf75b.png" width="145" style="max-width:145px; padding-bottom: 0; display: inline !important; vertical-align: bottom;" class="mcnImage">
+                                    
                                 
                             </td>
                         </tr>
@@ -609,6 +607,9 @@
             </tr>
     </tbody>
 </table></td>
+                                                    </tr>
+                                                </table>
+                                            </td>
                                         </tr>
                                     </table>
                                     <!-- // END HEADER -->
@@ -617,9 +618,12 @@
                             <tr>
                                 <td align="center" valign="top">
                                     <!-- BEGIN BODY // -->
-                                    <table border="0" cellpadding="0" cellspacing="0" width="600" id="templateBody">
+                                    <table border="0" cellpadding="0" cellspacing="0" width="100%" id="templateBody">
                                         <tr>
-                                            <td valign="top" class="bodyContainer"><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnTextBlock">
+                                            <td align="center" valign="top">
+                                                <table border="0" cellpadding="0" cellspacing="0" width="600" class="templateContainer">
+                                                    <tr>
+                                                        <td valign="top" class="bodyContainer" style="padding-top:10px; padding-bottom:10px;"><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnTextBlock">
     <tbody class="mcnTextBlockOuter">
         <tr>
             <td valign="top" class="mcnTextBlockInner">
@@ -627,28 +631,9 @@
                 <table align="left" border="0" cellpadding="0" cellspacing="0" width="600" class="mcnTextContentContainer">
                     <tbody><tr>
                         
-                        <td valign="top" class="mcnTextContent" style="padding-top:9px; padding-right: 18px; padding-bottom: 9px; padding-left: 18px;">
-                        
-                            <h1>{{ title }}</h1>
-
-<h3><span style="font-size:13px; line-height:1.6em">{{ preamble }}</span></h3><br>
-<hr>
-{% for section in posts_map %}
- <h2 style="margin: 0;padding: 0;display: block;font-family: Helvetica;font-size: 26px;font-style: normal;font-weight: bold;line-height: 125%;letter-spacing: -.75px;text-align: left;color: #404040 !important;">{{ section.type }}</h2>
-        <br>
-        {% for post in section.posts %}
-        <a href="{{ post.link }}" style="color: #AAAAAA;font-weight: normal;text-decoration: none;word-wrap: break-word;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;" target="_blank"><span style="font-family:georgia,serif; font-size:20px; line-height:1.2">{{ post.title }}</span> </a><br>
-        
-        <span style="font-family:georgia,serif; font-size:16px; line-height:1.2">{{ post.text }}</span><br>
-        <a href="{{ post.link }}" style="color: #3399CC;font-weight: normal;text-decoration: none;word-wrap: break-word;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">>{{post.link_name}}</a><br>
-        Shared by {{ post.author }}
-        {% if post.promoted == True %}
-<a style="vertical-align: middle;border-radius: 3px;background: #eee;font-size: 10px;text-transform: uppercase;font-weight: regular;color: #3399CC;padding: 1px 5px;display: inline-block;text-decoration: none;word-wrap: break-word;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">Promoted</a>
-		{% endif %}
-        <br>
-        &nbsp;<br>
-        {% endfor %}
-{% endfor %}
+                        <td valign="top" class="mcnTextContent" style="padding: 9px 18px; text-align: center;">
+                            <h1 style="text-align: center;">{{ title }}</h1>
+<p style="text-align: center;">{{ preamble }}</p>
                         </td>
                     </tr>
                 </tbody></table>
@@ -656,7 +641,71 @@
             </td>
         </tr>
     </tbody>
-</table></td>
+</table><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnDividerBlock">
+    <tbody class="mcnDividerBlockOuter">
+        <tr>
+            <td class="mcnDividerBlockInner" style="padding: 18px;">
+                <table class="mcnDividerContent" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-top-width: 1px;border-top-style: solid;border-top-color: #999999;">
+                    <tbody><tr>
+                        <td>
+                            <span></span>
+                        </td>
+                    </tr>
+                </tbody></table>
+            </td>
+        </tr>
+    </tbody>
+</table>
+{% for section in posts_map %}
+<table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnTextBlock">
+    <tbody class="mcnTextBlockOuter">
+        <tr>
+            <td valign="top" class="mcnTextBlockInner">
+                
+                <table align="left" border="0" cellpadding="0" cellspacing="0" width="600" class="mcnTextContentContainer">
+                    <tbody><tr>
+                        
+                        <td valign="top" class="mcnTextContent" style="padding: 9px 18px; line-height: 125%;">
+                        
+                            <h2 class="null">{{ section.type }}</h2>
+
+                        </td>
+                    </tr>
+                </tbody></table>
+                
+            </td>
+        </tr>
+    </tbody>
+</table>
+{% for post in section.posts %}
+<table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnTextBlock">
+    <tbody class="mcnTextBlockOuter">
+        <tr>
+            <td valign="top" class="mcnTextBlockInner">
+                
+                <table align="left" border="0" cellpadding="0" cellspacing="0" width="600" class="mcnTextContentContainer">
+                    <tbody><tr>
+                        
+                        <td valign="top" class="mcnTextContent" style="padding: 9px 18px; line-height: 125%;"><h3 class="null">{{ post.title }}</h3>
+{{ post.text }}<br>
+<a href="{{ post.link }}" target="_blank">{{post.link_name}}</a><br>
+Shared by {{ post.author }}  {% if post.promoted == True %}
+<a style="vertical-align: middle;border-radius: 3px;background: #eee;font-size: 10px;text-transform: uppercase;font-weight: regular;color: #3399CC;padding: 1px 5px;display: inline-block;text-decoration: none;word-wrap: break-word;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">Promoted</a>
+		{% endif %}
+                        </td>
+                    </tr>
+                </tbody></table>
+    {% endfor %}
+{% endfor %}   
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+</td>
+                                                    </tr>
+                                                </table>
+                                            </td>
                                         </tr>
                                     </table>
                                     <!-- // END BODY -->
@@ -665,9 +714,12 @@
                             <tr>
                                 <td align="center" valign="top">
                                     <!-- BEGIN FOOTER // -->
-                                    <table border="0" cellpadding="0" cellspacing="0" width="600" id="templateFooter">
-                                        <tr>245	245	245	
-                                            <td valign="top" class="footerContainer" style="padding-bottom:9px;"><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnTextBlock">
+                                    <table border="0" cellpadding="0" cellspacing="0" width="100%" id="templateFooter">
+                                        <tr>
+                                            <td align="center" valign="top">
+                                                <table border="0" cellpadding="0" cellspacing="0" width="600" class="templateContainer">
+                                                    <tr>
+                                                        <td valign="top" class="footerContainer" style="padding-top:10px; padding-bottom:10px;"><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnTextBlock">
     <tbody class="mcnTextBlockOuter">
         <tr>
             <td valign="top" class="mcnTextBlockInner">
@@ -702,6 +754,9 @@
         </tr>
     </tbody>
 </table></td>
+                                                    </tr>
+                                                </table>
+                                            </td>
                                         </tr>
                                     </table>
                                     <!-- // END FOOTER -->

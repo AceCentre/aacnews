@@ -258,7 +258,8 @@ class EmailPreview(sqla.ModelView):
         groups = defaultdict(list)
         priorityList = []
         for obj in models:
-			obj.text = markdown.markdown(obj.text)
+            # to remove the p tags. not probably the best way.. 
+			obj.text = markdown.markdown(obj.text)[3:-4]
 			if obj.author is None:
 				obj.author = ''
 			if obj.link is None:
