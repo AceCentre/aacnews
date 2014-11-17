@@ -139,7 +139,7 @@ def subscribe():
 @app.route('/archive')
 def archive():
     mailchimp_client = get_mailchimp_api()
-    campaigns = mailchimp_client.campaigns.list({ 'status' : 'sent', 'title' : 'AACNews', 'exact' : False})
+    campaigns = mailchimp_client.campaigns.list({ 'status' : 'sent', 'title' : app.config['PROJECT_TITLE'], 'exact' : False})
 
     campaign_list = []
     for i in range(0, campaigns['total']):
@@ -210,6 +210,7 @@ class PostAdmin(sqla.ModelView):
 class EmailPreview(sqla.ModelView):
     def get_query(self):
         today = datetime.date.today()
+        # chamge this if you want weekly.. 
         last_month = today - relativedelta(months=1)
         return self.session.query(self.model).filter(and_(Post.publish, Post.date <= today, Post.date >= last_month))
 
@@ -419,7 +420,7 @@ def internal_server_error(e):
 
 
 # Create admin
-admin = admin.Admin(app, name='AACNews', index_view=MyAdminIndexView(), base_template='my_master.html')
+admin = admin.Admin(app, name=app.config['PROJECT_TITLE'], index_view=MyAdminIndexView(), base_template='my_master.html')
 
 admin.add_view(TypeAdmin(db.session))
 admin.add_view(NewsletterAdmin(db.session))
