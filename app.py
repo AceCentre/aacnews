@@ -11,6 +11,7 @@ from dateutil import parser
 from flask import Flask, redirect, request, url_for, render_template
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.admin import expose, helpers
+from urlparse import urlparse
 
 from wtforms import validators
 from wtforms.fields import SelectField
@@ -254,19 +255,22 @@ class EmailPreview(sqla.ModelView):
         groups = defaultdict(list)
         priorityList = []
         for obj in models:
-            obj.text = markdown.markdown(obj.text)
-            if obj.author is None:
-                obj.author = ''
-            if obj.link is None:
-                obj.link = ''
-            author = obj.author
-            if author.startswith('@'):
-                obj.author = '<a href="http://twitter.com/%s">%s</a>' % (author[1:],author)
-            elif re.match(EMAIL_REGEX, author):
-                obj.author = '<a href="mailto:%s">%s</a>' % (author,author)
-            groups[obj.type.name].append( obj )
-            if obj.type.name not in priorityList:
-                priorityList.append(obj.type.name)
+			obj.text = markdown.markdown(obj.text)
+			if obj.author is None:
+				obj.author = ''
+			if obj.link is None:
+				obj.link = ''
+				obj.link_name = ''
+			else:
+				obj.link_name = urlparse(obj.link).netloc
+			author = obj.author
+			if author.startswith('@'):
+				obj.author = '<a href="http://twitter.com/%s">%s</a>' % (author[1:],author)
+			elif re.match(EMAIL_REGEX, author):
+				obj.author = '<a href="mailto:%s">%s</a>' % (author,author)
+			groups[obj.type.name].append( obj )
+			if obj.type.name not in priorityList:
+				priorityList.append(obj.type.name)
 
         posts_map = []
         for key in priorityList:
@@ -411,7 +415,7 @@ class MyAdminIndexView(admin.AdminIndexView):
 
 @app.errorhandler(Exception)
 def internal_server_error(e):
-    return redirect(url_for('admin.internal_server_error_view'))
+	return redirect(url_for('admin.internal_server_error_view'))
 
 
 # Create admin
