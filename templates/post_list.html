@@ -10,14 +10,23 @@
 
     <script type="text/javascript">
     $(document).ready(function() {
-         $(document).on("click", 'input[data-role="datepicker"]', function(event){
-            $.ajax({
-              type: "POST",
-              url: "{{ url_for('postview.last_newsletter') }}",
-              success: function(date) {
-                $(event.target).val(date);
-              }
-            });
+         window.added = false;
+         $('table.filters').bind('DOMSubtreeModified', function(event){
+
+            if ($('input[data-role="datepicker"]').is(':visible') == true && window.added != true) {
+              window.added = true;
+              $.ajax({
+                type: "POST",
+                url: "{{ url_for('postview.last_newsletter') }}",
+                success: function(date) {
+                  $(event.target).val(date + " 00:00");
+                }
+              });
+            }
+            if ($('input[data-role="datepicker"]').is(':visible') == false) {
+              window.added = false;
+            }
+
          });
     })
     </script>
