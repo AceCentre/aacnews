@@ -173,6 +173,8 @@ class PostAdmin(sqla.ModelView):
         self._edit_form_class = self.get_edit_form(is_accessible)
         return is_accessible;
 
+    list_template = 'post_list.html'
+
     column_exclude_list = ['text']
     column_sortable_list = ('title', 'author', 'publish', 'date', 'promoted', ('priority', Post.priority))
     column_labels = dict(title='Post Title', link='URL')
@@ -188,6 +190,12 @@ class PostAdmin(sqla.ModelView):
                     text=dict(label='Big Text', validators=[validators.required()]),
                     url=dict(label='URL')
                 )
+
+    @expose('/lastnewsletter/', methods=('GET', 'POST'))
+    def last_newsletter(self):
+        newsletter = self.session.query(Newsletter).order_by(Newsletter.date.desc()).first()
+        date = str(newsletter.date) if newsletter != None else ''
+        return date
 
     def get_edit_form(self, is_accessible = None):
         form = self.scaffold_form()
@@ -339,7 +347,7 @@ class EmailPreview(sqla.ModelView):
         app.logger.info(a)
 
         for post in posts:
-            # This needs checking... It can go wrong.. 
+            # This needs checking... It can go wrong..
             a.posts_add(post.link, post.title, extended=post.text, tags="aacnews "+post.type, replace='no')
             post.publish = False
 

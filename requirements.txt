@@ -9,3 +9,4 @@ SQLAlchemy
 mailchimp
 python-dateutil
 markdown
+pydelicious
