@@ -26,6 +26,9 @@ from wtforms import form, fields
 from collections import defaultdict
 from jinja2 import Template
 
+import logging
+from pydelicious import DeliciousAPI
+
 
 # Create application
 app = Flask(__name__)
@@ -153,6 +156,10 @@ def archive():
 
     return render_template('archive.html', campaign_list = campaign_list)
 
+@app.route('/rss')
+def rssview():
+    render_template('test.html')
+    
 @app.route('/about')
 def about():
     return render_template('about.html')
@@ -325,8 +332,15 @@ class EmailPreview(sqla.ModelView):
         mailchimp_client.campaigns.send(cid)
 
         posts = self.session.query(Post).filter(Post.id.in_(ids)).all()
+        
+        # This needs error checking
+        a = DeliciousAPI(app.config['DELICIOUS_USER'], app.config['DELICIOUS_PASS'])
+        app.logger.info('delicous logged in')
+        app.logger.info(a)
 
         for post in posts:
+            # This needs checking... It can go wrong.. 
+            a.posts_add(post.link, post.title, extended=post.text, tags="aacnews "+post.type, replace='no')
             post.publish = False
 
         newsletter = Newsletter()

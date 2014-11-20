@@ -8,6 +8,8 @@ PROJECT_TITLE = 'AACInfo'
 MAILCHIMP_CAMPAIGN_NAME ='AACInfo Monthly'
 MAILCHIMP_BACKUP_CAMPAIGN_NAME ='AACInfo Monthly Backup'
 MAILCHIMP_APIKEY ='mailchimp-api-here'
+DELICIOUS_USER = ''
+DELICIOUS_PASS = ''
 
 DATABASE_FILE ='aacnews_db.sqlite'
 SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, DATABASE_FILE)
