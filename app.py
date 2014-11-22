@@ -341,14 +341,19 @@ class EmailPreview(sqla.ModelView):
 
         posts = self.session.query(Post).filter(Post.id.in_(ids)).all()
         
-        # This needs error checking
-        a = DeliciousAPI(app.config['DELICIOUS_USER'], app.config['DELICIOUS_PASS'])
-        app.logger.info('delicous logged in')
-        app.logger.info(a)
+        if (app.config['DELICIOUS_USER']!=''):
+            # This needs error checking
+            a = DeliciousAPI(app.config['DELICIOUS_USER'], app.config['DELICIOUS_PASS'])
 
         for post in posts:
-            # This needs checking... It can go wrong..
-            a.posts_add(post.link, post.title, extended=post.text, tags="aacnews "+post.type, replace='no')
+            # should really be if_delicious_logged_in
+            if (app.config['DELICIOUS_USER']!=''):
+                # This needs checking... It can go wrong..
+                # How do I grab the post.type leo??! I was wanting to add it to the tags. 
+                #a.posts_add(post.link, post.title, extended=post.text, tags="aacnews "+post.type, replace='yes')
+                #  Also - can I add the Author to the post.text .. (E.g. + '( Shared by'+ re.sub('<[^<]+?>', '', post.author) +')' ? 
+                #    (the re.sub is to strip any html - I think this is needed because its got converted by now right?) 
+                a.posts_add(post.link, post.title, extended=post.text, tags="aacnews ", replace='yes')
             post.publish = False
 
         newsletter = Newsletter()
