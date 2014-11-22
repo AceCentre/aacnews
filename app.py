@@ -5,6 +5,8 @@ from time import strftime
 import mailchimp
 import markdown
 import re
+import threading
+import time
 
 from dateutil.relativedelta import relativedelta
 from dateutil import parser
@@ -47,7 +49,26 @@ def load_user(user_id):
 
 
 def get_mailchimp_api():
-    return mailchimp.Mailchimp(app.config['MAILCHIMP_APIKEY']) 
+    return mailchimp.Mailchimp(app.config['MAILCHIMP_APIKEY'])
+
+def addPostToDelicious(link,title,text,author,type_name):
+    if (app.config['DELICIOUS_USER']!=''):
+        a = DeliciousAPI(app.config['DELICIOUS_USER'], app.config['DELICIOUS_PASS'])
+        tag = str("aacnews " + type_name)
+        extended = str(text + ' (Shared by ' + author + ')')
+        retry = 1
+        success = False
+        while not success and retry <= app.config['RETRY_ATTEMPTS']:
+            try:
+                a.posts_add(str(link), str(title), extended=extended, tags=tag, replace='yes')
+                success = True
+                app.logger.info("Post %s was successfully added to Delicious", title)
+            except Exception, ex:
+                wait = retry * 20;
+                app.logger.error("Some errors occured while adding post %s to Delicious", title)
+                app.logger.error(ex)
+                time.sleep(wait)
+                retry += 1
 
 # Create models
 class Type(db.Model):
@@ -325,6 +346,7 @@ class EmailPreview(sqla.ModelView):
         return self.render('email_preview_action.html', template_content = html, title = title,
             spoiler = spoiler, preamble = preamble, cid = backup_campaign['id'], ids = ids)
 
+
     @expose('/send/', methods = ['GET', 'POST'])
     def email_send_action(self):
         title = request.form['title']
@@ -341,19 +363,10 @@ class EmailPreview(sqla.ModelView):
 
         posts = self.session.query(Post).filter(Post.id.in_(ids)).all()
         
-        if (app.config['DELICIOUS_USER']!=''):
-            # This needs error checking
-            a = DeliciousAPI(app.config['DELICIOUS_USER'], app.config['DELICIOUS_PASS'])
-
         for post in posts:
-            # should really be if_delicious_logged_in
-            if (app.config['DELICIOUS_USER']!=''):
-                # This needs checking... It can go wrong..
-                # How do I grab the post.type leo??! I was wanting to add it to the tags. 
-                #a.posts_add(post.link, post.title, extended=post.text, tags="aacnews "+post.type, replace='yes')
-                #  Also - can I add the Author to the post.text .. (E.g. + '( Shared by'+ re.sub('<[^<]+?>', '', post.author) +')' ? 
-                #    (the re.sub is to strip any html - I think this is needed because its got converted by now right?) 
-                a.posts_add(post.link, post.title, extended=post.text, tags="aacnews ", replace='yes')
+            t = threading.Thread(target=addPostToDelicious, args=(post.link, post.title, post.text,post.author,post.type.name))
+            t.setDaemon(True)
+            t.start()
             post.publish = False
 
         newsletter = Newsletter()
