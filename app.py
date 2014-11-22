@@ -37,6 +37,7 @@ app = Flask(__name__)
 app.config.from_object('config')
 
 db = SQLAlchemy(app)
+a = DeliciousAPI(app.config['DELICIOUS_USER'], app.config['DELICIOUS_PASS'])
 
 EMAIL_REGEX = '\w[\w\.-]*@\w[\w\.-]+\.\w+'
 
@@ -53,7 +54,6 @@ def get_mailchimp_api():
 
 def addPostToDelicious(link,title,text,author,type_name):
     if (app.config['DELICIOUS_USER']!=''):
-        a = DeliciousAPI(app.config['DELICIOUS_USER'], app.config['DELICIOUS_PASS'])
         tag = str("aacnews " + type_name)
         extended = str(text + ' (Shared by ' + author + ')')
         retry = 1
