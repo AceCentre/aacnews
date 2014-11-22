@@ -7,7 +7,7 @@ A working version of this can be seen at http://news.speechbubble.org.uk
 ## To Install and run
 
 1. pip install -r requirements.txt
-2. Edit the various settings in config.live.py. You will need a mailchimp API key. You will also need to have already setup a campaign titled the same as 'MAILCHIMP_CAMPAIGN_NAME' with a template. Copy the one from templates/mcAACNews.html for now - you can change this as you go. 
+2. Edit the various settings in config.live.py. You will need a mailchimp API key. You will also need to have already setup a campaign titled the same as 'MAILCHIMP_CAMPAIGN_NAME' with a template. Copy the one from templates/mcAACNews.html for now - you can change this as you go. If you want to use the auto-posting of published links to delicious.com then add your delicious username/password. Leave the username blank if you don't want to use this feature. 
 3. mv config.live.py config.py
 4. python app.py
 5. login via /admin with the details you set in config 
