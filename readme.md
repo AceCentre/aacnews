@@ -2,7 +2,7 @@
 
 This is a flask-admin based system to manage posted, short publicly posted snippets of news/links and generate a mailchimp newsletter. Its really quite basic. 
 
-A working version of this can be seen at http://news.speechbubble.org.uk 
+A working version of this can be seen at http://AACinfo.email 
 
 ## To Install and run
 
