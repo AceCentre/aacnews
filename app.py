@@ -53,22 +53,21 @@ def get_mailchimp_api():
     return mailchimp.Mailchimp(app.config['MAILCHIMP_APIKEY'])
 
 def addPostToDelicious(link,title,text,author,type_name):
-    if (app.config['DELICIOUS_USER']!=''):
-        tag = str("aacnews " + type_name)
-        extended = str(text + ' (Shared by ' + author + ')')
-        retry = 1
-        success = False
-        while not success and retry <= app.config['RETRY_ATTEMPTS']:
-            try:
-                a.posts_add(str(link), str(title), extended=extended, tags=tag, replace='yes')
-                success = True
-                app.logger.info("Post %s was successfully added to Delicious", title)
-            except Exception, ex:
-                wait = retry * 20;
-                app.logger.error("Some errors occured while adding post %s to Delicious", title)
-                app.logger.error(ex)
-                time.sleep(wait)
-                retry += 1
+    tag = str("aacnews " + type_name)
+    extended = str(text + ' (Shared by ' + author + ')')
+    retry = 1
+    success = False
+    while not success and retry <= app.config['RETRY_ATTEMPTS']:
+        try:
+            a.posts_add(str(link), str(title), extended=extended, tags=tag, replace='yes')
+            success = True
+            app.logger.info("Post %s was successfully added to Delicious", title)
+        except Exception, ex:
+            wait = retry * 20;
+            app.logger.error("Some errors occured while adding post %s to Delicious", title)
+            app.logger.error(ex)
+            time.sleep(wait)
+            retry += 1
 
 # Create models
 class Type(db.Model):
