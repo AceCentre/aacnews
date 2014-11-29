@@ -155,3 +155,8 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#3f324e', end
 .buttons-email-preview a{
     margin-left:10px;
 }
+
+#radioBtn .notActive{
+    color: #3276b1;
+    background-color: #fff;
+}
