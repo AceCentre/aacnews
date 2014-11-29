@@ -87,84 +87,53 @@
         <p>Many thanks for adding your news item!</p>
         <img src="http://api.stathat.com/c?ukey=NzQ0MiA9VR5z91wphzWB6A2qes7g&key=I0PcmlcobfY5vyFOclxcbyBPbDUw&count=1" style="display:none;" width="1" height="1">
         {% else %}        
-<div style="width:600px; margin: 0 auto; margin-bottom: 40px;">
-
         <form id="postForm" action="{{ url_for('post') }}" method="POST" class="form-horizontal" enctype="multipart/form-data">
       <fieldset>
-          <div class="control-group">
-            <div class="control-label">
-              <label for="s2id_autogen1">Type
-                  &nbsp;
-              </label>
-            </div>
-            <div class="controls">
-            <div>
-              <select data-allow-blank="1" data-role="select2" id="type" name="type" tabindex="-1" class="select2-offscreen">
+          <div class="form-group">
+              <label class="col-md-4 control-label" for="s2id_autogen1">Type </label>
+            <div class="col-md-6">
+              <select data-allow-blank="1" data-role="select2" id="type" name="type" tabindex="-1" class="select2-offscreen form-control">
                   {% for type in types %}
                      <option value="{{ type.id }}">{{ type.name }}</option>
                   {% endfor %}
               </select>
             </div>
+          </div>
+          
+          <div class="form-group">
+            <div class="control-label">
+              <label class="col-md-4 control-label" for="title">Title<strong style="color: red">*</strong></label>
+            </div>
+            <div class="col-md-6">
+              <input id="title" name="title" type="text" value=""  maxlength="450" required class="form-control">
             </div>
           </div>
-          <div class="control-group">
-            <div class="control-label">
-              <label for="title">Title
+          
+          <div class="form-group">
+              <label class="col-md-4 control-label" for="text">Description (450 characters)<strong style="color: red">*</strong></label>
+              <div class="col-md-6">
+                <textarea id="text" name="text" maxlength="450" required class="form-control"></textarea>
+              </div>
+          </div>          
+          
+          <div class="form-group">
+              <label class="col-md-4 control-label" for="link">URL (a link to the item)</label>
+              <div class="col-md-6">
+                <textarea id="link" name="link" maxlength="450" class="form-control"></textarea>
+              </div>     
+            </div>
 
-                    <strong style="color: red">*</strong>
-              </label>
-            </div>
-            <div class="controls">
-            <div>
-              <input id="title" name="title" type="text" value=""  maxlength="450" required>
-            </div>
-            </div>
-          </div>
-          <div class="control-group">
-            <div class="control-label">
-              <label for="text">Description (450 characters!)
-                <strong style="color: red">*</strong>
-              </label>
-            </div>
-            <div class="controls">
-              <div>
-                <textarea id="text" name="text" maxlength="450" required></textarea>
-              </div>
-            </div>
-          </div>
-          <div class="control-group">
-            <div class="control-label">
-              <label for="link">URL (a link to the item)
-                  &nbsp;
-              </label>
-            </div>
-            <div class="controls">
-              <div>
-                <textarea id="link" name="link" maxlength="450"></textarea>
-              </div>
+          <div class="form-group">
+            <label class="col-md-4 control-label" for="author">Shared by (e.g. twitter @username, email or just name)</label>
+            <div class="col-md-6">
+                <input id="author" name="author" type="text" value="" maxlength="450" class="form-control">
             </div>
           </div>
 
-          <div class="control-group">
-            <div class="control-label">
-              <label for="author">Shared by (e.g. twitter @username, email or just name)
-                  &nbsp;
-              </label>
-            </div>
-            <div class="controls">
-              <div>
-                <input id="author" name="author" type="text" value="" maxlength="450">
-              </div>
-            </div>
-          </div>
-          <br />
-          <div class="control-group">
-              <div class="controls">
+          <div class="form-group text-center">
                 <input type="submit" class="btn btn-primary btn-large" value="Submit">
                 <a href="{{ url_for('admin.index') }}" class="btn btn-large">Cancel</a>
-              </div>
           </div>
-
 
       </fieldset>
     </form>

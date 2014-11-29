@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="/static/style/bootstrap.css">
 <link rel="stylesheet" href="/static/style/style.css">
 <link rel="stylesheet" href="/static/style/responsive.css">
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.5.4/bootstrap-select.min.css">
 <script type="text/javascript" src="/static/js/jquery-1.11.1.min.js"></script>
 <script type="text/javascript" src="/static/js/bootstrap.js"></script>
 <script type="text/javascript">
@@ -30,6 +31,14 @@
     
   });
   
+  $('#radioBtn a').on('click', function(){
+    var sel = $(this).data('title');
+    var tog = $(this).data('toggle');
+    $('#'+tog).prop('value', sel);
+    
+    $('a[data-toggle="'+tog+'"]').not('[data-title="'+sel+'"]').removeClass('active').addClass('notActive');
+    $('a[data-toggle="'+tog+'"][data-title="'+sel+'"]').removeClass('notActive').addClass('active');
+    })
   
 });
 </script>
@@ -62,28 +71,58 @@
                 <div class="col-9 col-md-9 col-sm-9 col-xs-12">
                   <div class="rightbar">
                       <div class="top_c">
-        <!-- Begin MailChimp Signup Form -->
-<link href="//cdn-images.mailchimp.com/embedcode/slim-081711.css" rel="stylesheet" type="text/css">
-<style type="text/css">
-  #mc_embed_signup{background:#fff; clear:left; font:14px Helvetica,Arial,sans-serif; }
-  /* Add your own MailChimp form style overrides in your site stylesheet or in this style block.
-     We recommend moving this block and the preceding CSS link to the HEAD of your HTML file. */
-</style>
-<div id="mc_embed_signup">
-<form action="//acecentre.us7.list-manage.com/subscribe/post?u=d05eb11e79c97878b9f10fd9c&amp;id=93471cc66b" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
-    <div id="mc_embed_signup_scroll">
-  <label for="mce-EMAIL">Subscribe to our mailing list</label>
-  <input type="email" value="" name="EMAIL" class="email" id="mce-EMAIL" placeholder="email address" required>
-    <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
-    <div style="position: absolute; left: -5000px;"><input type="text" name="b_d05eb11e79c97878b9f10fd9c_93471cc66b" tabindex="-1" value=""></div>
-    <div class="clear"><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button"></div>
-    </div>
-</form>
-</div>
+                <!-- top_c -->
+                        {% if posted %}
+                         <h4>{% print message %}</h4>
+                        {% else %}
+                        
+                        <form action="/subscribe" method="post" class="form-horizontal">
+                          <fieldset>
+                            <!-- Email input-->
+                            {% if errorFound %}
+                              <span class="label label-warning"> Whoops! {% print message %}</span> <br/><br/><br/> 
+                            {% endif %}
+                            <div class="form-group">
+                              <label class="col-md-4 control-label" for="email">Your E-mail</label>
+                              <div class="col-md-5">
+                                <input id="email" name="EMAIL" type="text" placeholder="Your email" class="form-control">
+                              </div>
+                            </div>
 
-<!--End mc_embed_signup-->
-      </div>  
-                               
+                            <!-- Role -->
+                            <div class="form-group">
+                              <label class="col-md-4 control-label" for="message">Your role</label>
+                              <div class="col-md-5">
+                                <select name="ROLE">
+                                    <option value="Professional">Health/Education Professional</option>
+                                    <option value="Family">Parent/Guardian/Family member</option>
+                                    <option value="User">User</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                              </div>
+                            </div>
+
+                            <!-- Email input-->
+                            <div class="form-group">
+                              <label class="col-md-4 control-label" for="email">Would you be happy for the ACE Centre to contact you about things going on at the centre (Training, Events etc)?</label>
+                              <div class="col-md-2">
+                                    <div id="radioBtn" class="btn-group">
+                                        <a class="btn btn-primary btn-sm active" data-toggle="otherlists" data-title="Yes">Yes</a>
+                                        <a class="btn btn-primary btn-sm notActive" data-toggle="otherlists" data-title="No">No</a>
+                                    </div>
+                                <input type="hidden" name="otherlists" id="otherlists" value="No">
+                              </div>
+                              <div class="col-md-3 text-right">
+                                <button type="submit" class="btn btn-primary btn-lg">Subscribe</button>
+                              </div>
+                            </div>
+                            <!-- Form actions -->
+                          </fieldset>
+                          </form>                   
+                <!-- top_c finish -->
+                    
+                {% endif %}
+                      </div>           
                     </div>
                 </div>
             <div class="col-2 col-md-2 col-sm-2 col-xs-2"></div>

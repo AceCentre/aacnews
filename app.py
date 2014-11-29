@@ -34,6 +34,7 @@ from pydelicious import DeliciousAPI
 
 # Create application
 app = Flask(__name__)
+app.debug = True
 app.config.from_object('config')
 
 db = SQLAlchemy(app)
@@ -155,9 +156,24 @@ class LoginForm(form.Form):
 def index():
     return render_template('index.html',posted=False)
 
-@app.route('/subscribe')
+@app.route('/subscribe', methods=('GET', 'POST'))
 def subscribe():
-    return render_template('subscribe.html')
+    if request.method == 'POST':
+        if request.form['otherlists']=='Yes':
+            AddToOther = 'Other'
+        else:
+            AddToOther = ''
+        mailchimp_client = get_mailchimp_api()
+        usersip = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
+        try:
+            mcout = mailchimp_client.lists.subscribe('ec5a06da07', {'email':request.form['EMAIL']}, {'groupings': [{'id': 11085,'groups': ('AACinfo',AddToOther)}], 'optin_ip':usersip, 'LOCATION':'Unspecified','POINT':'AACinfo','TYPE':request.form['ROLE']},'html', True, True, False)
+            msg = 'Thankyou. Your email address has been added to the AACinfo newsletter. An email will be sent towards the end of each month. We hope you enjoy it!'
+            return render_template('subscribe.html', posted=True, errorFound=False, message=msg)
+        except mailchimp.Error, e:
+            msg = e
+            return render_template('subscribe.html', posted=False, errorFound=True, message=msg)
+    else:
+        return render_template('subscribe.html', posted=False, errorFound=False, message='None')
 
 @app.route('/archive')
 def archive():
