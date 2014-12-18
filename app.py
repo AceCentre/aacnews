@@ -282,6 +282,7 @@ class EmailPreview(sqla.ModelView):
     can_delete = False
     list_row_actions_header = None
     column_descriptions = None
+    page_size = -1
 
     column_exclude_list = ['text', 'publish', 'edit', 'promoted', 'priority']
     column_sortable_list = ('type', 'title', 'author', 'date')
