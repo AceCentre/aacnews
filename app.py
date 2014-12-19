@@ -265,7 +265,7 @@ class EmailPreview(sqla.ModelView):
         last_month = today - relativedelta(months=1)
         query = self.session.query(Post)
         query = query.join(Type, Type.id == Post.type_id)
-        return query.filter(and_(Post.publish, Post.date <= today, Post.date >= last_month)).order_by(Type.priority.desc()).order_by(Post.priority.desc()).order_by(Post.date.desc())
+        return query.filter(and_(Post.publish, Post.date <= today, Post.date >= last_month)).order_by(Type.priority.desc()).order_by(Post.priority.desc()).order_by(Post.date.asc())
 
     def get_count_query(self):
         today = datetime.date.today()
@@ -305,7 +305,7 @@ class EmailPreview(sqla.ModelView):
         preamble = request.form['preamble']
         ids = [int(i) for i in request.form.getlist('rowid')]
 
-        models = Post.query.filter(Post.id.in_(ids)).join(Post.type).order_by(Type.priority.desc()).order_by(Post.priority.desc()).order_by(Post.date.desc()).all()
+        models = Post.query.filter(Post.id.in_(ids)).join(Post.type).order_by(Type.priority.desc()).order_by(Post.priority.desc()).order_by(Post.date.asc()).all()
 
         groups = defaultdict(list)
         priorityList = []
