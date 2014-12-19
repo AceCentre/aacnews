@@ -54,8 +54,8 @@ def get_mailchimp_api():
     return mailchimp.Mailchimp(app.config['MAILCHIMP_APIKEY'])
 
 def addPostToDelicious(link,title,text,author,type_name):
-    tag = str("aacnews " + type_name)
-    extended = str(text + ' (Shared by ' + author + ')')
+    tag = str("aacnews," + type_name)
+    extended = str(text + ' (' + author + ')')
     retry = 1
     success = False
     while not success and retry <= app.config['RETRY_ATTEMPTS']:
