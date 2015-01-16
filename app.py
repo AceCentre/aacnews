@@ -321,8 +321,8 @@ class EmailPreview(sqla.ModelView):
 				obj.link_name = urlparse(obj.link).netloc
 			author = obj.author
 			if author.startswith('@'):
-				m = re.match(r'(@[A-Za-z]+[A-Za-z0-9]+)', author)
-				obj.author = '<a href="http://twitter.com/%s">%s</a>%s' % (m.group(1)[1:], m.group(1), m.group(2))
+				m = re.compile('@([A-Za-z]+[A-Za-z0-9]+)')
+				obj.author = m.sub('<a href="http://twitter.com/\g<1>">@\g<1></a>',author)
 			elif re.match(EMAIL_REGEX, author):
 				obj.author = '<a href="mailto:%s">%s</a>' % (author,author)
 			groups[obj.type.name].append( obj )
