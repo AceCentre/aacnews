@@ -87,8 +87,8 @@
         <p>Many thanks for adding your news item!</p>
         <img src="http://api.stathat.com/c?ukey=NzQ0MiA9VR5z91wphzWB6A2qes7g&key=I0PcmlcobfY5vyFOclxcbyBPbDUw&count=1" style="display:none;" width="1" height="1">
         {% else %}
-        <div class="text-center"> 
-                        <a href="/mission">What kinds of items do we approve?</a><br /><br />
+        <div class="text-center small"> 
+                        <a href="/mission">(What kinds of items do we approve?)</a><br /><br />
         </div>
         <form id="postForm" action="{{ url_for('post') }}" method="POST" class="form-horizontal" enctype="multipart/form-data">
       <fieldset>
