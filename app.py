@@ -204,6 +204,10 @@ def about():
 def privacy():
     return render_template('privacy.html')
 
+@app.route('/mission')
+def mission():
+    return render_template('mission.html')
+
 # Customized Post model admin
 class PostAdmin(sqla.ModelView):
 

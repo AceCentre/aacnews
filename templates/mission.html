@@ -1,0 +1,122 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>AACInfo Monthly</title>
+<link rel="stylesheet" href="/static/fonts/fonts.css">
+<link rel="stylesheet" href="/static/style/font-awesome.css">
+<link rel="stylesheet" href="/static/style/bootstrap-theme.css">
+<link rel="stylesheet" href="/static/style/bootstrap.css">
+<link rel="stylesheet" href="/static/style/style.css">
+<link rel="stylesheet" href="/static/style/responsive.css">
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.5.4/bootstrap-select.min.css">
+<script type="text/javascript" src="/static/js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="/static/js/bootstrap.js"></script>
+<script type="text/javascript">
+  $(document).ready(function () {
+  
+  $("#nav a.menu_res").click(function (e) {
+    e.preventDefault();
+    
+    if($("#nav").find('.activemenu').length > 0){
+      $(".nav_inner").css("left","-200px");
+      $(this).removeClass("activemenu");
+    } else {
+      $(".nav_inner").css("left","0");
+      $(this).addClass("activemenu");
+    }     
+    $(".nav_inner").addClass("done");
+    $("body").addClass("bigsize");
+    
+  });
+  
+  $('#radioBtn a').on('click', function(){
+    var sel = $(this).data('title');
+    var tog = $(this).data('toggle');
+    $('#'+tog).prop('value', sel);
+    
+    $('a[data-toggle="'+tog+'"]').not('[data-title="'+sel+'"]').removeClass('active').addClass('notActive');
+    $('a[data-toggle="'+tog+'"][data-title="'+sel+'"]').removeClass('notActive').addClass('active');
+    })
+  
+});
+</script>
+</head>
+
+<body>
+  <div id="header">
+      <div class="container">     
+          <div class="logo"><a href="#"><img src="/static/images/AACInfo.png" width="200px" alt=""></a>
+      </div>
+            <div id="nav">
+              <a href="#" class="menu_res"><span></span><span></span><span></span></a>
+              <div class="nav_inner clearfix">
+                    <ul>
+                      <li><a href="/">Home</a></li>
+                      <li><a href="/subscribe">Subscribe</a></li>
+                      <li><a href="/archive">Archives</a></li>
+                      <li><a href="/post">Post</a></li>
+                      <li class="active"><a href="/about">About</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="content">
+      <div class="container">
+            <div class="row">
+            <div class="col-2 col-md-2 col-sm-2 col-xs-2"></div>
+                <div class="col-9 col-md-9 col-sm-9 col-xs-12">
+                  <div class="rightbar">
+                      <div class="top_c">
+                <!-- top_c -->
+<h4>Mission</h4>
+The AAC industry is fast paced, worldwide and broad. It is impossible keeping up with what is going on. The aim of the site is to create a concise summary of all things going on in the world of AAC. The author is YOU. The editor is the ACE Centre. You can read more <a href="/about">about us here</a>. 
+
+<h4>What gets accepted?</h4>
+<ul>
+<li>Unique, new, product releases, updates developments</li>
+<li>Research and development projects</li>
+<li>Jobs</li>
+</ul>
+
+<h4>What doesn't get accepted?</h4>
+<ul>
+<li>Regular training/update events from suppliers</li>
+<li>Product advertisements (we are considering sponsorship however)</li>
+<li>Education/non-AAC resources (although if they are felt to be useful to the AAC world they may be accepted under 'Related fields..')
+</ul>
+
+<h4>So who edits this?</h4>
+Members of the <a href="http://acecentre.org.uk">Service Delivery Team from the ACE Centre</a>
+<p></p>
+
+                      </div>           
+                    </div>
+                </div>
+            <div class="col-2 col-md-2 col-sm-2 col-xs-2"></div>
+                
+            </div>
+
+            <div class="ace_logo"><a href="#"><img src="/static/images/ace_logo.png" alt=""></a></div>
+      </div>
+    </div>
+    <div id="footer">
+      <div class="container">
+          <div class="f_links">
+              <ul class="clearfix">
+                    <li><a href="/privacy">Pricacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="social">
+              <ul class="clearfix">
+                  <li><a href="#"><span class="fa fa-facebook"></span></a></li>
+                    <li><a href="#"><span class="fa fa-twitter"></span></a></li>
+                </ul>
+            </div>
+            <p>Copyright &copy; 2014 ACE Centre. ACE Centre is a registered charity no. 1089313. Registered as a company limited by guarantee no. 04268143 (England & Wales). Registered office: SpeechBubble, Hollinwood Business Centre, Albert Street, Oldham, OL8 3QL. VAT registration number 785728278  </p>
+        </div>
+    </div>
+</body>
+</html>
