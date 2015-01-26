@@ -93,7 +93,7 @@
         <form id="postForm" action="{{ url_for('post') }}" method="POST" class="form-horizontal" enctype="multipart/form-data">
       <fieldset>
           <div class="form-group">
-              <label class="col-md-4 control-label" for="s2id_autogen1">Type </label>
+              <label class="col-md-4 control-label" for="s2id_autogen1">Type of news item to be posted </label>
             <div class="col-md-6">
               <select data-allow-blank="1" data-role="select2" id="type" name="type" tabindex="-1" class="select2-offscreen form-control">
                   {% for type in types %}
@@ -139,6 +139,8 @@
           </div>
 
       </fieldset>
+      <div class="text-left small"><strong style="color: red">*</strong> item is required</div>
+      <p></p>
     </form>
     </div> {% endif %}
 
