@@ -186,7 +186,7 @@ def archive():
         campaign = campaigns['data'][i]
         campaign_template_obj['archive_url'] = campaign['archive_url_long']
         date = parser.parse(campaign['send_time'])
-        campaign_template_obj['date'] = date.strftime('%Y-%m-%d')
+        campaign_template_obj['date'] = date.strftime('%d-%m-%y')
         campaign_template_obj['title'] = campaign['title']
         campaign_list.append(campaign_template_obj)
 
