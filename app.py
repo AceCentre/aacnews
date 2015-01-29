@@ -31,11 +31,16 @@ from jinja2 import Template
 import logging
 from pydelicious import DeliciousAPI
 
+from slack import Slack
+
 
 # Create application
 app = Flask(__name__)
 app.debug = True
 app.config.from_object('config')
+
+#slack
+slacker = Slack(app.config['SLACK_HOOK'])
 
 db = SQLAlchemy(app)
 a = DeliciousAPI(app.config['DELICIOUS_USER'], app.config['DELICIOUS_PASS'])
@@ -484,9 +489,6 @@ class MyAdminIndexView(admin.AdminIndexView):
 
 
 
-@app.errorhandler(Exception)
-def internal_server_error(e):
-    return redirect(url_for('admin.internal_server_error_view'))
 
 
 # Create admin
@@ -510,6 +512,7 @@ def post():
         db.session.add(post)
         db.session.commit()
         #return redirect(url_for('index',True))
+        slacker.send_rich('New Post', slacker.PRIMARY, post.author,post.title,post.link,post.text, {})
         return render_template('post.html',posted=True)
 
 

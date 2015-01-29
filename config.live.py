@@ -20,3 +20,5 @@ SQLALCHEMY_ECHO =True
 USERNAME ='admin'
 PASSWORD ='pass'
 
+#slack
+SLACK_HOOK = 'paste_hook_url_here'
