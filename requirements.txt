@@ -9,6 +9,7 @@ Flask-Login
 Flask-SQLAlchemy
 Flask-Script
 Flask-WTF
+psycopg2
 SQLAlchemy
 mailchimp
 python-dateutil
