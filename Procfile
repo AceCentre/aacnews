@@ -1,2 +1,1 @@
-<process type>: web
-web:app.py
+web: gunicorn aacinfo:app
