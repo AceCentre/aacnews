@@ -13,3 +13,4 @@ mailchimp
 python-dateutil
 markdown
 pydelicious
+flask_environ

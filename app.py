@@ -33,11 +33,29 @@ from pydelicious import DeliciousAPI
 
 from slack import Slack
 
+from flask_environ import get, collect, word_for_true
+
 
 # Create application
 app = Flask(__name__)
 app.debug = True
-app.config.from_object('config')
+
+app.config.update(collect(
+    get('SECRET_KEY', default='123456790'),
+    get('PROJECT_TITLE', default='AACInfo'),
+    get('MAILCHIMP_CAMPAIGN_NAME', default='TESTAACInfo'),
+    get('MAILCHIMP_BACKUP_CAMPAIGN_NAME', default='TESTAACInfo Backup'),
+    get('MAILCHIMP_APIKEY', default='some-key-here'),
+    get('DELICIOUS_USER', default='delicious-user-here'),
+    get('DELICIOUS_PASS', default='some-delicious-password-here'),
+    get('RETRY_ATTEMPTS', default=10, convert=int),
+    get('DATABASE_FILE', default='aacinfo_db.sqlite'),
+    get('SQLALCHEMY_DATABASE_URI', default='sqlite:///realpath/db_file'),
+    get('SQLALCHEMY_ECHO', default=True, convert=word_for_true),
+    get('USERNAME', default='admin'),
+    get('PASSWORD', default='pass'),
+    get('SLACK_HOOK', default='some_slack_url_here')
+))
 
 #slack
 slacker = Slack(app.config['SLACK_HOOK'])

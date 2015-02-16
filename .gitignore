@@ -1,5 +1,5 @@
 venv/
 *.pyc
 *.sqlite
-config.py
+config.env
 aacnews_db.sqlite
