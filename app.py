@@ -70,7 +70,7 @@ login_manager.init_app(app)
 
 @login_manager.user_loader
 def load_user(user_id):
-    return db.session.query(User).get(user_id)
+    return db.session.query(Users).get(user_id)
 
 
 def get_mailchimp_api():
@@ -133,7 +133,7 @@ class Post(db.Model):
         return self.title
 
 
-class User(db.Model):
+class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     login =  db.Column(db.String(120), unique=True)
     password = db.Column(db.String(64))
@@ -171,7 +171,7 @@ class LoginForm(form.Form):
 
 
     def get_user(self):
-        return db.session.query(User).filter_by(login=self.login.data).first()
+        return db.session.query(Users).filter_by(login=self.login.data).first()
 
 
 # Flask views
