@@ -1,2 +1,2 @@
 <process type>: web
-web: app.py
+web:app.py
