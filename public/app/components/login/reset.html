@@ -1,0 +1,96 @@
+<div class="page-splash-bg" style="height: 475px;">
+
+    <div class="row m-n">
+
+       <div class="col-md-4 col-md-offset-4 col-xs-12 box-center-fix-login">
+            <section class="panel bg-trans-frost">
+
+              <header class=" text-center">
+                  <div class="login-logo">
+                      <div class="logo-bg"></div>
+                      <span class="text-white logo-txt">BirdWhisper</span>
+                  </div>
+
+              </header>
+
+
+                <form name="form" novalidate class="panel-body" ng-submit="reset(form.$valid)">
+                    <label class="control-label text-white">Ingrese su correo para recuperar la contraseña</label>
+                    <div class="form-group" ng-class="{ 'has-error' : form.email.$invalid && submitted }">
+                        
+                        <div class="input-group">
+                            <input type="email" placeholder="Correo" name="email" data-ng-model="email" class="form-control">
+                          
+                            <div ng-click="reset(form.$valid)" class="input-group-addon btn btn-danger">Enviar</div>
+                          
+                        </div>
+                    </div>
+                    
+                    
+                    
+                    <div class="line line-dashed"></div>
+                    <p ng-show="form.email.$invalid && submitted" class="help-block text-warning">El correo no es válido.</p>
+                    <div data-ng-hide="message == ''" class="alert alert-danger">
+                            {{message}}
+                    </div>
+                </form>
+            </section>
+
+            <footer id="footer">
+                <div class="text-center padder clearfix">
+                    <p class="text-primary">
+                        <small>BirdWhisper © 2014</small>
+                    </p>
+                </div>
+            </footer>
+
+        </div>
+
+
+    </div>
+</div>
+<!--
+<div class="page-splash-bg" style="height: 348px;">
+
+        <div class="row m-n">
+            <div class="col-md-4 col-md-offset-4 col-xs-12 box-center-fix-register">
+                <section class="panel bg-trans-frost">
+                    <header class=" text-center">
+                        <div class="login-logo">
+                            <span class="text-white logo-txt">Skyloop</span>
+                            <div class="logo-bg"></div>
+                        </div>
+                    </header>
+
+                    <form name="form" novalidate class="panel-body" ng-submit="reset(form.$valid)">
+                        
+                        <div class="form-group" ng-class="{ 'has-error' : form.email.$invalid && submitted }">
+                            <label class="text-white">Your email address</label>
+                            <input type="email" placeholder="test@example.com" name="email" data-ng-model="email" class="form-control" required>
+                            <p ng-show="form.email.$invalid && submitted" class="help-block">Your email is not valid.</p>
+
+                        </div>
+
+                        <button type="submit" class="btn btn-danger">Send</button>
+                        <div class="line line-dashed"></div>
+                        <div data-ng-hide="message == ''" class="alert alert-danger">
+                            {{message}}
+                        </div>
+                    </form>
+
+
+                </section>
+
+                <footer id="footer">
+                    <div class="text-center padder clearfix">
+                        <p>
+                            <small>Skyloop © 2014</small>
+                        </p>
+                    </div>
+                </footer>
+
+            </div>
+
+
+        </div>
+</div>-->

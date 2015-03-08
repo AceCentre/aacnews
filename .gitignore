@@ -1,0 +1,5 @@
+uploads/*
+assets/pdfs/*
+.htaccess
+bower_components/*
+node_modules/*

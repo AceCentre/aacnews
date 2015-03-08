@@ -1,0 +1,75 @@
+<div class="container">
+            <div class="row">
+            <div class="col-2 col-md-2 col-sm-2 col-xs-2"></div>
+                <div class="col-9 col-md-9 col-sm-9 col-xs-12">
+                	<div class="rightbar">
+                    	<div class="top_c">
+                        <div ng-show="posted">
+                          <p>Many thanks for adding your news item!</p>
+                          <img src="http://api.stathat.com/c?ukey=NzQ0MiA9VR5z91wphzWB6A2qes7g&key=I0PcmlcobfY5vyFOclxcbyBPbDUw&count=1" style="display:none;" width="1" height="1">
+                        </div>
+        
+                        <form ng-show="!posted" id="postForm" name="form" novalidate ng-submit="form.$valid && savePost()" class="form-horizontal" enctype="multipart/form-data">
+                          <div class="text-center small"> 
+                                        <a ui-sref="root.mission">(What kinds of items do we approve?)</a><br /><br />
+                          </div>
+                      <fieldset>
+                          <div class="form-group" ng-class="{ 'has-error' : form.$submitted && form.type.$invalid}">
+                              <label class="col-md-4 control-label" for="s2id_autogen1">Type of news item to be posted </label>
+                            <div class="col-md-6">
+                              <select data-allow-blank="1" data-role="select2" id="type" name="type" tabindex="-1" class="select2-offscreen form-control" ng-model="post.type" ng-options="obj.name for obj in types track by obj._id" required="">
+                                <option value="">Select Type</option>
+                              </select>
+                              <p ng-show="form.$submitted && form.type.$error.required" class="help-block">Type is required.</p>
+                            </div>
+                          </div>
+                          
+                          <div class="form-group" ng-class="{ 'has-error' : form.$submitted && form.title.$invalid}">
+                            <div class="control-label">
+                              <label class="col-md-4 control-label" for="title">Title<strong style="color: red">*</strong></label>
+                            </div>
+                            <div class="col-md-6">
+                              <input id="title" name="title" type="text" value=""  ng-model="post.title" maxlength="450" required class="form-control" required="">
+                              <p ng-show="form.$submitted && form.title.$error.required" class="help-block">Title is required.</p>
+                            </div>
+                          </div>
+                          
+                          <div class="form-group" ng-class="{ 'has-error' : form.$submitted && form.text.$invalid}">
+                              <label class="col-md-4 control-label" for="text">Description (450 characters) (you can style it with <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet">Markdown</a> if you like)<strong style="color: red">*</strong></label>
+                              <div class="col-md-6">
+                                <textarea id="text" name="text" ng-model="post.text" maxlength="450" required class="form-control" required=""></textarea>
+                                <p ng-show="form.$submitted && form.text.$error.required" class="help-block">Description is required.</p>
+                              </div>
+                          </div>          
+                          
+                          <div class="form-group" ng-class="{ 'has-error' : form.$submitted && form.link.$invalid}">
+                              <label class="col-md-4 control-label" for="link">URL (a link to the item)</label>
+                              <div class="col-md-6">
+                                <textarea id="link" name="link" ng-model="post.link" maxlength="450" class="form-control" required=""></textarea>
+                                <p ng-show="form.$submitted && form.link.$error.required" class="help-block">URL is required.</p>
+                              </div>     
+                            </div>
+
+                          <div class="form-group">
+                            <label class="col-md-4 control-label" for="author">Shared by (e.g. twitter @username, email or just name)</label>
+                            <div class="col-md-6">
+                                <input id="author" name="author" type="text" value="" ng-model="post.author" maxlength="450" class="form-control">
+                            </div>
+                          </div>
+
+                          <div class="form-group text-center">
+                                <input type="submit"  class="btn btn-primary btn-large" value="Submit">
+                          </div>
+
+                      </fieldset>
+                      <div class="text-left small"><strong style="color: red">*</strong> item is required</div>
+                      <p></p>
+                    </form>
+                  </div> <!--{% endif %}-->
+
+                </div>  
+                               
+              </div>
+            </div>
+            <div class="ace_logo"><a href="#"><img src="/assets/images/ace_logo.png" alt=""></a></div>
+      </div>

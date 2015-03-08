@@ -1,0 +1,134 @@
+<div >
+<h3>Email structure</h3>
+	<br>
+	<div ng-show="message" class="alert alert-success" role="alert">Notification was sent successfully.</div>
+	<div ng-show="message_err" class="alert alert-success" role="alert">Some errors occured during notification sending.</div>
+	<div ng-show="!builder && !message && !message_err" style="display:inline-block;" class="pull-right">
+		<a class="btn btn-danger " ng-click="back()">Cancel</a><span>&nbsp;</span>
+        <a ng-disabled="isSending" class="btn btn-success" ng-click="send()">&nbsp;Send&nbsp;</a>
+	</div>	
+
+	<div dynamic="html" id="content" ng-show="!builder && !message && !message_err"></div>
+
+	<span us-spinner spinner-key="spinner-1" spinner-start-active="false"></span>
+	<form class="form-horizontal" role="form" ng-show="builder && !message && !message_err" name="form" novalidate ng-submit="form.$valid && preview()" >
+		<button class="btn btn-primary pull-right" type="submit">
+	<i class="icon-calendar icon-white"></i>&nbsp;Preview</button>
+			<br>
+			<br>
+		  <div class="form-group" ng-class="{ 'has-error' : form.$submitted && form.email_title.$invalid}">
+		    <label for="post_title" class="col-lg-2 control-label">Title</label>
+		    <div class="col-lg-10">
+		      <input type="text" class="form-control" id="newsletter_title"
+		             placeholder="Title" name="email_title" ng-model="email.title" required="">
+		        <p ng-show="form.$submitted && form.email_title.$error.required" class="help-block">Title is required.</p>
+		    </div>
+		    
+		  </div>
+		  <div ng-show="markdown" class="form-group" ng-class="{ 'has-error' : form.$submitted && form.email_preamble.$invalid}">
+		    <label for="newsletter_preamble" class="col-lg-2 control-label">Preamble (Markdown)</label>
+		    <div class="col-lg-10">
+		      <button class="btn btn-success pull-right" type="button" ng-click="changeToHTML()" >&nbsp;HTML</button><br>
+		      <textarea rows="10" type="text" name="email_preamble" class="form-control" id="post_text"
+		             placeholder="Write preamble" ng-model="email.preamble" required="">
+		      </textarea>
+		      <p ng-show="form.$submitted && form.email_preamble.$error.required" class="help-block">Preamble is required.</p>
+		    </div>
+		  </div>
+		  <div ng-show="!markdown" class="form-group" >
+		    <label for="newsletter_text_HTML" class="col-lg-2 control-label">Preamble (HTML)</label>
+		    <div class="col-lg-10">
+		      <button class="btn btn-success pull-right" type="button" ng-click="changeToMarkdown()" >&nbsp;Markdown</button><br>
+		      <blockquote marked="email.preamble"></blockquote>
+		    </div>
+		  </div>
+		  <div class="form-group" ng-class="{ 'has-error' : form.$submitted && form.email_spoiler.$invalid}">
+		    <label for="newsletter_spoiler" class="col-lg-2 control-label">Spoiler</label>
+		    <div class="col-lg-10">
+		      <input type="text" type="text" name="email_spoiler" class="form-control" id="post_spoiler"
+		             placeholder="Write spoiler" ng-model="email.spoiler" required="">
+		      </input>
+		      <p ng-show="form.$submitted && form.email_spoiler.$error.required" class="help-block">Spoiler is required.</p>
+		    </div>
+		  </div>
+	</form>
+	<!--
+	<table class='table table-striped' ng-show="builder && !message && !message_err">
+	  <thead>
+	  	<tr>
+	  	  <th><input type="checkbox" ng-click="checkAll()" ng-model="checkedAll"></th></th>
+	  	  <th>Type</th>
+	  	  <th>Title</th>
+	  	  <th>Date</th>
+	  	  <th>Link</th>
+	  	  <th>Author</th>
+	  	</tr>
+	  </thead>
+  <tbody>
+    <tr ng-repeat='post in posts track by $index'>
+      <td><input type="checkbox" ng-model="post.selected" /></td>
+      <td>{{post.type.name}}</td>
+      <td>{{post.title}}</td>
+      <td>{{post.date | date:'dd/MM/yyyy'}}</td>
+      <td>{{post.link}}</td>
+      <td>{{post.author}}</td>
+    </tr>
+  </tbody>
+</table>
+	-->
+</div>
+<div class="nestedPosts row" ng-show="builder && !message && !message_err">
+<!-- Markup for lists inside the dropzone. It's inside a seperate template
+     because it will be used recursively. The dnd-list directive enables
+     to drop elements into the referenced array. The dnd-draggable directive
+     makes an element draggable and will transfer the object that was
+     assigned to it. If an element was dragged away, you have to remove
+     it from the original list yourself using the dnd-moved attribute -->
+<script type="text/ng-template" id="list.html">
+    <ul dnd-list="list">
+        <li ng-repeat="item in list"
+            dnd-draggable="item"
+            dnd-effect-allowed="move"
+            dnd-moved="list.splice($index, 1)"
+            dnd-selected="models.selected = item"
+            ng-class="{selected: models.selected === item}"
+            ng-include="item.type + '.html'">
+        </li>
+    </ul>
+</script>
+
+<!-- This template is responsible for rendering a container element. It uses
+     the above list template to render each container column -->
+<script type="text/ng-template" id="container.html">
+    <div class="container-element box box-blue">
+        <h3>{{item.name}}</h3>
+        <div class="column" ng-repeat="list in item.columns" ng-include="'list.html'" ></div>
+        <div class="clearfix"></div>
+    </div>
+</script>
+
+<!-- Template for a normal list item -->
+<script type="text/ng-template" id="item.html">
+    <div class="item">{{item.title}}</div>
+</script>
+
+	<!-- Main area with dropzones and source code -->
+	<div class="col-md-12">
+	    <div class="row">
+	        <div ng-repeat="(zone, list) in models_post.dropzones" class="col-md-6">
+	            <div class="dropzone box box-yellow">
+	                <!-- The dropzone also uses the list template -->
+	                <h3>{{zone}}</h3>
+	                <div ng-include="'list.html'"></div>
+	            </div>
+	        </div>
+	    </div>
+		<!-- only for debugging -->
+		<div ng-show="show_json">
+		    <div view-source="nested"  highlight-lines="{markup: '1-18, 20-28, 40-42, 57-68, 78-82'}"></div>
+
+		    <h2>Generated Model</h2>
+		    <pre>{{modelAsJson}}</pre>
+		</div>
+	</div>
+</div>

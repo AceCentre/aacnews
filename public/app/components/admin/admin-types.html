@@ -1,0 +1,80 @@
+<div >
+<h3>List of Types</h3>
+<button class="btn btn-primary pull-right" ng-click="editType('new')" data-toggle="modal" href="#editModal">
+	<i class="icon-calendar icon-white"></i>&nbsp;Create New Type</button>
+<table  st-table="displayedCollection" st-safe-src="types" class='table table-striped'>
+  <thead>
+  	<tr>
+  	  <th st-sort="name">Name</th>
+  	  <th st-sort="priority">Priority</th>
+  	  <th>&nbsp;</th>
+  	</tr>
+  	<tr>
+		<th colspan="3">
+			<input st-search placeholder="global search" class="input-sm form-control" type="search"/>
+		</th>
+	</tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="type in displayedCollection">
+      <td>{{type.name}}</td>
+      <td>{{type.priority}}</td>
+      <td class="text-right"><button role='button' class='btn btn-primary' ng-click="editType(type._id)" data-toggle="modal" href="#editModal"><i class="fa fa-pencil-square-o"></i></button>&nbsp;<button role='button' class='btn btn-danger' ng-click="removeType(type._id)"><i class="fa fa-times"></i></button></td>
+    </tr>
+  </tbody>
+  <tfoot>
+		<tr>
+			<td colspan="3" class="text-center">
+				<div st-pagination="" st-items-by-page="10" st-displayed-pages="7"></div>
+			</td>
+		</tr>
+	</tfoot>
+</table>	
+</div>
+<!-- Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+      	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		  <h4 ng-show='type.id'>Edit Type: {{type.name}}</h4>
+		  <h4 ng-hide='type.id'>New Type</h4>
+      </div>
+      <div class="modal-body">
+        <form name="form" novalidate class="form-horizontal" ng-submit="form.$valid && saveType()" role="form">
+		  <div class="form-group" ng-class="{ 'has-error' : form.$submitted && form.type_name.$invalid}" >
+		    <label for="type_name" class="col-lg-2 control-label">Name</label>
+		    <div class="col-lg-10">
+		      <input type="text" class="form-control" id="type_name"
+		             placeholder="Name" ng-model="type.name" name="type_name" required="">
+		      <p ng-show="form.$submitted && form.type_name.$error.required" class="help-block">Type name is required.</p>
+		    </div>
+		    
+		  </div>
+		  <div class="form-group">
+		    <label for="type_priority" class="col-lg-2 control-label">Priority</label>
+		    <div class="col-lg-3">
+		      <select class="form-control" ng-model="type.priority">
+				  <option value="0">0</option>
+				  <option value="1">1</option>
+				  <option value="2">2</option>
+				  <option value="3">3</option>
+				  <option value="4">4</option>
+				  <option value="5">5</option>
+				  <option value="6">6</option>
+				  <option value="7">7</option>
+				  <option value="8">8</option>
+				  <option value="9">9</option>
+				  <option value="10">10</option>
+			   </select>
+		    </div>
+		  </div>
+		  <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	        <button type="submit"  class="btn btn-primary" >Save changes</button>
+	      </div>
+		</form>
+      </div>      
+    </div>
+  </div>
+</div>

@@ -1,0 +1,160 @@
+<div >
+<h4>Versions of "{{title}}"</h4>
+<br>
+<table st-table="displayedCollection" st-safe-src="posts_history" class='table table-striped'>
+  <thead>
+  	<tr>
+  	  <th st-sort="type.name">Type</th>
+  	  <th st-sort="title">Title</th>
+  	  <th st-sort="date">Date</th>
+  	  <th st-sort="link">URL</th>
+  	  <th st-sort="published">Publish</th>
+  	  <th st-sort="promoted">Promoted</th>
+  	  <th st-sort="priority">Priority</th>
+  	  <th st-sort="author">Author</th>
+  	  <th st-sort="date_creation">Update</th>
+  	  <th>&nbsp;</th>
+  	</tr>
+  	<tr>
+		<th colspan="10">
+			<input st-search placeholder="global search" class="input-sm form-control" type="search"/>
+		</th>
+	</tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat='post in displayedCollection'>
+      <td>{{post.type.name}}</td>
+      <td>{{post.title}}</td>
+      <td>{{post.date | date:'dd/MM/yyyy'}}</td>
+      <td>{{post.link}}</td>
+      <td>{{post.published}}</td>
+      <td>{{post.promoted}}</td>
+      <td>{{post.priority}}</td>
+      <td>{{post.author}}</td>
+      <td>{{post.date_creation | date:'dd/MM/yyyy'}}</td>
+      <td nowrap class="text-right"><button role='button' class='btn btn-primary' ng-click="getHistoryByPost(post.id_post,post.version)" data-toggle="modal" href="#editModal"><i class="fa fa-pencil-square-o" title="Edit post"></i></button></td>
+    </tr>
+  </tbody>
+  <tfoot>
+		<tr>
+			<td colspan="3" class="text-center">
+				<div st-pagination="" st-items-by-page="10" st-displayed-pages="7"></div>
+			</td>
+		</tr>
+	</tfoot>
+</table>	
+</div>
+<!-- Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+      	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		  <h4 ng-show='post.id'>Edit Post: {{post.title}}</h4>
+		  <h4 ng-hide='post.id'>New Post</h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal" role="form">
+          <div class="form-group">
+		    <label for="types" class="col-lg-2 control-label">Type</label>
+		    <div class="col-lg-3">
+		      <select class="form-control" ng-model="post.type" ng-options="obj.name for obj in types track by obj._id">
+			  	<option value="">Select Type</option>
+			  </select>
+		    </div>
+		  </div>
+		  <div class="form-group">
+		    <label for="post_title" class="col-lg-2 control-label">Title</label>
+		    <div class="col-lg-10">
+		      <input type="text" class="form-control" id="post_title"
+		             placeholder="Title" ng-model="post.title">
+		    </div>
+		  </div>
+		  <div ng-show="markdown_hist" class="form-group">
+		    <label for="post_text" class="col-lg-2 control-label">Content (Markdown)</label>
+		    <div class="col-lg-10">
+		      <button class="btn btn-success pull-right" type="button" ng-click="changeToHTML()" >&nbsp;HTML</button><br>
+		      <textarea rows="10" type="text" class="form-control" id="post_text"
+		             placeholder="Write content" ng-model="post.text">
+		      </textarea>
+		    </div>
+		  </div>
+		  
+		  <div ng-show="!markdown_hist" class="form-group">
+		    <label for="post_text_HTML" class="col-lg-2 control-label">Content (HTML)</label>
+		    <div class="col-lg-10">
+		      <button class="btn btn-success pull-right" type="button" ng-click="changeToMarkdown()" >&nbsp;Markdown</button><br>
+		      <blockquote marked="post.text"></blockquote>
+		    </div>
+		  </div>
+
+		  <div class="form-group">
+		    <label for="post_date" class="col-lg-2 control-label">Date</label>
+		    <div class="col-lg-3">
+		    	  <p class="input-group">		    	  
+			      <input type="text" class="form-control" datepicker-popup="dd/MM/yyyy" ng-model="post.date" is-open="opened"  datepicker-options="dateOptions" ng-required="true" close-text="Close" />
+	              <span class="input-group-btn">
+	                <button type="button" class="btn btn-default" ng-click="open($event)"><i class="fa fa-calendar"></i></button>
+	              </span>
+	              </p>
+		    </div>
+		  </div>
+		  <div class="form-group">
+		    <label for="post_url" class="col-lg-2 control-label">URL</label>
+		    <div class="col-lg-10">
+		      <input type="text" class="form-control" id="post_url"
+		             placeholder="URL" ng-model="post.link">
+		    </div>
+		  </div>
+		  <div class="form-group">
+		    <div class="col-lg-offset-2 col-lg-10">
+		    	<div class="checkbox">
+			        <label>
+			          <input type="checkbox" ng-model="post.published"> Published
+			        </label>
+		      	</div>
+		    </div>
+		  </div>
+		  <div class="form-group">
+		    <div class="col-lg-offset-2 col-lg-10">
+		    	<div class="checkbox">
+			        <label>
+			          <input type="checkbox" ng-model="post.promoted"> Promoted
+			        </label>
+		      	</div>
+		    </div>
+		  </div>
+		  <div class="form-group">
+		    <label for="post_author" class="col-lg-2 control-label">Author</label>
+		    <div class="col-lg-3">
+		      <input type="text" class="form-control" id="post_author"
+		             placeholder="Author" ng-model="post.author">
+		    </div>
+		  </div>
+		  <div class="form-group">
+		    <label for="priorities" class="col-lg-2 control-label">Priority</label>
+		    <div class="col-lg-3">
+		      <select class="form-control" ng-model="post.priority">
+				  <option value="0">0</option>
+				  <option value="1">1</option>
+				  <option value="2">2</option>
+				  <option value="3">3</option>
+				  <option value="4">4</option>
+				  <option value="5">5</option>
+				  <option value="6">6</option>
+				  <option value="7">7</option>
+				  <option value="8">8</option>
+				  <option value="9">9</option>
+				  <option value="10">10</option>
+			   </select>
+		    </div>
+		  </div>	
+		</form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="savePost()">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>

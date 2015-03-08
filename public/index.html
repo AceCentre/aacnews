@@ -1,0 +1,85 @@
+<!-- index.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="utf-8" />
+    <title>AACInfo Monthly</title>
+    <base href="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <link rel="stylesheet" href="assets/fonts/fonts.css" type="text/css" />
+    <link rel="stylesheet" href="assets/css/bootstrap.css" type="text/css" />
+    <link rel="stylesheet" href="assets/css/font-awesome.css" type="text/css" />
+    <link rel="stylesheet" href="assets/css/bootstrap-theme.css" type="text/css" />
+    <link rel="stylesheet" href="assets/css/style.css" type="text/css" />
+    <link rel="stylesheet" href="assets/css/responsive.css" type="text/css" />
+    <link rel="stylesheet" href="assets/css/bootstrap-select.min.css" type="text/css" />
+    <link rel="stylesheet" href="assets/css/draganddrop.css" type="text/css" />
+    
+    
+
+    <!-- JS (load angular, ui-router, and our custom js file) -->
+    <script src="assets/js/jquery-1.11.1.min.js"></script>
+    <script src="assets/js/jquery.validate.min.js"></script>
+    <script src="assets/js/bootstrap.js"></script>
+    <script src="assets/js/angular.js"></script>
+    <script src="assets/js/angular-sanitize.min.js"></script>
+    <script src="assets/js/angular-ui-router.min.js"></script>
+    <script src="assets/js/ui-bootstrap-tpls.min.js"></script>
+    <script src="assets/js/marked.js"></script>
+    <script src="assets/js/angular-marked.js"></script>
+    <script src="assets/js/angular-filter.min.js"></script>
+    <script src="assets/js/spin.min.js"></script>
+    <script src="assets/js/angular-spinner.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-local-storage/0.1.5/angular-local-storage.min.js"></script>
+    <script src="assets/js/smart-table.min.js"></script>
+    <script src="assets/js/angular-drag-and-drop-lists.min.js"></script>
+    <script src="app/app.module.js"></script>
+    
+    <!-- SERVICES -->
+    <script src="app/components/login/authInterceptorService.js"></script>
+    <script src="app/components/login/authService.js"></script>
+    <script src="app/components/admin/adminService.js"></script>
+    <script src="app/components/subscribe/subscribeService.js"></script>
+    <script src="app/components/archives/archivesService.js"></script>
+
+    <!-- CONTROLLERS -->
+    <script src="app/components/home/homeCtrl.js"></script>
+    <script src="app/components/subscribe/subscribeCtrl.js"></script>
+    <script src="app/components/login/loginCtrl.js"></script>
+    <script src="app/components/admin/adminCtrl.js"></script>
+    <script src="app/components/archives/archivesCtrl.js"></script>
+    
+    <!-- DIRECTIVES -->
+    
+    <script type="text/javascript">
+      $(document).ready(function () {
+        
+        $("#nav a.menu_res").click(function (e) {
+            e.preventDefault();
+            
+            if($("#nav").find('.activemenu').length > 0){
+                $(".nav_inner").css("left","-200px");
+                $(this).removeClass("activemenu");
+            } else {
+                $(".nav_inner").css("left","0");
+                $(this).addClass("activemenu");
+            }           
+            $(".nav_inner").addClass("done");
+            $("body").addClass("bigsize");
+            
+        });
+    });
+    </script>
+</head>
+
+<!-- apply our angular app to our site -->
+<body ng-app="routerApp" id="appBody">
+
+   
+    <div ui-view>
+    </div>
+    
+</body>
+</html>

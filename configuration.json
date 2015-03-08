@@ -1,0 +1,12 @@
+{
+	"MONGO_DB_URL" : "aacInfoUserAdmin=h6eXOkkPtiHF@178.62.37.190:27017/aacinfo",
+	"MAILCHIMP_API_KEY" : "19a4ff3c6dd785db425aae32b23ffb0f-us8",
+	"MAILCHIMP_CAMPAIGN_NAME" : "AACInfo Monthly",
+	"MAILCHIMP_BACKUP_CAMPAIGN_NAME" : "AACInfo Monthly Backup",
+	"MAILCHIMP_CAMPAIGN_LIST_ID" : "11085",
+	"PROJECT_TITLE": "AACNews",
+	"USER_DELICIOUS": "pcocko",
+	"PWD_DELICIOUS": "celecapo",
+	"AACNEWS_PORT" : "3000",
+	"SLACK_HOOK":"https://hooks.slack.com/services/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"
+}

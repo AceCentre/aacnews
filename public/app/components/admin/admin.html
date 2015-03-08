@@ -1,0 +1,42 @@
+<div class="container-fluid">
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" ui-sref="admin.home">ACCInfo</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li ng-class="getClassMenu('types')"><a ui-sref="admin.type">Type</a></li>
+        <li ng-class="getClassMenu('newsletters')"><a ui-sref="admin.newsletters">Newsletter</a></li>
+        <li ng-class="getClassMenu('posts')"><a ui-sref="admin.posts">Post</a></li>
+        <li ng-class="getClassMenu('email')"><a ui-sref="admin.email">Email</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+          <i class="fa fa-user"></i>&nbsp;admin <span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="#">Logout</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div><!-- /.container-fluid -->
+  </div>
+</nav>
+<div class="row-fluid">
+    
+    <!--Body content-->
+    <div class="span10">
+        <div ui-view></div>
+    </div>
+</div>
+</div>

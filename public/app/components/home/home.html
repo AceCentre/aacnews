@@ -1,0 +1,40 @@
+<div id="header">
+      <div class="container">     
+          <div class="logo"><a href="#"><img src="/assets/images/AACInfo.png" width="200px" alt=""></a>
+      </div>
+            <div id="nav">
+              <a href="#" class="menu_res"><span></span><span></span><span></span></a>
+              <div class="nav_inner clearfix">
+                    <ul>
+                      <li ng-class="getClassMenu('home')"><a ui-sref="root.home">Home</a></li>
+                      <li ng-class="getClassMenu('subscribe')"><a ui-sref="root.subscribe">Subscribe</a></li>
+                      <li ng-class="getClassMenu('archives')"><a ui-sref="root.archives" >Archives</a></li>
+                      <li ng-class="getClassMenu('posts')"><a ui-sref="root.posts" >Post</a></li>
+                      <li ng-class="getClassMenu('about')"><a ui-sref="root.about">About</a></li>
+                    
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="content" ui-view>
+      
+    </div>
+    <div id="footer">
+      <div class="container">
+          <div class="f_links">
+              <ul class="clearfix">
+                    <li><a href="/privacy">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="social">
+              <ul class="clearfix">
+                  <li><a href="#"><span class="fa fa-facebook"></span></a></li>
+                    <li><a href="#"><span class="fa fa-twitter"></span></a></li>
+                </ul>
+            </div>
+            <p>Copyright &copy; 2014 ACE Centre. ACE Centre is a registered charity in England and Wales (charity number 1089313) and a company limited by guarantee (company number 04268143). Registered office: ACE Centre, Hollinwood Business Centre, Albert Street, Oldham, OL8 3QL. VAT registration number 785728278
+  </p>
+        </div>
+    </div>
+

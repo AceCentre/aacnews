@@ -1,0 +1,67 @@
+<div class="container">
+            <div class="row">
+            <div class="col-2 col-md-2 col-sm-2 col-xs-2"></div>
+                <div class="col-9 col-md-9 col-sm-9 col-xs-12">
+                  <div class="rightbar">
+                      <div class="top_c">
+                <!-- top_c -->
+                        <div ng-show="posted">
+                          <h4>{{msg}}</h4>
+                        </div>
+                        
+                        <form ng-show="!posted" action="/subscribe" method="post" class="form-horizontal">
+                          <div ng-show="show_error">
+                            <span class="label label-warning"> Whoops! {{msg}}</span> <br/><br/><br/> 
+                          </div>
+                          <fieldset>
+                            <!-- Email input-->
+                            <div class="form-group">
+                              <label class="col-md-4 control-label" for="email">Your Email*</label>
+                              <div class="col-md-5">
+                                <input id="email" ng-model="subscription.email" name="EMAIL" type="text" placeholder="Your email" class="form-control">
+                              </div>
+                            </div>
+
+                            <!-- Role -->
+                            <div class="form-group">
+                              <label class="col-md-4 control-label" for="message">Your role</label>
+                              <div class="col-md-5">
+                                <select name="ROLE" ng-model="subscription.role">
+                                    <option value="">Select your role</option>
+                                    <option value="Professional">Health/Education Professional</option>
+                                    <option value="Family">Parent/Guardian/Family member</option>
+                                    <option value="User">User</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                              </div>
+                            </div>
+
+                            <!-- Email input-->
+                            <div class="form-group">
+                              <label class="col-md-4 control-label" for="email">Would you be happy for the ACE Centre to contact you about things going on at the centre (Training, Events etc)?</label>
+                              <div class="col-md-2">
+                                    <div id="radioBtn" class="btn-group">
+                                      <label class="btn btn-sm btn-primary"  ng-class="{notActive:notOtherGroup()}" ng-model="subscription.otherGroup" btn-radio="'Y'">Yes</label>
+                                      <label class="btn btn-sm btn-primary" ng-class="{notActive:!notOtherGroup()}" ng-model="subscription.otherGroup" btn-radio="'N'">No</label>
+                                  </div>
+                              </div>
+                              <div class="col-md-3 text-right">
+                                <button type="button" ng-click="subscribe()" class="btn btn-primary btn-lg">Subscribe</button>
+                              </div>
+                            </div>
+                            <!-- Form actions -->
+                          </fieldset>
+                          </form>    
+                          <div class="text-center small">*&nbsp;<a ui-sref="root.privacy">NB:  We will not, under any circumstances, share your data with anyone for marketing purposes</a> <br /><br /></div>              
+                <!-- top_c finish -->
+                    
+                
+                      </div>           
+                    </div>
+                </div>
+            <div class="col-2 col-md-2 col-sm-2 col-xs-2"></div>
+                
+            </div>
+
+            <div class="ace_logo"><a href="#"><img src="/assets/images/ace_logo.png" alt=""></a></div>
+      </div>
