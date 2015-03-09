@@ -30,7 +30,7 @@ exports.subscribe = function(req, res){
 	ip_addr = req.body.ip_addr;
 	roleType = req.body.role;
 
-	mc.lists.subscribe({'id':'a3d95b59bc',
+	mc.lists.subscribe({'id':global.MAILCHIMP_CAMPAIGN_LIST_ID,
 						'email':{'email':anEmail},
 						'merge_vars':{
 							'groupings':[{'id': global.MAILCHIMP_CAMPAIGN_LIST_ID,'groups': ('AACinfo',otherGroup)}],
