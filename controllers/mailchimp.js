@@ -40,7 +40,7 @@ exports.subscribe = function(req, res){
 							'TYPE':roleType
 							},
 						'email_type':'html',
-						'double_optin':true,
+						'double_optin':false,
 						'update_existing':true,
 						'replace_interests':false
 						},
