@@ -108,6 +108,15 @@ router.route('/slack/posts').post(mailchimpController.addPostSlack);
 app.use('/api', router);
 app.use(express.static(path.join(__dirname, 'public'))); //  "public" off of current is root
 
+app.use(function(req, res, next) {
+	console.log(req.user);
+    if (req.user == null && req.path.indexOf('/admin') === 0)
+    {
+        res.redirect('/login');
+    }
+    next(); 
+});
+
 app.get('/*', function (req, res) {
   res.sendfile(__dirname + '/public/index.html');
 });
