@@ -9,15 +9,15 @@ exports.subscribe = function(req, res){
 	// Getting lists
 	// list_id = a3d95b59bc
 	/*
-	mc.lists.lists({}, function(data) {
-    	res.json({ title: 'Your MailChimp Lists', lists: data.data });
+	mc.lists.list({}, function(data) {
+		console.log(data.data);
   	});*/
   	
   	// Getting interest groupings
   	// group_id = 8029
   	/*
-  	mc.lists.interestGroupings({"id":"a3d95b59bc"},function(data){
-  		res.json(data);
+  	mc.lists.interestGroupings({"id":"ec5a06da07"},function(data){
+  		console.log(data);
   	});*/
 	var anEmail, list_id, group_id, otherGroup, ip_addr, roleType;
 
@@ -29,11 +29,11 @@ exports.subscribe = function(req, res){
 	otherGroup = req.body.otherGroup;
 	ip_addr = req.body.ip_addr;
 	roleType = req.body.role;
-
+	
 	mc.lists.subscribe({'id':global.MAILCHIMP_CAMPAIGN_LIST_ID,
 						'email':{'email':anEmail},
 						'merge_vars':{
-							'groupings':[{'id': global.MAILCHIMP_CAMPAIGN_LIST_ID,'groups': ('AACinfo',otherGroup)}],
+							'groupings':[{'id': global.MAILCHIMP_GROUPING_ID,'groups': ('AACinfo',otherGroup)}],
 							'optin_ip':ip_addr,
 							'LOCATION':'Unspecified',
 							'POINT':'AACinfo',
