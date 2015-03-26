@@ -4,6 +4,7 @@
 	"MAILCHIMP_CAMPAIGN_NAME" : "AACInfo Monthly",
 	"MAILCHIMP_BACKUP_CAMPAIGN_NAME" : "AACInfo Monthly Backup",
 	"MAILCHIMP_CAMPAIGN_LIST_ID" : "id_here",
+	"MAILCHIMP_GROUPING_ID" : "grouping_id_here",
 	"PROJECT_TITLE": "AACNews",
 	"USER_DELICIOUS": "userhere",
 	"PWD_DELICIOUS": "pwdhere",
