@@ -7,7 +7,7 @@ var Slack = require('slack-node');
 // Sucribing email in list - method /api/subscribe (POST)
 exports.subscribe = function(req, res){
 	// Getting lists
-	// list_id = a3d95b59bc
+	// list_id = a3d95b59bc/ec5a06da07
 	/*
 	mc.lists.list({}, function(data) {
 		console.log(data.data);
@@ -16,8 +16,8 @@ exports.subscribe = function(req, res){
   	// Getting interest groupings
   	// group_id = 8029
   	/*
-  	mc.lists.interestGroupings({"id":"ec5a06da07"},function(data){
-  		console.log(data);
+  	mc.lists.interestGroupings({"id":"a3d95b59bc"},function(data){
+  		console.log(data[0].groups[1]);
   	});*/
 	var anEmail, list_id, group_id, otherGroup, ip_addr, roleType;
 
@@ -30,10 +30,14 @@ exports.subscribe = function(req, res){
 	ip_addr = req.body.ip_addr;
 	roleType = req.body.role;
 	
+	var groups = ['AACinfo'];
+	if(otherGroup === 'Y')
+		groups.push('Other');
+
 	mc.lists.subscribe({'id':global.MAILCHIMP_CAMPAIGN_LIST_ID,
 						'email':{'email':anEmail},
 						'merge_vars':{
-							'groupings':[{'id': global.MAILCHIMP_GROUPING_ID,'groups': ('AACinfo',otherGroup)}],
+							'groupings':[{'id': global.MAILCHIMP_GROUPING_ID,'groups': groups}],
 							'optin_ip':ip_addr,
 							'LOCATION':'Unspecified',
 							'POINT':'AACinfo',
