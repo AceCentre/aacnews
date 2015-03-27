@@ -110,7 +110,6 @@ app.use('/api', router);
 app.use(express.static(path.join(__dirname, 'public'))); //  "public" off of current is root
 
 app.use(function(req, res, next) {
-	console.log(req.user);
     if (req.user == null && req.path.indexOf('/admin') === 0)
     {
         res.redirect('/login');
