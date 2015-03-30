@@ -137,13 +137,11 @@ routerApp.controller('postController', ['$scope', '$location', '$rootScope','adm
 
     function getPosts(){
         adminService.getPosts().then(function (response) {
-            console.log($scope.posts);
             $scope.posts = response.data;
         });
     }
 
     $scope.editPost = function(postId){
-        console.log(postId);
         $scope.types = []; 
         
         adminService.getTypes().then(function (response) {
@@ -425,7 +423,7 @@ routerApp.controller('emailController', ['$scope', '$location', '$rootScope', '$
                 aPost.type = "item";
                 aPost.id = aPost._id;
                 aPost.text = marked(aPost.text);
-            
+                aPost.text = aPost.text.replace(/(<p>|<\/p>)/g, "");
                 if(aPost.link)
                     aPost.link_name = getHostName(aPost.link);
                 
@@ -498,7 +496,6 @@ routerApp.controller('emailController', ['$scope', '$location', '$rootScope', '$
         $scope.preamble = marked($scope.email.preamble);
         $scope.markdown = true;
         $scope.posts_selected = $scope.models_post.dropzones["2. Newsletter structure"];
-        
         adminService.getTemplate().then(function(aHTML){
             $scope.html = aHTML.data;
             usSpinnerService.stop('spinner-1');

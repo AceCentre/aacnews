@@ -251,3 +251,5 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#3f324e', end
 .st-sort-descent:before{
     content: '\25BC';
 }
+
+.top_c ul, li{ list-style:disc; }
