@@ -1,5 +1,5 @@
 {
-	"MONGO_DB_URL" : "ip:port/db",
+	"MONGO_DB_URL" : "127.0.0.1:27017/aacinfo",
 	"MAILCHIMP_API_KEY" : "key_here",
 	"MAILCHIMP_CAMPAIGN_NAME" : "AACInfo Monthly",
 	"MAILCHIMP_BACKUP_CAMPAIGN_NAME" : "AACInfo Monthly Backup",
