@@ -118,7 +118,8 @@ exports.sendNewsletter = function(req, res){
 		function(response){
 			if(response.data.length > 0){ //Backup exists
 				var backup_id = response.data[0].id;
-
+				var groupInterest = 'interests-' + global.MAILCHIMP_GROUPING_ID;
+				var conditions = {'match': 'all','conditions':[{'field':groupInterest,'op':'all','value':global.MAILCHIMP_GROUP_AACINFO}]};
 				mc.campaigns.create({
 						'type':"regular", 
 						'options':{'list_id':response.data[0].list_id,
@@ -126,7 +127,8 @@ exports.sendNewsletter = function(req, res){
 									'title' :  '[' + global.MAILCHIMP_CAMPAIGN_NAME + "] - " + req.body.title,
 								    'from_email':response.data[0].from_email,
 									'from_name':response.data[0].from_name,
-								    'to_name':response.data[0].to_name}, 
+								    'to_name':response.data[0].to_name},
+						'segment_opts':conditions,
 						'content':{'html':req.body.html}},
 					function(response){
 						var campaign_id = response.id;
@@ -192,7 +194,8 @@ exports.addPostDelicious = function(req,res){
 			   function(aPost,callback){
 			   	extended = (aPost.text + ' (' + aPost.author + ')').replace(/[^\x00-\x7F]/g, "");
 			   	eggtart.posts().add({"url":aPost.link,"description":aPost.title,"extended":extended,"tags":("aacnews,"+aPost.type.name),"replace":"yes"},function(err,result){
-			   		console.log(err);
+			   		if(err)
+			   			console.log(err);
 			   	});
 			   },
 			   function(err){
