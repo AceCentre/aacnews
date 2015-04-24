@@ -694,7 +694,7 @@
                         
                             <h3 class="null">{{post.title}}</h3>
                             <span ng-bind-html="post.text"></span><br>
-<a ng-href="{{post.link}}" target="_blank">{{post.link_name}}</a><br>
+<a ng-href="post.link" target="_blank">{{post.link_name}}</a><br>
 <span ng-bind-html="post.author"></span>
                         </td>
                     </tr>
@@ -744,8 +744,8 @@
     *|HTML:LIST_ADDRESS_HTML|* *|END:IF|*
     <br>
     <br>
-    <a href="*|UNSUB|*" class="utilityLink">unsubscribe from this list</a>&nbsp;&nbsp;&nbsp;
-    <a href="*|UPDATE_PROFILE|*" class="utilityLink">update subscription preferences</a>&nbsp;
+    <a href="{{unsuscribe_list_mark}}" class="utilityLink">unsubscribe from this list</a>&nbsp;&nbsp;&nbsp;
+    <a href="{{unsuscribe_modify_preferences_mark}}" class="utilityLink">update subscription preferences</a>&nbsp;
     <br>
     <br>
     *|IF:REWARDS|* *|HTML:REWARDS|*
