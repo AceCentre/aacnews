@@ -9,6 +9,10 @@
 	"PROJECT_TITLE": "AACNews",
 	"USER_DELICIOUS": "userhere",
 	"PWD_DELICIOUS": "pwdhere",
+	"USER_DIIGO": "userhere",
+	"PWD_DIIGO": "pwdhere", 
+	"KEY_DIIGO": "keyhere",
+	"AACNEWS_PORT" : "3000",
 	"AACNEWS_PORT" : "3000",
 	"SLACK_HOOK":"your_slack_hook_here"
 }
