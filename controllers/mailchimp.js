@@ -1,6 +1,7 @@
 var mcapi = require('../node_modules/mailchimp-api/mailchimp');
 var moment = require('moment');
 var Eggtart = require('eggtart');
+var diigo = require('diigonode');
 var async = require('async');
 var Slack = require('slack-node');
 
@@ -203,6 +204,32 @@ exports.addPostDelicious = function(req,res){
 			      console.log('Failed to post in Delicious');
 			    } else {
 			      console.log('All posts have been processed successfully');
+			    }
+			   });
+}
+
+// Add posts in Diigo (POST)
+exports.addPostsDiigo = function(req,res){
+	var posts = req.body.posts;
+
+	var auth = {'password':global.PWD_DIIGO,'username':global.USER_DIIGO}
+
+	async.each(posts,
+			   function(aPost,callback){
+			   	extended = (aPost.text + ' (' + aPost.author + ')').replace(/[^\x00-\x7F]/g, "");
+			   	var saveOptions = {'key':global.KEY_DIIGO,'title':aPost.title,'url':aPost.link,'shared': 'yes','desc': extended, 'readLater': 'yes'};
+			   	diigo.saveDiigo(saveOptions, auth, function(err, results) {
+    				//do stuff with results
+    				if( err ) {
+				      res.send({'error':'Failed to post in Diigo'});
+				      return;
+				    }
+    			});
+			   },
+			   function(err){
+			   	if( err ) {
+			      res.send({'error':'Failed to post in Diigo'});
+			      return;
 			    }
 			   });
 }

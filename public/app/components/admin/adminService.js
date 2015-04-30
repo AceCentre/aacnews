@@ -198,7 +198,7 @@ routerApp.factory('adminService', ['$http', '$q', 'localStorageService', '$rootS
         });
         var deferred = $q.defer();
         
-        $http.post('api/delicious/posts', {"posts":arrPosts}).success(function (response) {
+        $http.post('api/diigo/posts', {"posts":arrPosts}).success(function (response) {
                 deferred.resolve(response);
             }).error(function (err, status) {
                 deferred.reject(err);

@@ -13,7 +13,6 @@ var typeController = require('./controllers/types');
 var postController = require('./controllers/posts');
 var newsletterController = require('./controllers/newsletters');
 var mailchimpController = require('./controllers/mailchimp');
-var Eggtart = require('eggtart');
 
 var configuration = JSON.parse(
   fs.readFileSync("configuration.json")
@@ -33,6 +32,10 @@ global.MAILCHIMP_GROUP_AACINFO = process.env.MAILCHIMP_GROUP_AACINFO || configur
 // Set Delicious usr/pwd
 global.USER_DELICIOUS = process.env.USER_DELICIOUS || configuration.USER_DELICIOUS;
 global.PWD_DELICIOUS = process.env.PWD_DELICIOUS || configuration.PWD_DELICIOUS;
+// Set Diigo user/pwd/key
+global.USER_DIIGO = process.env.USER_DIIGO || configuration.USER_DIIGO;
+global.PWD_DIIGO = process.env.PWD_DIIGO || configuration.PWD_DIIGO;
+global.KEY_DIIGO = process.env.KEY_DIIGO || configuration.KEY_DIIGO;
 
 // Set Slack
 global.SLACK_HOOK = process.env.SLACK_HOOK || configuration.SLACK_HOOK;
@@ -105,6 +108,9 @@ router.route('/send').post(mailchimpController.sendNewsletter);
 
 // delicious
 router.route('/delicious/posts').post(mailchimpController.addPostDelicious);
+
+// diigo
+router.route('/diigo/posts').post(mailchimpController.addPostsDiigo);
 
 // slack
 router.route('/slack/posts').post(mailchimpController.addPostSlack);
