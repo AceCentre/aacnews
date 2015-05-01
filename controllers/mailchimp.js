@@ -4,6 +4,7 @@ var Eggtart = require('eggtart');
 var diigo = require('diigonode');
 var async = require('async');
 var Slack = require('slack-node');
+var htmlToText = require('html-to-text');
 
 // Sucribing email in list - method /api/subscribe (POST)
 exports.subscribe = function(req, res){
@@ -217,7 +218,8 @@ exports.addPostsDiigo = function(req,res){
 	async.each(posts,
 			   function(aPost,callback){
 			   	extended = (aPost.text + ' (' + aPost.author + ')').replace(/[^\x00-\x7F]/g, "");
-			   	var saveOptions = {'key':global.KEY_DIIGO,'title':aPost.title,'url':aPost.link,'shared': 'yes','desc': extended, 'readLater': 'yes'};
+			   	var text = htmlToText.fromString(extended, false);
+			   	var saveOptions = {'key':global.KEY_DIIGO,'title':aPost.title,'url':aPost.link,'shared': 'yes','desc': text, 'readLater': 'yes'};
 			   	diigo.saveDiigo(saveOptions, auth, function(err, results) {
     				//do stuff with results
     				if( err ) {
