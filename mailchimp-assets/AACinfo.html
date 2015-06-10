@@ -636,7 +636,6 @@
                             <h1 style="text-align: center;">{{title}}</h1>
 
 <p style="text-align: left;" ng-bind-html="preamble"></p>
-<p style="text-align: center; middle; font-size: 10px; display: inline-block;text-decoration: none;word-wrap: break-word;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">NB: Any postings below do not represent recommendations of the sharer or the editors (the ACE Centre).  Any views or opinions expressed below do not represent those of the ACE Centre</p>
                         </td>
                     </tr>
                 </tbody></table>
@@ -737,15 +736,16 @@
 <br>
 *|IFNOT:ARCHIVE_PAGE|*
     *|LIST:DESCRIPTION|*
-    <br>
-    <br>
+    <br><br>
+    NB: Any postings above do not represent recommendations of the sharer or the editors (the ACE Centre).  Any views or opinions expressed below do not represent those of the ACE Centre
+    <br><br>
     <strong>Our mailing address is:</strong>
     <br>
     *|HTML:LIST_ADDRESS_HTML|* *|END:IF|*
     <br>
     <br>
-    <a href="{{unsuscribe_list_mark}}" class="utilityLink">unsubscribe from this list</a>&nbsp;&nbsp;&nbsp;
-    <a href="{{unsuscribe_modify_preferences_mark}}" class="utilityLink">update subscription preferences</a>&nbsp;
+    <a href="{{unsuscribe_list_mark}}" class="utilityLink">unsubscribe from this list</a>&nbsp;&#149;&nbsp;
+    <a href="{{unsuscribe_modify_preferences_mark}}" class="utilityLink">update subscription preferences</a>&nbsp;&#149;&nbsp;(<a href="*|UNSUB|*">unsubscribe</a> *|EMAIL|* from <i>ALL</i> ACE Centre emails.)<br /> 
     <br>
     <br>
     *|IF:REWARDS|* *|HTML:REWARDS|*
