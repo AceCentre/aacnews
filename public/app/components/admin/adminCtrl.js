@@ -497,6 +497,8 @@ routerApp.controller('emailController', ['$scope', '$location', '$rootScope', '$
         $scope.markdown = true;
         $scope.unsuscribe_list_mark = "*|UNSUB|*";
         $scope.unsuscribe_modify_preferences_mark = "*|UPDATE_PROFILE|*";
+        $scope.email_addr = "*|EMAIL|*";
+        $scope.archive_url = "*|ARCHIVE|*";
         $scope.posts_selected = $scope.models_post.dropzones["2. Newsletter structure"];
         adminService.getTemplate().then(function(aHTML){
             $scope.html = aHTML.data;
