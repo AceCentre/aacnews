@@ -88,7 +88,7 @@ exports.getTemplate = function(req, res){
 		function(response){
 			if(!response.data)
 				return res.send({"error":"Campaign " + global.MAILCHIMP_CAMPAIGN_NAME + " not found"})
-			
+
 			var campaign_id = response.data[0].id;
 			mc.campaigns.list({"filters":{ 'title' : global.MAILCHIMP_BACKUP_CAMPAIGN_NAME, 'exact' : true}},
 				function(response){
