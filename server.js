@@ -1,3 +1,4 @@
+require('pmx').init();
 var express = require('express');
 var mongoose = require('mongoose');
 var app = express();
@@ -123,7 +124,7 @@ app.use(function(req, res, next) {
     {
         res.redirect('/login');
     }
-    next(); 
+    next();
 });
 
 app.get('/*', function (req, res) {
