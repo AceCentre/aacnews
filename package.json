@@ -19,6 +19,7 @@
     "passport": "^0.2.1",
     "passport-http": "^0.2.2",
     "path": "^0.4.9",
+    "pmx": "^0.5.3",
     "slack-node": "0.1.0"
   }
 }
