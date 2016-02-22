@@ -19,7 +19,8 @@ routerApp.config(function($stateProvider, $urlRouterProvider, $httpProvider, $lo
             controller: 'HomeTextController'
         })
         .state('root.subscribe', {
-            url: '/subscribe',
+            name: 'subscribe',
+            url: '/subscribe?email&role&other&autosubscribe',
             templateUrl: '../app/components/subscribe/subscribe.html',
             controller: 'SubscribeController'
         })
@@ -94,12 +95,5 @@ routerApp.config(function($stateProvider, $urlRouterProvider, $httpProvider, $lo
 
 
 routerApp.run(['$rootScope',function($rootScope) {
-    //$rootScope.urlBackend = 'http://localhost:3000/';
-    //$rootScope.urlBackend = 'http://128.199.60.174:3000/';
-    //$rootScope.urlSite = 'http://XXXXX/';
+    $rootScope.roles = ['Professional','Family','User','Other'];
 }]);
-
-/*
-routerApp.run(['authService', function (authService) {
-    authService.fillAuthData();
-}]);*/

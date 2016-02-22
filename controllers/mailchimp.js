@@ -36,15 +36,25 @@ exports.subscribe = function(req, res){
 	if(otherGroup === 'Y')
 		groups.push('Other');
 
+	var merge_vars;
+	if(roleType.length == 0)
+		merge_vars ={
+						'groupings':[{'id': global.MAILCHIMP_GROUPING_ID,'groups': groups}],
+						'optin_ip':ip_addr,
+						'LOCATION':'Unspecified',
+						'POINT':'AACinfo'
+					}
+	else
+		merge_vars ={
+						'groupings':[{'id': global.MAILCHIMP_GROUPING_ID,'groups': groups}],
+						'optin_ip':ip_addr,
+						'LOCATION':'Unspecified',
+						'POINT':'AACinfo',
+						'TYPE':roleType
+					}
 	mc.lists.subscribe({'id':global.MAILCHIMP_CAMPAIGN_LIST_ID,
 						'email':{'email':anEmail},
-						'merge_vars':{
-							'groupings':[{'id': global.MAILCHIMP_GROUPING_ID,'groups': groups}],
-							'optin_ip':ip_addr,
-							'LOCATION':'Unspecified',
-							'POINT':'AACinfo',
-							'TYPE':roleType
-							},
+						'merge_vars':merge_vars,
 						'email_type':'html',
 						'double_optin':false,
 						'update_existing':true,

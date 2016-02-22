@@ -5,11 +5,11 @@
                   <div class="rightbar">
                       <div class="top_c">
                 <!-- top_c -->
-                        <div ng-show="posted">
+                        <div ng-show="posted && loaded">
                           <h4>{{msg}}</h4>
                         </div>
                         
-                        <form ng-show="!posted" action="/subscribe" method="post" class="form-horizontal">
+                        <form ng-show="!posted && loaded" action="/subscribe" method="post" class="form-horizontal">
                           <div ng-show="show_error">
                             <span class="label label-warning"> Whoops! {{msg}}</span> <br/><br/><br/> 
                           </div>
@@ -52,7 +52,7 @@
                             <!-- Form actions -->
                           </fieldset>
                           </form>    
-                          <div class="text-center small">*&nbsp;<a ui-sref="root.privacy">NB:  We will not, under any circumstances, share your data with anyone for marketing purposes</a> <br /><br /></div>              
+                          <div ng-show="loaded" class="text-center small">*&nbsp;<a ui-sref="root.privacy">NB:  We will not, under any circumstances, share your data with anyone for marketing purposes</a> <br /><br /></div>              
                 <!-- top_c finish -->
                     
                 

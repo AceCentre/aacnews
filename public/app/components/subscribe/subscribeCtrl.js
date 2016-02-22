@@ -1,22 +1,16 @@
 'use strict';
-routerApp.controller('SubscribeController', ['$scope', '$location', 'subscribeService', function($scope,$location,subscribeService) {
+routerApp.controller('SubscribeController', ['$scope', '$location', '$stateParams', '$rootScope', 'subscribeService', function($scope,$location,$stateParams,$rootScope,subscribeService) {
 
-	$scope.subscription = {
-		email:"",
-		role:"",
-		otherGroup:"Y"
-	}
 	$scope.msg = "";
 	$scope.posted = false;
+	$scope.loaded = false;
 	$scope.show_error = false;
 
 	$scope.notOtherGroup = function(){
-
 		return ($scope.subscription.otherGroup === 'N' ? true : false);
 	}
 
 	$scope.subscribe = function() {
-		console.log($scope.subscription);
 		$scope.msg = "";
 		$scope.posted = false;
 		$scope.show_error = false;
@@ -31,8 +25,39 @@ routerApp.controller('SubscribeController', ['$scope', '$location', 'subscribeSe
 				$scope.msg = (response.error ? response.error : "There was an error subscribing that user");
 				$scope.show_error = true;
 			}
+			$scope.loaded = true;
 		});
 		
+	}
+
+	// checking autosubscribe
+	if($stateParams.email && $stateParams.other && $stateParams.autosubscribe){
+		// checking role
+		$stateParams.role = $stateParams.role ? $stateParams.role : "";
+		var aRole = "";
+		angular.forEach($rootScope.roles,function(value,index){
+        	if(value.toUpperCase() == $stateParams.role.toUpperCase())
+        		aRole = $stateParams.role;
+        })
+
+		$scope.subscription = {
+			email:$stateParams.email,
+			role: aRole,
+			otherGroup:($stateParams.other.toUpperCase() === "YES"?'Y':'N')
+		}
+
+		if($stateParams.autosubscribe.toUpperCase() === "YES")
+			$scope.subscribe();
+		else
+			$scope.loaded = true;
+	}
+	else{
+		$scope.subscription = {
+			email:"",
+			role:"",
+			otherGroup:"Y"
+		}
+		$scope.loaded = true;
 	}
 
 	angular.element(document).ready(function () {
@@ -40,6 +65,6 @@ routerApp.controller('SubscribeController', ['$scope', '$location', 'subscribeSe
 	        $(".nav_inner").css("left","-200px");
 	        $("#nav").find('.activemenu').removeClass("activemenu");
 	    }
-    });
+    });    
 
 }]);
