@@ -27,3 +27,15 @@ exports.signupUser = function(req, res){
             data: user });
     });
 }
+
+exports.getUsers = function(req, res) {
+	User.find({}).
+		//populate("type").
+			//sort({'name':'asc'}).
+	    exec(
+	  		function(err,users){
+	  			if(err) return res.send(err);
+	  			res.json(users);
+	  		}
+	);
+}

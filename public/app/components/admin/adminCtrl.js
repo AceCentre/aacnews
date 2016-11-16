@@ -570,6 +570,95 @@ routerApp.controller('emailController', ['$scope', '$location', '$rootScope', '$
 
 }]);
 
+routerApp.controller('adminUsersController', ['$scope', '$location', '$rootScope','adminService', '$stateParams', function ($scope, $location, $rootScope, adminService, $stateParams) {
+    
+    $scope.post = {
+        username:"",
+        role:""
+    }
+
+    $scope.open = function($event) {
+        $event.preventDefault();
+        $event.stopPropagation();
+        $scope.opened = true;
+    };
+
+    $scope.users = [];
+    getUsers();
+
+    function getUsers(){
+        adminService.getUsers().then(function (response) {
+            $scope.users = response.data;
+            $scope.displayedCollection = [].concat($scope.users);
+        });
+    }
+
+    $scope.editUser = function(userId){
+        $scope.roles = ['publisher', 'editor', 'admin']; 
+        
+        if(userId==="new")
+            $scope.user = {
+                username:"",
+                role:"",
+                password:""
+            }
+        else
+        {
+            adminService.getUser(userId).then(function (response) {
+                $scope.user = {
+                    id: response.data._id,
+                    username:response.data.username,
+                    role:response.data.role
+                }
+            });
+        }
+    }
+
+    $scope.savePost = function () {
+        if($scope.post.date)
+            $scope.post.date = getDate($scope.post.date);
+        if($scope.post.promoted)
+            $scope.post.promoted = 1;
+        else
+            $scope.post.promoted = 0;
+        if($scope.post.published)
+            $scope.post.published = 1;
+        else
+            $scope.post.published = 0;
+
+        adminService.savePost($scope.user).then(function (response) {
+            $('.modal').modal('hide');
+            $scope.displayedCollection = [];
+            getUsers();
+            if($stateParams.user_id){
+                $location.path("/admin/posts");
+            }
+        },
+         function (err) {
+             $scope.message = err;
+         });
+    }
+    $scope.removeUser = function(userId){
+
+        adminService.removeUser(userId).then(function (response) {
+            $scope.users = [];
+            $scope.displayedCollection = [];
+            getUsers();
+        },
+         function (err) {
+             $scope.message = err;
+        });
+    }
+
+    angular.element(document).ready(function () {
+        if($("#nav").find('.activemenu').length > 0){
+            $(".nav_inner").css("left","-200px");
+            $("#nav").find('.activemenu').removeClass("activemenu");
+        }
+    });
+
+}]);
+
 routerApp.filter( 'short_url', function () {
   return function ( input ) {
     if(input && input.length > 30){

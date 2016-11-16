@@ -236,6 +236,49 @@ routerApp.factory('adminService', ['$http', '$q', 'localStorageService', '$rootS
         return deferred.promise;
     }
 
+    var _getUsers = function() {
+        var authData = localStorageService.get('authorizationData');
+        if(authData)
+            $http.defaults.headers.common['X-Access-Token'] = authData.token;
+        
+        return $http.get('api/users');
+    }
+
+    var _saveUser = function (userData) {
+        var deferred = $q.defer();
+        if(userData.id)
+            $http.put('api/users/' + userData.id, userData).success(function (response) {
+                deferred.resolve(response);
+            }).error(function (err, status) {
+                deferred.reject(err);
+            });
+        else
+            $http.post('api/users', userData).success(function (response) {
+                deferred.resolve(response);
+            }).error(function (err, status) {
+                deferred.reject(err);
+            });
+
+        return deferred.promise;
+
+    };
+
+    var _getUser = function(userId) {
+        var authData = localStorageService.get('authorizationData');
+        if(authData)
+            $http.defaults.headers.common['X-Access-Token'] = authData.token;
+        
+        return $http.get('api/users/' + userId);
+    }
+
+    var _removeUser = function(userId) {
+        var authData = localStorageService.get('authorizationData');
+        if(authData)
+            $http.defaults.headers.common['X-Access-Token'] = authData.token;
+        
+        return $http.delete('api/users/' + userId);
+    }
+
     adminServiceFactory.saveType = _saveType;
     adminServiceFactory.getTypes = _getTypes;
     adminServiceFactory.getType = _getType;
@@ -255,6 +298,10 @@ routerApp.factory('adminService', ['$http', '$q', 'localStorageService', '$rootS
     adminServiceFactory.getTemplate = _getTemplate;
     adminServiceFactory.addPostDelicious = _addPostDelicious;
     adminServiceFactory.addPostSlack = _addPostSlack;
+    adminServiceFactory.getUsers = _getUsers;
+    adminServiceFactory.saveUser = _saveUser;
+    adminServiceFactory.getUser = _getUser;
+    adminServiceFactory.removeUser = _removeUser;
 
     return adminServiceFactory;
 }]);

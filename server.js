@@ -76,6 +76,7 @@ var router = express.Router();
 // users
 router.route('/users/signup').post(userController.signupUser);
 router.route('/login').post(authController.login);
+router.route('/users').get(userController.getUsers);
 
 // types
 router.route('/types').post(jwtauth, requireAuth, typeController.addType);
