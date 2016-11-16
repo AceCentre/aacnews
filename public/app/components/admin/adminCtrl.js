@@ -605,39 +605,31 @@ routerApp.controller('adminUsersController', ['$scope', '$location', '$rootScope
         else
         {
             adminService.getUser(userId).then(function (response) {
+              console.log(response)
                 $scope.user = {
                     id: response.data._id,
                     username:response.data.username,
-                    role:response.data.role
+                    role:response.data.role,
+                    password: ""
                 }
             });
         }
     }
 
-    $scope.savePost = function () {
-        if($scope.post.date)
-            $scope.post.date = getDate($scope.post.date);
-        if($scope.post.promoted)
-            $scope.post.promoted = 1;
-        else
-            $scope.post.promoted = 0;
-        if($scope.post.published)
-            $scope.post.published = 1;
-        else
-            $scope.post.published = 0;
-
-        adminService.savePost($scope.user).then(function (response) {
+    $scope.saveUser = function () {
+        adminService.saveUser($scope.user).then(function (response) {
             $('.modal').modal('hide');
             $scope.displayedCollection = [];
             getUsers();
             if($stateParams.user_id){
-                $location.path("/admin/posts");
+                $location.path("/admin/users");
             }
         },
          function (err) {
              $scope.message = err;
          });
     }
+
     $scope.removeUser = function(userId){
 
         adminService.removeUser(userId).then(function (response) {

@@ -67,6 +67,17 @@ var requireAuth = function(req, res, next) {
 	}
 }
 
+var requireRole = function(role) {
+  return function (req, res, next) {
+    if (req.user && req.user.role === role) {
+      next();
+    }
+    else {
+      res.end('Not authorized', 401)
+    }
+  };
+}
+
 var multipart = require('connect-multiparty')
     , multipartMiddleware = multipart();
 
@@ -76,7 +87,11 @@ var router = express.Router();
 // users
 router.route('/users/signup').post(userController.signupUser);
 router.route('/login').post(authController.login);
-router.route('/users').get(userController.getUsers);
+router.route('/users').get(jwtauth, requireAuth, requireRole('admin'), userController.getUsers);
+router.route('/users').post(jwtauth, requireAuth, requireRole('admin'), userController.postUser);
+router.route('/users/:user_id').get(jwtauth, requireAuth, requireRole('admin'), userController.getUser);
+router.route('/users/:user_id').put(jwtauth, requireAuth, requireRole('admin'), userController.putUser);
+router.route('/users/:user_id').delete(jwtauth, requireAuth, requireRole('admin'), userController.deleteUser);
 
 // types
 router.route('/types').post(jwtauth, requireAuth, typeController.addType);

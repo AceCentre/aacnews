@@ -39,3 +39,70 @@ exports.getUsers = function(req, res) {
 	  		}
 	);
 }
+
+exports.getUser = function(req, res) {
+	User.findById(req.params.user_id).
+			exec(function(err,user){
+	  			if(err) return res.send(err);
+	  			res.json(user);
+	  		}
+	);
+}
+
+exports.putUser = function(req, res){
+	
+  var userId = req.params.user_id;
+	var user = new User(req.body);
+
+  var update = {
+    username: user.username,
+    role: user.role
+  };
+
+  if(req.body.password == "") {
+    update.password = user.password;
+  }
+
+  User.findByIdAndUpdate(userId,
+    {$set: update},
+    {upsert: false},
+		function (err, user) {
+		  if (err) {
+		  	console.log(err)
+		  	return res.send(err);
+		  }
+
+      res.send(user);
+	});
+}
+
+exports.postUser = function(req, res){
+	var newUser = new User(req.body);
+
+	newUser.save(function(err,user){
+		if (err) {
+			res.send(err);
+			return;
+		}
+
+    res.json({ 
+      message: 'User added to the system!',
+      status: 1, 
+      data: user
+    });
+			    
+  });
+}
+
+exports.deleteUser = function(req, res){
+	User.findByIdAndRemove(req.params.user_id, 
+		function (err, user) {
+      if (err)
+        return res.send(err);
+
+      res.send({
+        message: "User was removed",
+        data: user
+      });
+	});
+}
