@@ -34,22 +34,22 @@ exports.login = function(req, res) {
     res.setHeader('Access-Control-Allow-Origin','*');
     var username = req.body.username || '';
     var password = req.body.password || '';
-    
+
     if (username == '' || password == '') {
         console.log("Not username or password entered");
         return res.json({"login":0});
     }
- 
+
     User.findOne({ username: username.toLowerCase() }).exec(
       function (err, user) {
         if (err) {
             console.log(err);
             return res.json({"login":0});
         }
-        
+
          // No user found with that username
         if (!user) { return  res.json({"login":0}); }
-        
+
         user.comparePassword(password, function(isMatch) {
             if (!isMatch) {
                 console.log("Attempt failed to login with " + user.username);
@@ -65,16 +65,16 @@ exports.login = function(req, res) {
 
               return res.json(
                   {
-                    "login":1, 
-                    "user_id":user._id, 
+                    "login":1,
+                    "user_id":user._id,
                     "role":user.role,
                     "token" : token,
                     "expires": expires
                   });
             });
-            
-            
+
+
         });
- 
+
     });
 };
