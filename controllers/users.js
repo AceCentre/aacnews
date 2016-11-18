@@ -54,26 +54,36 @@ exports.putUser = function(req, res){
   var userId = req.params.user_id;
 	var user = new User(req.body);
 
-  var update = {
-    username: user.username,
-    role: user.role
-  };
+  User.findOne({ _id: userId }, function(err, userdb) {
+    userdb.username = user.username;
+    userdb.role = user.role;
 
-  if(req.body.password == "") {
-    update.password = user.password;
-  }
+    var update = {
+      username: user.username,
+      role: user.role
+    };
 
-  User.findByIdAndUpdate(userId,
-    {$set: update},
-    {upsert: false},
-		function (err, user) {
-		  if (err) {
-		  	console.log(err)
-		  	return res.send(err);
-		  }
+    if(req.body.password != "") {
+      update.password = user.password;
+      userdb.password = user.password;
+    }
 
-      res.send(user);
-	});
+    userdb.save(function() {
+      return res.send(user);
+    });
+  });
+
+  //User.findByIdAndUpdate(userId,
+    //{$set: update},
+    //{upsert: false},
+		//function (err, user) {
+			//if (err) {
+				//console.log(err)
+				//return res.send(err);
+			//}
+
+      //res.send(user);
+	//});
 }
 
 exports.postUser = function(req, res){

@@ -11,6 +11,7 @@ routerApp.controller('loginController', ['$scope', '$location', '$rootScope','au
     $scope.login = function () {
         authService.login($scope.loginData).then(function (response) {
             
+          alert(response)
             if(response.login)
                 $location.path('/admin');
             else

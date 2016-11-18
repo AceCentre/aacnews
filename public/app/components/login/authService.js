@@ -19,7 +19,7 @@ routerApp.factory('authService', ['$http', '$q', 'localStorageService', '$rootSc
             if(response.login){
                 localStorageService.set('authorizationData', { token: response.token, user_id: response.user_id, role: response.role, school: response.school });
                 _authentication.isAuth = true;
-                _authentication.userName = loginData.usernam; 
+                _authentication.userName = loginData.username; 
             }
             else{
                 _logOut();

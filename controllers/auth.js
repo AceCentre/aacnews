@@ -50,9 +50,6 @@ exports.login = function(req, res) {
          // No user found with that username
         if (!user) { return  res.json({"login":0}); }
         
-        user.password = 'admin';
-        user.save();
-
         user.comparePassword(password, function(isMatch) {
             if (!isMatch) {
                 console.log("Attempt failed to login with " + user.username);
@@ -70,7 +67,7 @@ exports.login = function(req, res) {
                   {
                     "login":1, 
                     "user_id":user._id, 
-                    "rolt":user.role,
+                    "role":user.role,
                     "token" : token,
                     "expires": expires
                   });

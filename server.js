@@ -1,5 +1,6 @@
 require('pmx').init();
 var express = require('express');
+var expressSession = require('express-session');
 var mongoose = require('mongoose');
 var app = express();
 var path = require('path');
@@ -43,7 +44,7 @@ global.SLACK_HOOK = process.env.SLACK_HOOK || configuration.SLACK_HOOK;
 
 var allowCrossDomain = function(req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
-	res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Access-Token");
+    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Access-Token");
     next();
 }
 
@@ -54,10 +55,16 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 app.use(allowCrossDomain);
+app.use(expressSession({
+  secret: 'secret',
+  resave: false,
+  saveUninitialized: false
+}));
 
 
 // Use the passport package in our application
 app.use(passport.initialize());
+app.use(passport.session());
 
 var requireAuth = function(req, res, next) {
 	if (!req.user) {
