@@ -120,6 +120,7 @@ routerApp.controller('postController', ['$scope', '$location', '$rootScope','adm
         priority: 0
     };
 
+    $scope.filters = {};
     $scope.posts = [];
     $scope.posts_history = [];
     $scope.message = "";
@@ -207,16 +208,50 @@ routerApp.controller('postController', ['$scope', '$location', '$rootScope','adm
              $scope.message = err;
          });
     }
-    $scope.removePost = function(postId){
 
+    $scope.removePost = function(postId){
         adminService.removePost(postId).then(function (response) {
             $scope.posts = [];
             $scope.displayedCollection = [];
             getPosts();
         },
          function (err) {
-             $scope.message = err;
+            $scope.message = err;
         });
+    }
+
+    $scope.applyFilters = function() {
+      var filters = $scope.filters;
+      var filterPublish = -1;
+      var minDate = -1;
+
+      if(filters.published && !filters.notPublished) {
+        filterPublish = 1;
+      }
+      else if(!filters.published && filters.notPublished) {
+        filterPublish = 0;
+      }
+
+      if(filters.interval !== '') {
+        var parsed = filters.interval.split(' ');
+        var value = parseInt(parsed[0]);
+        minDate = moment().subtract(value, parsed[1])
+      }
+
+      adminService.getPosts().then(function (response) {
+          $scope.posts = response.data.filter(function(post) {
+            var pred = true;
+            if(filterPublish != -1) {
+              pred = pred && (post.published == filterPublish);
+            }
+
+            if(minDate != -1) {
+              pred = pred && (moment(post.date) >= minDate);
+            }
+
+            return pred;
+          });
+      });
     }
 
     function getHistoryPost(postId){

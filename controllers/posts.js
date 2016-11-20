@@ -121,6 +121,7 @@ exports.getPosts = function(req, res){
 	
 	Post.find({}).
 		populate("type").
+      sort({'date':'desc'}).
 	    sort({'name':'asc'}).
 	    exec(
 	  		function(err,posts){
