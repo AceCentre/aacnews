@@ -196,3 +196,33 @@ exports.getHistoryPostbyVersion = function(req, res){
 	);
 }
 
+exports.putBulkPublishPosts = function(req, res) {
+  var published = parseInt(req.body.published);
+
+  Post.update({
+    _id: { $in: req.body.ids }
+  }, {
+    $set: { published: published }
+  }, {
+    multi: true
+  },
+  function() {
+    return res.json({});
+  });
+}
+
+exports.putBulkPromotePosts = function(req, res) {
+  var promoted = parseInt(req.body.promoted);
+
+  Post.update({
+    _id: { $in: req.body.ids }
+  }, {
+    $set: { promoted: promoted }
+  }, {
+    multi: true
+  },
+  function() {
+    return res.json({});
+  });
+}
+

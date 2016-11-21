@@ -259,22 +259,36 @@ routerApp.controller('postController', ['$scope', '$location', '$rootScope','adm
       });
     }
 
-    $scope.publishSelected = function () {
-        $scope.displayedCollection.filter(function(post) {
-          return post.selected;
-        }).forEach(function(post) {
-          post.published = 1;
-          adminService.savePost(post).then(function (response) {
-              $scope.displayedCollection = [];
-              getPosts();
-              if($stateParams.post_id){
-                  $location.path("/admin/posts");
-              }
-          },
-           function (err) {
-               $scope.message = err;
-           });
-        })
+    function getSelectedPostsIds() {
+      return $scope.displayedCollection.filter(function(post) {
+        return post.selected;
+      }).map(function(post) {
+        return post._id;
+      });
+    }
+
+    $scope.setSelectedPublished = function (published) {
+      var ids = getSelectedPostsIds();
+
+      adminService.bulkPublishPosts(ids, published).then(function (response) {
+          $scope.displayedCollection = [];
+          getPosts();
+      },
+       function (err) {
+           $scope.message = err;
+       });
+    }
+
+    $scope.setSelectedPromoted = function (promoted) {
+      var ids = getSelectedPostsIds();
+
+      adminService.bulkPromotePosts(ids, promoted).then(function (response) {
+          $scope.displayedCollection = [];
+          getPosts();
+      },
+       function (err) {
+           $scope.message = err;
+       });
     }
 
     function getHistoryPost(postId){

@@ -111,6 +111,8 @@ router.route('/types/:type_id').delete(jwtauth, requireAuth, typeController.dele
 router.route('/posts').post(postController.addPost);
 router.route('/posts').get(jwtauth, requireAuth, postController.getPosts);
 router.route('/posts/published').get(jwtauth, requireAuth, postController.getPostsPublished);
+router.route('/posts/published').put(jwtauth, requireAuth, postController.putBulkPublishPosts);
+router.route('/posts/promoted').put(jwtauth, requireAuth, postController.putBulkPromotePosts);
 router.route('/posts/:post_id').get(jwtauth, requireAuth, postController.getPost);
 router.route('/posts/:post_id').put(jwtauth, requireAuth, postController.updatePost);
 router.route('/posts/:post_id').delete(jwtauth, requireAuth, postController.deletePost);

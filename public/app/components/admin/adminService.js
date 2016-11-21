@@ -82,6 +82,38 @@ routerApp.factory('adminService', ['$http', '$q', 'localStorageService', '$rootS
 
     };
 
+    var _bulkPublishPosts = function (ids, published) {
+      var deferred = $q.defer();
+      var data = {
+        ids: ids,
+        published: published ? 1 : 0
+      };
+
+      $http.put('api/posts/published', data).success(function (response) {
+          deferred.resolve(response);
+      }).error(function (err, status) {
+          deferred.reject(err);
+      });
+
+      return deferred.promise;
+    };
+
+    var _bulkPromotePosts = function (ids, promoted) {
+      var deferred = $q.defer();
+      var data = {
+        ids: ids,
+        promoted: promoted ? 1 : 0
+      };
+
+      $http.put('api/posts/promoted', data).success(function (response) {
+          deferred.resolve(response);
+      }).error(function (err, status) {
+          deferred.reject(err);
+      });
+
+      return deferred.promise;
+    };
+
     var _getPost = function(postId) {
         var authData = localStorageService.get('authorizationData');
         if(authData)
@@ -286,6 +318,8 @@ routerApp.factory('adminService', ['$http', '$q', 'localStorageService', '$rootS
     adminServiceFactory.getPosts = _getPosts;
     adminServiceFactory.getPostsPublished = _getPostsPublished;
     adminServiceFactory.savePost = _savePost;
+    adminServiceFactory.bulkPublishPosts = _bulkPublishPosts;
+    adminServiceFactory.bulkPromotePosts = _bulkPromotePosts;
     adminServiceFactory.getPost = _getPost;
     adminServiceFactory.removePost = _removePost;
     adminServiceFactory.getHistoryPost = _getHistoryPost;
