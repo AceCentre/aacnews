@@ -55,7 +55,7 @@ exports.login = function(req, res) {
                 console.log("Attempt failed to login with " + user.username);
                 return res.json({"login":0});
             }
-            
+
             user.save(function(err){
               var expires = moment().add(7,'days').valueOf();
               var token = jwt.encode({

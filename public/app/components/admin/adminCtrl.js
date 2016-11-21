@@ -1,6 +1,6 @@
 'use strict';
 routerApp.controller('typeController', ['$scope', '$location', '$rootScope','adminService', function ($scope, $location, $rootScope, adminService) {
- 
+
     $scope.type = {
         id: null,
         name: "",
@@ -79,7 +79,7 @@ routerApp.controller('typeController', ['$scope', '$location', '$rootScope','adm
 }]);
 
 routerApp.controller('postController', ['$scope', '$location', '$rootScope','adminService', '$stateParams', function ($scope, $location, $rootScope, adminService, $stateParams) {
-    
+
     if($stateParams.post_id){
         getHistoryPost($stateParams.post_id);
     }
@@ -121,11 +121,15 @@ routerApp.controller('postController', ['$scope', '$location', '$rootScope','adm
     };
 
     $scope.bulkSelect = true;
-    $scope.filters = {};
+    $scope.filters = {
+      published: true,
+      notPublished: true,
+      interval: ''
+    };
     $scope.posts = [];
     $scope.posts_history = [];
     $scope.message = "";
-    $scope.types = []; 
+    $scope.types = [];
     $scope.posted = false;
     $scope.markdown = true;
     $scope.markdown_hist = true;
@@ -144,8 +148,8 @@ routerApp.controller('postController', ['$scope', '$location', '$rootScope','adm
     }
 
     $scope.editPost = function(postId){
-        $scope.types = []; 
-        
+        $scope.types = [];
+
         adminService.getTypes().then(function (response) {
             $scope.types = response.data;
         });
@@ -318,7 +322,7 @@ routerApp.controller('postController', ['$scope', '$location', '$rootScope','adm
 
 
 routerApp.controller('newsletterController', ['$scope', '$location', '$rootScope','adminService', function ($scope, $location, $rootScope, adminService) {
-    
+
     $scope.newsletter = {
         title:"",
         preamble:"",
@@ -368,7 +372,7 @@ routerApp.controller('newsletterController', ['$scope', '$location', '$rootScope
     }
 
     $scope.editNewsletter = function(newsletterId){
-        
+
         if(newsletterId==="new")
             $scope.newsletter = {
                 title:"",
@@ -380,7 +384,7 @@ routerApp.controller('newsletterController', ['$scope', '$location', '$rootScope
         else
         {
             adminService.getNewsletter(newsletterId).then(function (response) {
-                
+
                 $scope.newsletter = {
                     id: response.data._id,
                     title:response.data.title,
@@ -397,7 +401,7 @@ routerApp.controller('newsletterController', ['$scope', '$location', '$rootScope
     $scope.saveNewsletter = function () {
         if($scope.newsletter.date)
             $scope.newsletter.date = getDate($scope.newsletter.date);
-       
+
         adminService.saveNewsletter($scope.newsletter).then(function (response) {
             $scope.newsletters = [];
             $scope.displayedCollection = [];
@@ -429,7 +433,7 @@ routerApp.controller('newsletterController', ['$scope', '$location', '$rootScope
 }]);
 
 routerApp.controller('emailController', ['$scope', '$location', '$rootScope', '$filter', 'filterFilter', 'adminService', '$sce', 'usSpinnerService', '$compile', '$window', function ($scope, $location, $rootScope, $filter, filterFilter, adminService,$sce, usSpinnerService, $compile, $window) {
-    
+
     $scope.email = {
         title:"",
         preamble:"",
@@ -461,7 +465,7 @@ routerApp.controller('emailController', ['$scope', '$location', '$rootScope', '$
             // ordering by categories
             // creating unique types/groups
             var groups = {};
-        
+
             // adding posts foreach type
             angular.forEach(response.data,function(aPost,index){
 
@@ -480,7 +484,7 @@ routerApp.controller('emailController', ['$scope', '$location', '$rootScope', '$
                 aPost.text = aPost.text.replace(/(<p>|<\/p>)/g, "");
                 if(aPost.link)
                     aPost.link_name = getHostName(aPost.link);
-                
+
                 aPost.author_original = aPost.author;
                 if(aPost.author.indexOf("@") == 0) // twitter user
                     aPost.author='Shared by ' + addTwitterLinks(aPost.author);
@@ -503,7 +507,7 @@ routerApp.controller('emailController', ['$scope', '$location', '$rootScope', '$
             types.sort(function (a, b) {
               return parseInt(b.group_priority) - parseInt(a.group_priority);
             });
-            
+
             $scope.posts_builder = [];
             angular.forEach(types,function(aType){
                 var entry = {}
@@ -513,7 +517,7 @@ routerApp.controller('emailController', ['$scope', '$location', '$rootScope', '$
                 entry['columns'] = [];
                 entry['columns'].push(aType.posts);
                 $scope.posts_builder.push(entry)
-            }); 
+            });
             $scope.models_post = {
                 selected: null,
                 templates: [
@@ -586,10 +590,10 @@ routerApp.controller('emailController', ['$scope', '$location', '$rootScope', '$
     }
 
     $scope.send = function(){
-        
+
         $scope.isSending = true;
         var htmlCompiled =  document.getElementById("content").innerHTML;
- 
+
         adminService.sendNewsletter(htmlCompiled,$scope.title).then(function(response){
             // adding newsletter
             $scope.newsletter = {
@@ -617,7 +621,7 @@ routerApp.controller('emailController', ['$scope', '$location', '$rootScope', '$
     $scope.changeToMarkdown = function() {
         $scope.markdown = true;
     }
-    
+
     $scope.$watch('models_post.dropzones', function(model) {
         $scope.modelAsJson = angular.toJson(model, true);
     }, true);
@@ -625,7 +629,7 @@ routerApp.controller('emailController', ['$scope', '$location', '$rootScope', '$
 }]);
 
 routerApp.controller('adminUsersController', ['$scope', '$location', '$rootScope','adminService', '$stateParams', function ($scope, $location, $rootScope, adminService, $stateParams) {
-    
+
     $scope.post = {
         username:"",
         role:""
@@ -648,8 +652,8 @@ routerApp.controller('adminUsersController', ['$scope', '$location', '$rootScope
     }
 
     $scope.editUser = function(userId){
-        $scope.roles = ['publisher', 'editor', 'admin']; 
-        
+        $scope.roles = ['publisher', 'editor', 'admin'];
+
         if(userId==="new")
             $scope.user = {
                 username:"",
