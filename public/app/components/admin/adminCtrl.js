@@ -120,6 +120,7 @@ routerApp.controller('postController', ['$scope', '$location', '$rootScope','adm
         priority: 0
     };
 
+    $scope.bulkSelect = true;
     $scope.filters = {};
     $scope.posts = [];
     $scope.posts_history = [];
@@ -252,6 +253,24 @@ routerApp.controller('postController', ['$scope', '$location', '$rootScope','adm
             return pred;
           });
       });
+    }
+
+    $scope.publishSelected = function () {
+        $scope.displayedCollection.filter(function(post) {
+          return post.selected;
+        }).forEach(function(post) {
+          post.published = 1;
+          adminService.savePost(post).then(function (response) {
+              $scope.displayedCollection = [];
+              getPosts();
+              if($stateParams.post_id){
+                  $location.path("/admin/posts");
+              }
+          },
+           function (err) {
+               $scope.message = err;
+           });
+        })
     }
 
     function getHistoryPost(postId){

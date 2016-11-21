@@ -38,6 +38,8 @@
     </form>
   </div>
   <div class="col-md-4 pull-right">
+    <button class="btn btn-primary pull-right" ng-click="publishSelected()">
+      <i class="icon-calendar icon-white"></i>&nbsp;Publish selected</button>
     <button class="btn btn-primary pull-right" ng-click="editPost('new')" data-toggle="modal" href="#editModal">
       <i class="icon-calendar icon-white"></i>&nbsp;Create New Post</button>
   </div>
@@ -46,6 +48,7 @@
 <table st-table="displayedCollection" st-safe-src="posts" class='table table-striped'>
   <thead>
   	<tr>
+      <th ng-show="bulkSelect"></th>
   	  <th st-sort="type.name">Type</th>
   	  <th st-sort="title">Title</th>
   	  <th st-sort="date">Date</th>
@@ -64,6 +67,9 @@
   </thead>
   <tbody>
     <tr ng-repeat='post in displayedCollection'>
+      <td ng-show="bulkSelect">
+        <input type="checkbox" ng-model="post.selected" />
+      </td>
       <td>{{post.type.name}}</td>
       <td>{{post.title}}</td>
       <td>{{post.date | date:'dd/MM/yyyy'}}</td>
