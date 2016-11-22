@@ -1,5 +1,6 @@
 var mcapi = require('../node_modules/mailchimp-api/mailchimp');
 var moment = require('moment');
+var Draft = require('../models/draft');
 var Eggtart = require('eggtart');
 var diigo = require('diigonode');
 var async = require('async');
@@ -14,7 +15,7 @@ exports.subscribe = function(req, res){
 	mc.lists.list({}, function(data) {
 		console.log(data.data);
   	});*/
-  	
+
   	// Getting interest groupings
   	// group_id = 8029
   	/*
@@ -31,7 +32,7 @@ exports.subscribe = function(req, res){
 	otherGroup = req.body.otherGroup;
 	ip_addr = req.body.ip_addr;
 	roleType = req.body.role;
-	
+
 	var groups = ['AACinfo'];
 	if(otherGroup === 'Y')
 		groups.push('Other');
@@ -70,7 +71,7 @@ exports.subscribe = function(req, res){
       			res.send({"error":'There was an error subscribing that user'});
       		}
     });
-	
+
 }
 
 // Get the list of campaigns - method /api/campaigns (POST)
@@ -106,10 +107,10 @@ exports.getTemplate = function(req, res){
 						var backup_id = response.data[0].id;
 						mc.campaigns.delete({"cid":backup_id});
 					}
-					
-					mc.campaigns.replicate({"cid":campaign_id}, 
+
+					mc.campaigns.replicate({"cid":campaign_id},
 						function(backup_campaign){
-							
+
 							mc.campaigns.update({'cid':backup_campaign.id, 'name':'options', 'value':{'title' : global.MAILCHIMP_BACKUP_CAMPAIGN_NAME}});
 							mc.campaigns.content({'cid':backup_campaign.id},function(response){
 								res.json(response.html);
@@ -117,7 +118,7 @@ exports.getTemplate = function(req, res){
 					});
 				}
 			);
-			
+
 		}
 	);
 }
@@ -125,41 +126,50 @@ exports.getTemplate = function(req, res){
 // Send newsletter template - method /api/send (POST)
 exports.sendNewsletter = function(req, res){
 	var campaigns = [];
-	
-	mc.campaigns.list({"filters":{ 'title' : global.MAILCHIMP_BACKUP_CAMPAIGN_NAME, 'exact' : true}},
-		function(response){
-			if(response.data.length > 0){ //Backup exists
-				var backup_id = response.data[0].id;
-				var groupInterest = 'interests-' + global.MAILCHIMP_GROUPING_ID;
-				var conditions = {'match': 'all','conditions':[{'field':groupInterest,'op':'all','value':global.MAILCHIMP_GROUP_AACINFO}]};
-				mc.campaigns.create({
-						'type':"regular", 
-						'options':{'list_id':response.data[0].list_id,
-									'subject': '[' + global.MAILCHIMP_CAMPAIGN_NAME + "] - " + req.body.title,
-									'title' :  '[' + global.MAILCHIMP_CAMPAIGN_NAME + "] - " + req.body.title,
-								    'from_email':response.data[0].from_email,
-									'from_name':response.data[0].from_name,
-								    'to_name':response.data[0].to_name},
-						'segment_opts':conditions,
-						'content':{'html':req.body.html}},
-					function(response){
-						var campaign_id = response.id;
-						var web_id = response.web_id;
-						mc.campaigns.content({'cid':campaign_id},function(response){
-							mc.campaigns.send({'cid':campaign_id});
-							res.json({"html":response.html,"campaign_id":web_id});
-						});
 
-				});
-			}
-			else
-				return res.json({"error":"Newsletter can't be sent"});
-		});
-	
+	// mc.campaigns.list({"filters":{ 'title' : global.MAILCHIMP_BACKUP_CAMPAIGN_NAME, 'exact' : true}},
+	// 	function(response){
+	// 		if(response.data.length > 0){ //Backup exists
+	// 			var backup_id = response.data[0].id;
+	// 			var groupInterest = 'interests-' + global.MAILCHIMP_GROUPING_ID;
+	// 			var conditions = {'match': 'all','conditions':[{'field':groupInterest,'op':'all','value':global.MAILCHIMP_GROUP_AACINFO}]};
+	// 			mc.campaigns.create({
+	// 					'type':"regular",
+	// 					'options':{'list_id':response.data[0].list_id,
+	// 								'subject': '[' + global.MAILCHIMP_CAMPAIGN_NAME + "] - " + req.body.title,
+	// 								'title' :  '[' + global.MAILCHIMP_CAMPAIGN_NAME + "] - " + req.body.title,
+	// 							    'from_email':response.data[0].from_email,
+	// 								'from_name':response.data[0].from_name,
+	// 							    'to_name':response.data[0].to_name},
+	// 					'segment_opts':conditions,
+	// 					'content':{'html':req.body.html}},
+	// 				function(response){
+	// 					var campaign_id = response.id;
+	// 					var web_id = response.web_id;
+	// 					mc.campaigns.content({'cid':campaign_id},function(response){
+	// 						mc.campaigns.send({'cid':campaign_id});
+							var response = { html: "Lemol" };
+							var web_id = "frida";
+
+							if (req.body.draftId) {
+								Draft.remove({ _id: req.body.draftId }, function() {
+									res.json({"html":response.html,"campaign_id":web_id});
+								});
+							}
+							else {
+								res.json({"html":response.html,"campaign_id":web_id});
+							}
+		// 				});
+		// 		});
+		// 	}
+		// 	else
+		// 		return res.json({"error":"Newsletter can't be sent"});
+		// });
+
 }
 
 exports.addPostSlack = function(req,res){
-	
+
 	slack = new Slack();
 	slack.setWebhook(global.SLACK_HOOK);
 
@@ -185,7 +195,7 @@ exports.addPostSlack = function(req,res){
 			   	  ]
 				}, function(err, response) {
 				  console.log("All posts have been processed successfully");
-				});			   	
+				});
 			   },
 			   function(err){
 			   	if( err ) {

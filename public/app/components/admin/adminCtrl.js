@@ -472,6 +472,10 @@ routerApp.controller('emailController', ['$scope', '$location', '$rootScope', '$
     $scope.isSending = false;
     $scope.isSaving = false;
     $scope.show_json = false;
+    $scope.postFilters = {
+      fromDate: null,
+      toDate: null
+    }
 
     getPosts();
     getDrafts();
@@ -618,7 +622,7 @@ routerApp.controller('emailController', ['$scope', '$location', '$rootScope', '$
         $scope.isSending = true;
         var htmlCompiled =  document.getElementById("content").innerHTML;
 
-        adminService.sendNewsletter(htmlCompiled,$scope.title).then(function(response){
+        adminService.sendNewsletter(htmlCompiled, $scope.title, $scope.draft_id).then(function(response){
             // adding newsletter
             $scope.newsletter = {
                 title:$scope.email.title,
@@ -627,6 +631,9 @@ routerApp.controller('emailController', ['$scope', '$location', '$rootScope', '$
                 html:htmlCompiled,
                 campaign_id:response.campaign_id
             }
+
+            getDrafts();
+
             adminService.saveNewsletter($scope.newsletter).then(function (response) {
                 adminService.addPostDelicious($scope.posts_selected);
                 adminService.addPostSlack($scope.posts_selected);
@@ -669,6 +676,12 @@ routerApp.controller('emailController', ['$scope', '$location', '$rootScope', '$
       $scope.email.preamble = draft.preamble;
       $scope.email.spoiler = draft.spoiler;
     }
+
+    $scope.open = function($event) {
+        $event.preventDefault();
+        $event.stopPropagation();
+        $scope.opened = true;
+    };
 
     $scope.changeToHTML = function() {
         $scope.markdown = false;

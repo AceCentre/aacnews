@@ -7,7 +7,7 @@ routerApp.factory('adminService', ['$http', '$q', 'localStorageService', '$rootS
         var authData = localStorageService.get('authorizationData');
         if(authData)
             $http.defaults.headers.common['X-Access-Token'] = authData.token;
-        
+
         return $http.get('api/types');
     }
 
@@ -15,7 +15,7 @@ routerApp.factory('adminService', ['$http', '$q', 'localStorageService', '$rootS
         var authData = localStorageService.get('authorizationData');
         if(authData)
             $http.defaults.headers.common['X-Access-Token'] = authData.token;
-        
+
         return $http.get('api/types/' + typeId);
     }
 
@@ -23,13 +23,13 @@ routerApp.factory('adminService', ['$http', '$q', 'localStorageService', '$rootS
         var authData = localStorageService.get('authorizationData');
         if(authData)
             $http.defaults.headers.common['X-Access-Token'] = authData.token;
-        
+
         return $http.delete('api/types/' + typeId);
     }
 
     var _saveType = function (typeData) {
         var deferred = $q.defer();
-        
+
         if(typeData.id)
             $http.put('api/types/' + typeData.id, typeData).success(function (response) {
                 deferred.resolve(response);
@@ -51,7 +51,7 @@ routerApp.factory('adminService', ['$http', '$q', 'localStorageService', '$rootS
         var authData = localStorageService.get('authorizationData');
         if(authData)
             $http.defaults.headers.common['X-Access-Token'] = authData.token;
-        
+
         return $http.get('api/posts');
     }
 
@@ -59,7 +59,7 @@ routerApp.factory('adminService', ['$http', '$q', 'localStorageService', '$rootS
         var authData = localStorageService.get('authorizationData');
         if(authData)
             $http.defaults.headers.common['X-Access-Token'] = authData.token;
-        
+
         return $http.get('api/posts/published');
     }
 
@@ -151,7 +151,7 @@ routerApp.factory('adminService', ['$http', '$q', 'localStorageService', '$rootS
         var authData = localStorageService.get('authorizationData');
         if(authData)
             $http.defaults.headers.common['X-Access-Token'] = authData.token;
-        
+
         return $http.get('api/posts/' + postId);
     }
 
@@ -159,7 +159,7 @@ routerApp.factory('adminService', ['$http', '$q', 'localStorageService', '$rootS
         var authData = localStorageService.get('authorizationData');
         if(authData)
             $http.defaults.headers.common['X-Access-Token'] = authData.token;
-        
+
         return $http.delete('api/posts/' + postId);
     }
 
@@ -167,13 +167,13 @@ routerApp.factory('adminService', ['$http', '$q', 'localStorageService', '$rootS
         var authData = localStorageService.get('authorizationData');
         if(authData)
             $http.defaults.headers.common['X-Access-Token'] = authData.token;
-        
+
         return $http.get('api/newsletters');
     }
 
     var _saveNewsletter = function (newsletterData) {
         var deferred = $q.defer();
-        
+
         if(newsletterData.id)
             $http.put('api/newsletters/' + newsletterData.id, newsletterData).success(function (response) {
                 deferred.resolve(response);
@@ -195,7 +195,7 @@ routerApp.factory('adminService', ['$http', '$q', 'localStorageService', '$rootS
         var authData = localStorageService.get('authorizationData');
         if(authData)
             $http.defaults.headers.common['X-Access-Token'] = authData.token;
-        
+
         return $http.get('api/newsletters/' + newsletterId);
     }
 
@@ -203,7 +203,7 @@ routerApp.factory('adminService', ['$http', '$q', 'localStorageService', '$rootS
         var authData = localStorageService.get('authorizationData');
         if(authData)
             $http.defaults.headers.common['X-Access-Token'] = authData.token;
-        
+
         return $http.delete('api/newsletters/' + newsletterId);
     }
 
@@ -215,11 +215,11 @@ routerApp.factory('adminService', ['$http', '$q', 'localStorageService', '$rootS
         return $http.get('api/template');
     }
 
-    var _sendNewsletter = function (newsletterHTML,aTitle) {
+    var _sendNewsletter = function (newsletterHTML, aTitle, draftId) {
         var deferred = $q.defer();
-        
+
          $http.defaults.headers.common['Content-Type'] = 'text/html';
-         $http.post('api/send', {"html":newsletterHTML,"title":aTitle}).success(function (response) {
+         $http.post('api/send', {"html":newsletterHTML, "title":aTitle, "draftId": draftId}).success(function (response) {
                 deferred.resolve(response);
             }).error(function (err, status) {
                 deferred.reject(err);
@@ -233,7 +233,7 @@ routerApp.factory('adminService', ['$http', '$q', 'localStorageService', '$rootS
         var authData = localStorageService.get('authorizationData');
         if(authData)
             $http.defaults.headers.common['X-Access-Token'] = authData.token;
-        
+
         return $http.get('api/posts/history/' + postId);
     }
 
@@ -241,7 +241,7 @@ routerApp.factory('adminService', ['$http', '$q', 'localStorageService', '$rootS
         var authData = localStorageService.get('authorizationData');
         if(authData)
             $http.defaults.headers.common['X-Access-Token'] = authData.token;
-        
+
         return $http.get('api/posts/history/' + postId + "/" + version);
     }
 
@@ -262,7 +262,7 @@ routerApp.factory('adminService', ['$http', '$q', 'localStorageService', '$rootS
             })
         });
         var deferred = $q.defer();
-        
+
         $http.post('api/diigo/posts', {"posts":arrPosts}).success(function (response) {
                 deferred.resolve(response);
             }).error(function (err, status) {
@@ -289,7 +289,7 @@ routerApp.factory('adminService', ['$http', '$q', 'localStorageService', '$rootS
             })
         });
         var deferred = $q.defer();
-        
+
         // disabled because is published when a new post is created
         /*
         $http.post('api/slack/posts', {"posts":arrPosts}).success(function (response) {
@@ -305,7 +305,7 @@ routerApp.factory('adminService', ['$http', '$q', 'localStorageService', '$rootS
         var authData = localStorageService.get('authorizationData');
         if(authData)
             $http.defaults.headers.common['X-Access-Token'] = authData.token;
-        
+
         return $http.get('api/users');
     }
 
@@ -332,7 +332,7 @@ routerApp.factory('adminService', ['$http', '$q', 'localStorageService', '$rootS
         var authData = localStorageService.get('authorizationData');
         if(authData)
             $http.defaults.headers.common['X-Access-Token'] = authData.token;
-        
+
         return $http.get('api/users/' + userId);
     }
 
@@ -340,7 +340,7 @@ routerApp.factory('adminService', ['$http', '$q', 'localStorageService', '$rootS
         var authData = localStorageService.get('authorizationData');
         if(authData)
             $http.defaults.headers.common['X-Access-Token'] = authData.token;
-        
+
         return $http.delete('api/users/' + userId);
     }
 

@@ -18,6 +18,10 @@ var DraftSchema   = new mongoose.Schema({
   	type: String,
   	ref: 'User',
     required: true
+  },
+  updated: {
+    type: Date,
+    default: Date.now
   }
 });
 

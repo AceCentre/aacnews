@@ -30,7 +30,8 @@ exports.putDraft = function(req, res){
 	Draft.findByIdAndUpdate(req.params.draft_id, {$set :
 			{"title":draft.title,
 			 "preamble":draft.preamble,
-			 "spoiler":draft.spoiler
+			 "spoiler":draft.spoiler,
+			 "updated": Date.now()
 			}}, {upsert:false},
 		function (err, draftSaved) {
 		  if (err) {
