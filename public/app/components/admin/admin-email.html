@@ -14,7 +14,7 @@
 	<span us-spinner spinner-key="spinner-1" spinner-start-active="false"></span>
 	<form class="form-horizontal" role="form" ng-show="builder && !message && !message_err" name="form" novalidate ng-submit="form.$valid && preview()" >
     <a class="btn btn-default" data-toggle="modal" href="#openModal">&nbsp;Open Draft&nbsp;</a>
-    <button ng-show="draftId" class="btn btn-default" ng-click="newDraft()">&nbsp;New mail&nbsp;</button>
+    <a ng-show="draft_id" class="btn btn-default" ng-click="newDraft()">&nbsp;New Email&nbsp;</a>
     <button ng-disabled="isSaving" class="btn btn-default" ng-click="saveDraft(draft_id)">&nbsp;Save Draft&nbsp;</button>
 		<button class="btn btn-primary pull-right" type="submit">
 	<i class="icon-calendar icon-white"></i>&nbsp;Preview</button>
