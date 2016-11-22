@@ -55,12 +55,12 @@ routerApp.factory('adminService', ['$http', '$q', 'localStorageService', '$rootS
         return $http.get('api/posts');
     }
 
-    var _getPostsPublished = function() {
+    var _getPostsPublished = function(period) {
         var authData = localStorageService.get('authorizationData');
         if(authData)
             $http.defaults.headers.common['X-Access-Token'] = authData.token;
 
-        return $http.get('api/posts/published');
+        return $http.get('api/posts/published', { params: { period: period } });
     }
 
     var _savePost = function (postData) {

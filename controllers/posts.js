@@ -133,9 +133,20 @@ exports.getPosts = function(req, res){
 
 // Get all posts published - method /api/posts/publishe (GET)
 exports.getPostsPublished = function(req, res){
+  var period = req.query.period;
 	var today = moment();
-	var oneMonthAgo = moment().subtract(1, 'month');
-	Post.find({"published":1,"date": {"$gte": oneMonthAgo, "$lt": today}}).
+  var minDate = null;
+
+  if(!!period) {
+    var parsed = period.split(' ');
+    var value = parseInt(parsed[0]);
+    minDate = moment().subtract(value, parsed[1])
+  } else {
+    minDate = moment().subtract(1, 'month');
+  }
+
+  console.log(minDate)
+	Post.find({"published":1,"date": {"$gte": minDate, "$lt": today}}).
 		populate("type").
 	    sort({'name':'asc'}).
 	    exec(

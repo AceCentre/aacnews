@@ -473,86 +473,89 @@ routerApp.controller('emailController', ['$scope', '$location', '$rootScope', '$
     $scope.isSaving = false;
     $scope.show_json = false;
     $scope.postFilters = {
-      fromDate: null,
-      toDate: null
-    }
+      interval: ''
+    };
 
     getPosts();
     getDrafts();
 
+    function processPosts(response) {
+      $scope.posts = response.data;
+
+      // ordering by categories
+      // creating unique types/groups
+      var groups = {};
+
+      // adding posts foreach type
+      angular.forEach(response.data,function(aPost,index){
+
+          if(!groups[aPost.type.name]){
+              groups[aPost.type.name] = {
+                  group_priority : aPost.type.priority,
+                  id : aPost.type._id,
+                  posts : []
+              }
+          }
+
+          var typeName = aPost.type.name;
+          aPost.type = "item";
+          aPost.id = aPost._id;
+          aPost.text = marked(aPost.text);
+          aPost.text = aPost.text.replace(/(<p>|<\/p>)/g, "");
+          if(aPost.link)
+              aPost.link_name = getHostName(aPost.link);
+
+          aPost.author_original = aPost.author;
+          if(aPost.author.indexOf("@") == 0) // twitter user
+              aPost.author='Shared by ' + addTwitterLinks(aPost.author);
+          else{
+              if(aPost.author.match("\w[\w\.-]*@\w[\w\.-]+\.\w+")) // email
+                  aPost.author = 'Shared by <a href="mailto:' + aPost.author + '">' + aPost.author + '</a>';
+              else
+                  aPost.author = 'Shared by ' + aPost.author;
+          }
+          groups[typeName].posts.push(aPost);
+      });
+
+      // creating group array
+      var types = []
+      for (var k in groups) {
+          groups[k].name = k;
+          types.push(groups[k]);
+      }
+      // sorting by type priority
+      types.sort(function (a, b) {
+        return parseInt(b.group_priority) - parseInt(a.group_priority);
+      });
+
+      $scope.posts_builder = [];
+      angular.forEach(types,function(aType){
+          var entry = {}
+          entry['type'] = "container";
+          entry['id'] = aType.id;
+          entry['name'] = aType.name;
+          entry['columns'] = [];
+          entry['columns'].push(aType.posts);
+          $scope.posts_builder.push(entry)
+      });
+      $scope.models_post = {
+          selected: null,
+          templates: [
+              {type: "item", id: 2},
+              {type: "container", id: 1, columns: [[]]}
+          ],
+          dropzones: {
+              "1. Posts to be published": $scope.posts_builder
+              ,
+              "2. Newsletter structure": [
+              ]
+          }
+      }
+    }
+
     function getPosts(){
         adminService.getPostsPublished().then(function (response) {
-            $scope.posts = response.data;
-
-            // ordering by categories
-            // creating unique types/groups
-            var groups = {};
-
-            // adding posts foreach type
-            angular.forEach(response.data,function(aPost,index){
-
-                if(!groups[aPost.type.name]){
-                    groups[aPost.type.name] = {
-                        group_priority : aPost.type.priority,
-                        id : aPost.type._id,
-                        posts : []
-                    }
-                }
-
-                var typeName = aPost.type.name;
-                aPost.type = "item";
-                aPost.id = aPost._id;
-                aPost.text = marked(aPost.text);
-                aPost.text = aPost.text.replace(/(<p>|<\/p>)/g, "");
-                if(aPost.link)
-                    aPost.link_name = getHostName(aPost.link);
-
-                aPost.author_original = aPost.author;
-                if(aPost.author.indexOf("@") == 0) // twitter user
-                    aPost.author='Shared by ' + addTwitterLinks(aPost.author);
-                else{
-                    if(aPost.author.match("\w[\w\.-]*@\w[\w\.-]+\.\w+")) // email
-                        aPost.author = 'Shared by <a href="mailto:' + aPost.author + '">' + aPost.author + '</a>';
-                    else
-                        aPost.author = 'Shared by ' + aPost.author;
-                }
-                groups[typeName].posts.push(aPost);
-            });
-
-            // creating group array
-            var types = []
-            for (var k in groups) {
-                groups[k].name = k;
-                types.push(groups[k]);
-            }
-            // sorting by type priority
-            types.sort(function (a, b) {
-              return parseInt(b.group_priority) - parseInt(a.group_priority);
-            });
-
-            $scope.posts_builder = [];
-            angular.forEach(types,function(aType){
-                var entry = {}
-                entry['type'] = "container";
-                entry['id'] = aType.id;
-                entry['name'] = aType.name;
-                entry['columns'] = [];
-                entry['columns'].push(aType.posts);
-                $scope.posts_builder.push(entry)
-            });
-            $scope.models_post = {
-                selected: null,
-                templates: [
-                    {type: "item", id: 2},
-                    {type: "container", id: 1, columns: [[]]}
-                ],
-                dropzones: {
-                    "1. Posts to be published": $scope.posts_builder
-                    ,
-                    "2. Newsletter structure": [
-                    ]
-                }
-            }
+          processPosts(response);
         });
     }
 
@@ -677,11 +680,13 @@ routerApp.controller('emailController', ['$scope', '$location', '$rootScope', '$
       $scope.email.spoiler = draft.spoiler;
     }
 
-    $scope.open = function($event) {
-        $event.preventDefault();
-        $event.stopPropagation();
-        $scope.opened = true;
-    };
+    $scope.applyPostFilters = function() {
+      var filters = $scope.postFilters;
+
+      adminService.getPostsPublished(filters.period).then(function (response) {
+          processPosts(response);
+      });
+    }
 
     $scope.changeToHTML = function() {
         $scope.markdown = false;

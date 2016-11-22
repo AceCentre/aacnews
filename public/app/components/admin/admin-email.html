@@ -118,6 +118,29 @@
 
 	<!-- Main area with dropzones and source code -->
 	<div class="col-md-12">
+      <div class="row">
+        <div class="form-group">
+          <label class="col-lg-3 control-label">Period</label>
+          <div class="col-lg-3">
+            <select class="form-control" ng-model="postFilters.period" ng-change="applyPostFilters()">
+              <option value=""></option>
+              <option value="1 week">1 week</option>
+              <option value="2 week">2 weeks</option>
+              <option value="3 week">3 weeks</option>
+              <option value="4 week">4 weeks</option>
+              <option value="1 month">1 month</option>
+              <option value="2 month">2 months</option>
+              <option value="3 month">3 months</option>
+              <option value="4 month">4 months</option>
+              <option value="5 month">5 months</option>
+              <option value="6 month">6 months</option>
+              <option value="1 year">1 year</option>
+              <option value="2 year">2 years</option>
+              <option value="3 year">3 years</option>
+           </select>
+          </div>
+        </div>
+      </div>
 	    <div class="row">
 	        <div ng-repeat="(zone, list) in models_post.dropzones" class="col-md-6">
 	            <div class="dropzone box box-yellow">
