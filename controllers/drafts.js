@@ -5,7 +5,7 @@ exports.postDraft = function(req, res){
 	var draft = new Draft();
 
 	draft.title = req.body.title;
-	draft.premeable = req.body.premeable;
+	draft.preamble = req.body.preamble;
 	draft.spoiler = req.body.spoiler;
 	draft.author = req.user._id;
 
@@ -16,9 +16,9 @@ exports.postDraft = function(req, res){
 			return;
 		}
 
-    res.json({ 
+    res.json({
       message: 'Draft saved!',
-      status: 1, 
+      status: 1,
       data: draftSaved
     });
   });
@@ -27,9 +27,9 @@ exports.postDraft = function(req, res){
 exports.putDraft = function(req, res){
 	var draft = new Draft(req.body);
 
-	Draft.findByIdAndUpdate(req.params.draft_id, {$set : 
+	Draft.findByIdAndUpdate(req.params.draft_id, {$set :
 			{"title":draft.title,
-			 "premeable":draft.premeable,
+			 "preamble":draft.preamble,
 			 "spoiler":draft.spoiler
 			}}, {upsert:false},
 		function (err, draftSaved) {
@@ -38,8 +38,10 @@ exports.putDraft = function(req, res){
 		  	return res.send(err);
 		  }
 
-      res.send(draftSaved);
-		  
+      res.send({
+				data: draftSaved
+			});
+
 	});
 }
 
@@ -50,8 +52,9 @@ exports.getDrafts = function(req, res){
 	    exec(
 	  		function(err,drafts){
 	  			if(err) return res.send(err);
-	  			res.json(drafts);
+	  			res.json({
+						data: drafts
+					});
 	  		}
 	);
 }
-

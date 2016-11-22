@@ -7,20 +7,20 @@ var DraftSchema   = new mongoose.Schema({
     type: String,
     required: true
   },
-  premeable: {
+  preamble: {
     type: String,
     required: true
   },
   spoiler: {
-  	type: Date, 
-  	default: Date.now 
+  	type: String
   },
-  author: { 
-  	type: String, 
-  	ref: 'User' 
+  author: {
+  	type: String,
+  	ref: 'User',
+    required: true
   }
 });
 
-  
+
 // Export the Mongoose model
 module.exports = mongoose.model('Draft', DraftSchema);

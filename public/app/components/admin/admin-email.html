@@ -5,17 +5,17 @@
 	<div ng-show="message_err" class="alert alert-success" role="alert">Some errors occured during notification sending.</div>
 	<div ng-show="!builder && !message && !message_err" style="display:inline-block;" class="pull-right">
 		<a class="btn btn-danger " ng-click="back()">Cancel</a><span>&nbsp;</span>
-    <a ng-disabled="isSaving || isSending" class="btn btn-default" ng-click="saveDraft()">&nbsp;Save Draft&nbsp;</a>
+    <a ng-disabled="isSaving || isSending" class="btn btn-default" ng-click="saveDraft(draft_id)">&nbsp;Save Draft&nbsp;</a>
     <a ng-disabled="isSending" class="btn btn-success" ng-click="send()">&nbsp;Send&nbsp;</a>
-	</div>	
+	</div>
 
 	<div dynamic="html" id="content" ng-show="!builder && !message && !message_err"></div>
 
 	<span us-spinner spinner-key="spinner-1" spinner-start-active="false"></span>
 	<form class="form-horizontal" role="form" ng-show="builder && !message && !message_err" name="form" novalidate ng-submit="form.$valid && preview()" >
-    <button class="btn btn-default" ng-click="newDraft()">&nbsp;New Draft&nbsp;</button>
-    <button ng-show="draftId" class="btn btn-default" ng-click="newDraft()">&nbsp;New Draft&nbsp;</button>
-    <button ng-disabled="isSaving" class="btn btn-default" ng-click="saveDraft()">&nbsp;Save Draft&nbsp;</button>
+    <a class="btn btn-default" data-toggle="modal" href="#openModal">&nbsp;Open Draft&nbsp;</a>
+    <button ng-show="draftId" class="btn btn-default" ng-click="newDraft()">&nbsp;New mail&nbsp;</button>
+    <button ng-disabled="isSaving" class="btn btn-default" ng-click="saveDraft(draft_id)">&nbsp;Save Draft&nbsp;</button>
 		<button class="btn btn-primary pull-right" type="submit">
 	<i class="icon-calendar icon-white"></i>&nbsp;Preview</button>
 			<br>
@@ -27,7 +27,7 @@
 		             placeholder="Title" name="email_title" ng-model="email.title" required="">
 		        <p ng-show="form.$submitted && form.email_title.$error.required" class="help-block">Title is required.</p>
 		    </div>
-		    
+
 		  </div>
 		  <div ng-show="markdown" class="form-group" ng-class="{ 'has-error' : form.$submitted && form.email_preamble.$invalid}">
 		    <label for="newsletter_preamble" class="col-lg-2 control-label">Preamble (Markdown)</label>
@@ -135,4 +135,25 @@
 		    <pre>{{modelAsJson}}</pre>
 		</div>
 	</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="openModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+      	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h4>Open Draft</h4>
+      </div>
+      <div class="modal-body">
+				<ul>
+					<li ng-repeat="draft in drafts">
+						{{draft.title}} | <button ng-click="openDraft(draft)" data-dismiss="modal">Select</button>
+					</li>
+				</ul>
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div>
+  </div>
 </div>

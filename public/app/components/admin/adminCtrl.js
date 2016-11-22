@@ -464,7 +464,7 @@ routerApp.controller('emailController', ['$scope', '$location', '$rootScope', '$
 
     $scope.posts = [];
     $scope.drafts = [];
-    $scope.draftId = null;
+    $scope.draft_id = null;
     $scope.message = null;
     $scope.message_err = null;
     $scope.posted = false;
@@ -639,8 +639,9 @@ routerApp.controller('emailController', ['$scope', '$location', '$rootScope', '$
         });
     }
 
-    $scope.saveDraft = function(){
+    $scope.saveDraft = function(draft_id) {
         var emailData = {
+            _id: draft_id,
             title:$scope.email.title,
             preamble:$scope.email.preamble,
             spoiler:$scope.email.spoiler
@@ -650,16 +651,23 @@ routerApp.controller('emailController', ['$scope', '$location', '$rootScope', '$
 
         adminService.saveDraft(emailData).then(function(response){
           getDrafts();
-          $scope.draftId = response.data._id;
+          $scope.draft_id = response.data._id;
           $scope.isSaving = false;
         });
     }
 
     $scope.newDraft = function(){
-      $scope.draftId = response.data._id;
+      $scope.draft_id = null;
       $scope.email.title = '';
-      $scope.email.premeable = '';
+      $scope.email.preamble = '';
       $scope.email.spoiler = '';
+    }
+
+    $scope.openDraft = function(draft){
+      $scope.draft_id = draft._id;
+      $scope.email.title = draft.title;
+      $scope.email.preamble = draft.preamble;
+      $scope.email.spoiler = draft.spoiler;
     }
 
     $scope.changeToHTML = function() {
