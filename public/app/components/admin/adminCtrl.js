@@ -463,14 +463,18 @@ routerApp.controller('emailController', ['$scope', '$location', '$rootScope', '$
     }
 
     $scope.posts = [];
+    $scope.drafts = [];
+    $scope.draftId = null;
     $scope.message = null;
     $scope.message_err = null;
     $scope.posted = false;
     $scope.markdown = true;
     $scope.isSending = false;
+    $scope.isSaving = false;
     $scope.show_json = false;
 
     getPosts();
+    getDrafts();
 
     function getPosts(){
         adminService.getPostsPublished().then(function (response) {
@@ -545,6 +549,12 @@ routerApp.controller('emailController', ['$scope', '$location', '$rootScope', '$
                     ]
                 }
             }
+        });
+    }
+
+    function getDrafts(){
+        adminService.getDrafts().then(function (response) {
+            $scope.drafts = response.data;
         });
     }
 
@@ -627,6 +637,29 @@ routerApp.controller('emailController', ['$scope', '$location', '$rootScope', '$
                 $scope.message_err = err;
             });
         });
+    }
+
+    $scope.saveDraft = function(){
+        var emailData = {
+            title:$scope.email.title,
+            preamble:$scope.email.preamble,
+            spoiler:$scope.email.spoiler
+        };
+
+        $scope.isSaving = true;
+
+        adminService.saveDraft(emailData).then(function(response){
+          getDrafts();
+          $scope.draftId = response.data._id;
+          $scope.isSaving = false;
+        });
+    }
+
+    $scope.newDraft = function(){
+      $scope.draftId = response.data._id;
+      $scope.email.title = '';
+      $scope.email.premeable = '';
+      $scope.email.spoiler = '';
     }
 
     $scope.changeToHTML = function() {

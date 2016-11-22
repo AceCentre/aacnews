@@ -15,6 +15,7 @@ var typeController = require('./controllers/types');
 var postController = require('./controllers/posts');
 var newsletterController = require('./controllers/newsletters');
 var mailchimpController = require('./controllers/mailchimp');
+var draftController = require('./controllers/drafts');
 
 var configuration = JSON.parse(
   fs.readFileSync("configuration.json")
@@ -129,6 +130,9 @@ router.route('/newsletters/:newsletter_id').delete(jwtauth, requireAuth, newslet
 // mailchimp
 router.route('/subscribe').post(mailchimpController.subscribe);
 router.route('/campaigns').get(mailchimpController.getCampaigns);
+router.route('/campaigns/drafts').get(jwtauth, requireAuth, draftController.getDrafts);
+router.route('/campaigns/drafts/:draft_id').put(jwtauth, requireAuth, draftController.putDraft);
+router.route('/campaigns/drafts').post(jwtauth, requireAuth, draftController.postDraft);
 router.route('/template').get(mailchimpController.getTemplate);
 router.route('/send').post(mailchimpController.sendNewsletter);
 

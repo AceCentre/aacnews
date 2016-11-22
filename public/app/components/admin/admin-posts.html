@@ -38,13 +38,13 @@
     </form>
   </div>
   <div class="col-md-4 pull-right">
-    <button class="btn btn-primary pull-right" ng-click="setSelectedPublished(true)">
+    <button ng-show="auth.isEditor" class="btn btn-primary pull-right" ng-click="setSelectedPublished(true)">
       <i class="icon-calendar icon-white"></i>&nbsp;Publish selected</button>
-    <button class="btn btn-primary pull-right" ng-click="setSelectedPublished(false)">
+    <button ng-show="auth.isEditor" class="btn btn-primary pull-right" ng-click="setSelectedPublished(false)">
       <i class="icon-calendar icon-white"></i>&nbsp;Unpublish selected</button>
-    <button class="btn btn-primary pull-right" ng-click="setSelectedPromoted(true)">
+    <button ng-show="auth.isEditor" class="btn btn-primary pull-right" ng-click="setSelectedPromoted(true)">
       <i class="icon-calendar icon-white"></i>&nbsp;Promote selected</button>
-    <button class="btn btn-primary pull-right" ng-click="editPost('new')" data-toggle="modal" href="#editModal">
+    <button ng-show="auth.isEditor" class="btn btn-primary pull-right" ng-click="editPost('new')" data-toggle="modal" href="#editModal">
       <i class="icon-calendar icon-white"></i>&nbsp;Create New Post</button>
   </div>
 </div>

@@ -114,6 +114,39 @@ routerApp.factory('adminService', ['$http', '$q', 'localStorageService', '$rootS
       return deferred.promise;
     };
 
+    var _saveDraft = function (data) {
+      var deferred = $q.defer();
+
+      if (data._id) {
+        $http.put('api/campaigns/drafts/' + data._id, data).success(function (response) {
+            deferred.resolve(response);
+        }).error(function (err, status) {
+            deferred.reject(err);
+        });
+      }
+      else {
+        $http.post('api/campaigns/drafts', data).success(function (response) {
+            deferred.resolve(response);
+        }).error(function (err, status) {
+            deferred.reject(err);
+        });
+      }
+
+      return deferred.promise;
+    };
+
+    var _getDrafts = function (data) {
+      var deferred = $q.defer();
+
+      $http.get('api/campaigns/drafts').success(function (response) {
+          deferred.resolve(response);
+      }).error(function (err, status) {
+          deferred.reject(err);
+      });
+
+      return deferred.promise;
+    };
+
     var _getPost = function(postId) {
         var authData = localStorageService.get('authorizationData');
         if(authData)
@@ -320,6 +353,8 @@ routerApp.factory('adminService', ['$http', '$q', 'localStorageService', '$rootS
     adminServiceFactory.savePost = _savePost;
     adminServiceFactory.bulkPublishPosts = _bulkPublishPosts;
     adminServiceFactory.bulkPromotePosts = _bulkPromotePosts;
+    adminServiceFactory.getDrafts = _getDrafts;
+    adminServiceFactory.saveDraft = _saveDraft;
     adminServiceFactory.getPost = _getPost;
     adminServiceFactory.removePost = _removePost;
     adminServiceFactory.getHistoryPost = _getHistoryPost;

@@ -5,13 +5,17 @@
 	<div ng-show="message_err" class="alert alert-success" role="alert">Some errors occured during notification sending.</div>
 	<div ng-show="!builder && !message && !message_err" style="display:inline-block;" class="pull-right">
 		<a class="btn btn-danger " ng-click="back()">Cancel</a><span>&nbsp;</span>
-        <a ng-disabled="isSending" class="btn btn-success" ng-click="send()">&nbsp;Send&nbsp;</a>
+    <a ng-disabled="isSaving || isSending" class="btn btn-default" ng-click="saveDraft()">&nbsp;Save Draft&nbsp;</a>
+    <a ng-disabled="isSending" class="btn btn-success" ng-click="send()">&nbsp;Send&nbsp;</a>
 	</div>	
 
 	<div dynamic="html" id="content" ng-show="!builder && !message && !message_err"></div>
 
 	<span us-spinner spinner-key="spinner-1" spinner-start-active="false"></span>
 	<form class="form-horizontal" role="form" ng-show="builder && !message && !message_err" name="form" novalidate ng-submit="form.$valid && preview()" >
+    <button class="btn btn-default" ng-click="newDraft()">&nbsp;New Draft&nbsp;</button>
+    <button ng-show="draftId" class="btn btn-default" ng-click="newDraft()">&nbsp;New Draft&nbsp;</button>
+    <button ng-disabled="isSaving" class="btn btn-default" ng-click="saveDraft()">&nbsp;Save Draft&nbsp;</button>
 		<button class="btn btn-primary pull-right" type="submit">
 	<i class="icon-calendar icon-white"></i>&nbsp;Preview</button>
 			<br>
