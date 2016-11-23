@@ -530,20 +530,11 @@ routerApp.controller('emailController', ['$scope', '$location', '$rootScope', '$
       });
 
       $scope.posts_builder = [];
-      angular.forEach(types,function(aType){
-          var entry = {}
-          entry['allowedTypes'] = [aType.id];
-          entry['type'] = "postTypes";
-          entry['id'] = aType.id;
-          entry['name'] = aType.name;
-          entry['columns'] = [];
-          //entry['columns'].push(aType.posts);
-          $scope.posts_builder.push(entry)
-      });
 
       console.log($scope.posts_builder);
       $scope.post_types_pub = $scope.posts_builder;
       $scope.post_types = types;
+      $scope.post_types_saved = [].concat(types);
 
       $scope.models_post = {
           selected: null,
@@ -560,9 +551,20 @@ routerApp.controller('emailController', ['$scope', '$location', '$rootScope', '$
     }
 
     $scope.addPost = function(post, type) {
-      var entry = $scope.posts_builder.filter(function(t) {
+      var entry = $scope.post_types_pub.filter(function(t) {
         return t.id === type.id;
       })[0];
+
+      if(entry == null) {
+        entry = {}
+        entry['allowedTypes'] = [type.id];
+        entry['type'] = "postTypes";
+        entry['id'] = type.id;
+        entry['name'] = type.name;
+        entry['columns'] = [];
+        //entry['columns'].push(aType.posts);
+        $scope.post_types_pub.push(entry)
+      }
 
       if(entry.columns.length===0) {
         entry.columns.push([post]);
@@ -583,6 +585,41 @@ routerApp.controller('emailController', ['$scope', '$location', '$rootScope', '$
           });
         }
       });
+    };
+
+    $scope.removePost = function(post, type) {
+      var entry = $scope.post_types_pub.filter(function(t) {
+        return t.id === type.id;
+      })[0];
+
+      entry.columns[0] = entry.columns[0].filter(function(p) {
+        return p._id !== post._id;
+      });
+
+      if(entry.columns[0].length === 0) {
+        $scope.post_types_pub = $scope.post_types_pub.filter(function(t) {
+          return t.id !== type.id;
+        });
+      }
+
+      var type2 = $scope.post_types.filter(function(t) {
+        return t.id === type.id;
+      })[0];
+
+      if(type2 == null) {
+        type2 = $scope.post_types_saved.filter(function(pts) {
+          return pts.id === type.id;
+        })[0];
+
+        type2 = Object.assign({}, type2, {posts: [post]})
+        $scope.post_types.push(type2);
+
+        $scope.post_types.sort(function (a, b) {
+          return parseInt(b.group_priority) - parseInt(a.group_priority);
+        });
+      } else {
+        type2.posts.push(post);
+      }
     };
 
     function getPosts(){
@@ -620,7 +657,7 @@ routerApp.controller('emailController', ['$scope', '$location', '$rootScope', '$
         $scope.unsuscribe_modify_preferences_mark = "*|UPDATE_PROFILE|*";
         $scope.email_addr = "*|EMAIL|*";
         $scope.archive_url = "*|ARCHIVE|*";
-        $scope.posts_selected = $scope.models_post.dropzones["2. Newsletter structure"];
+      $scope.posts_selected = $scope.post_types_pub; // $scope.models_post.dropzones["2. Newsletter structure"];
         adminService.getTemplate().then(function(aHTML){
             $scope.html = aHTML.data;
             usSpinnerService.stop('spinner-1');
