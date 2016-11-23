@@ -82,39 +82,6 @@
 	-->
 </div>
 <div class="nestedPosts row" ng-show="builder && !message && !message_err">
-<!-- Markup for lists inside the dropzone. It's inside a seperate template
-     because it will be used recursively. The dnd-list directive enables
-     to drop elements into the referenced array. The dnd-draggable directive
-     makes an element draggable and will transfer the object that was
-     assigned to it. If an element was dragged away, you have to remove
-     it from the original list yourself using the dnd-moved attribute -->
-<script type="text/ng-template" id="list.html">
-    <ul dnd-list="list">
-        <li ng-repeat="item in list"
-            dnd-draggable="item"
-            dnd-effect-allowed="move"
-            dnd-moved="list.splice($index, 1)"
-            dnd-selected="models.selected = item"
-            ng-class="{selected: models.selected === item}"
-            ng-include="item.type + '.html'">
-        </li>
-    </ul>
-</script>
-
-<!-- This template is responsible for rendering a container element. It uses
-     the above list template to render each container column -->
-<script type="text/ng-template" id="container.html">
-    <div class="container-element box box-blue">
-        <h3>{{item.name}}</h3>
-        <div class="column" ng-repeat="list in item.columns" ng-include="'list.html'" ></div>
-        <div class="clearfix"></div>
-    </div>
-</script>
-
-<!-- Template for a normal list item -->
-<script type="text/ng-template" id="item.html">
-    <div class="item">{{item.title}}</div>
-</script>
 
 	<!-- Main area with dropzones and source code -->
 	<div class="col-md-12">
@@ -142,13 +109,60 @@
         </div>
       </div>
 	    <div class="row">
-	        <div ng-repeat="(zone, list) in models_post.dropzones" class="col-md-6">
-	            <div class="dropzone box box-yellow">
-	                <!-- The dropzone also uses the list template -->
-	                <h3>{{zone}}</h3>
-	                <div ng-include="'list.html'"></div>
-	            </div>
-	        </div>
+        <div class="col-md-6">
+            <div class="box box-yellow">
+                <h3>1. Posts to be published</h3>
+                <ul>
+                  <li ng-repeat="type in post_types">
+                    <h3>{{type.name}}</h3>
+                    <ul>
+                      <li ng-repeat="post in type.posts">
+                        {{post.title}} <button ng-click="addPost(post, type)">Add</button>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="dropzone box box-yellow">
+                <!-- The dropzone also uses the list template -->
+                <h3>2. Newsletter structure</h3>
+                <div>
+                  <ul dnd-list="post_types_pub" 
+                      dnd-allowed-types="['postTypes']">
+                      <li ng-repeat="type_item in post_types_pub"
+                          dnd-draggable="type_item"
+                          dnd-effect-allowed="move"
+                          dnd-type="type_item.type"
+                          dnd-moved="post_types_pub.splice($index, 1)"
+                          dnd-selected="models.selected = type_item"
+                          ng-class="{selected: models.selected === type_item}">
+                        <div class="container-element box box-blue">
+                            <h3>{{type_item.name}}</h3>
+                            <div class="column" ng-repeat="post_list_pub in type_item.columns">
+                              <ul dnd-list="post_list_pub" 
+                                  dnd-disabled-if="true"
+                                  dnd-allowed-types="type_item.allowedTypes">
+                                  <li ng-repeat="post_item in post_list_pub"
+                                      dnd-draggable="post_item"
+                                      dnd
+                                      dnd-effect-allowed="move"
+                                      dnd-type="post_item.type"
+                                      dnd-moved="post_list_pub.splice($index, 1)"
+                                      dnd-selected="models.selected = post_item"
+                                      ng-class="{selected: models.selected === post_item}">
+                                    <div class="item">{{post_item.title}} <button ng-click="removePost(post_item, type_item)">x</button></div>
+                                  </li>
+                              </ul>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                      </li>
+                  </ul>
+                </div>
+            </div>
+        </div>
 	    </div>
 		<!-- only for debugging -->
 		<div ng-show="show_json">

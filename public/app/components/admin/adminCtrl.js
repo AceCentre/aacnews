@@ -498,7 +498,8 @@ routerApp.controller('emailController', ['$scope', '$location', '$rootScope', '$
           }
 
           var typeName = aPost.type.name;
-          aPost.type = "item";
+          aPost.type = aPost.type._id;
+          aPost.ttype = 'item';
           aPost.id = aPost._id;
           aPost.text = marked(aPost.text);
           aPost.text = aPost.text.replace(/(<p>|<\/p>)/g, "");
@@ -531,13 +532,19 @@ routerApp.controller('emailController', ['$scope', '$location', '$rootScope', '$
       $scope.posts_builder = [];
       angular.forEach(types,function(aType){
           var entry = {}
-          entry['type'] = "container";
+          entry['allowedTypes'] = [aType.id];
+          entry['type'] = "postTypes";
           entry['id'] = aType.id;
           entry['name'] = aType.name;
           entry['columns'] = [];
-          entry['columns'].push(aType.posts);
+          //entry['columns'].push(aType.posts);
           $scope.posts_builder.push(entry)
       });
+
+      console.log($scope.posts_builder);
+      $scope.post_types_pub = $scope.posts_builder;
+      $scope.post_types = types;
+
       $scope.models_post = {
           selected: null,
           templates: [
@@ -547,11 +554,36 @@ routerApp.controller('emailController', ['$scope', '$location', '$rootScope', '$
           dropzones: {
               "1. Posts to be published": $scope.posts_builder
               ,
-              "2. Newsletter structure": [
-              ]
+              "2. Newsletter structure": $scope.posts_builder
           }
       }
     }
+
+    $scope.addPost = function(post, type) {
+      var entry = $scope.posts_builder.filter(function(t) {
+        return t.id === type.id;
+      })[0];
+
+      if(entry.columns.length===0) {
+        entry.columns.push([post]);
+      } else {
+        entry.columns[0].push(post);
+      }
+
+      $scope.post_types.filter(function(t) {
+        return t.id === type.id;
+      }).map(function(t) {
+        t.posts = t.posts.filter(function(p) {
+          return p._id != post._id;
+        });
+
+        if(t.posts.length === 0) {
+          $scope.post_types = $scope.post_types.filter(function(t2) {
+            return t.id !== t2.id;
+          });
+        }
+      });
+    };
 
     function getPosts(){
         adminService.getPostsPublished().then(function (response) {
