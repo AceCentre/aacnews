@@ -657,7 +657,7 @@ routerApp.controller('emailController', ['$scope', '$location', '$rootScope', '$
         $scope.unsuscribe_modify_preferences_mark = "*|UPDATE_PROFILE|*";
         $scope.email_addr = "*|EMAIL|*";
         $scope.archive_url = "*|ARCHIVE|*";
-      $scope.posts_selected = $scope.post_types_pub; // $scope.models_post.dropzones["2. Newsletter structure"];
+        $scope.posts_selected = $scope.post_types_pub; // $scope.models_post.dropzones["2. Newsletter structure"];
         adminService.getTemplate().then(function(aHTML){
             $scope.html = aHTML.data;
             usSpinnerService.stop('spinner-1');
