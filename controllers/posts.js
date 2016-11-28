@@ -1,3 +1,4 @@
+var Link = require('../models/link');
 var Post = require('../models/post');
 var PostHistory = require('../models/postHistory');
 var moment = require('moment');
@@ -121,6 +122,7 @@ exports.getPosts = function(req, res){
 	
 	Post.find({}).
 		populate("type").
+		populate("link").
       sort({'date':'desc'}).
 	    sort({'name':'asc'}).
 	    exec(
@@ -145,9 +147,9 @@ exports.getPostsPublished = function(req, res){
     minDate = moment().subtract(1, 'month');
   }
 
-  console.log(minDate)
 	Post.find({"published":1,"date": {"$gte": minDate, "$lt": today}}).
 		populate("type").
+		populate("link").
 	    sort({'name':'asc'}).
 	    exec(
 	  		function(err,posts){
