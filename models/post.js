@@ -1,6 +1,5 @@
 // Load required packages
 var mongoose = require('mongoose');
-mongoose.Promise = require('bluebird');
 var Link = require('./link');
 var parseDomain = require('parse-domain');
 
@@ -59,7 +58,7 @@ var preSave = function(callback) {
     .then(function(link) {
       if(link == null) {
         link = new Link({
-          _id: 0, url: post.link
+          url: post.link
         });
       }
 

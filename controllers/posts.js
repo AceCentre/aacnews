@@ -122,15 +122,22 @@ exports.getPosts = function(req, res){
 
 	Post.find({}).
 		populate("type").
-		populate("linkInfo.domain").
-      sort({'date':'desc'}).
-	    sort({'name':'asc'}).
-	    exec(
-	  		function(err,posts){
-	  			if(err) return res.send(err);
-	  			res.json(posts);
-	  		}
-	);
+    populate({
+      path: 'linkInfo',
+      model: 'Link',
+      populate: {
+        path: 'domain',
+        model: 'Domain'
+      }
+    }).
+    sort({'date':'desc'}).
+    sort({'name':'asc'}).
+    exec(
+      function(err,posts){
+        if(err) return res.send(err);
+        res.json(posts);
+      }
+    );
 }
 
 // Get all posts published - method /api/posts/publishe (GET)

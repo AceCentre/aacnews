@@ -12,8 +12,7 @@ var LinkSchema   = new mongoose.Schema({
   },
   domain: {
   	type: String,
-  	ref: 'Domain',
-    required: true
+  	ref: 'Domain'
   },
   posts: {
     type: Number,
@@ -26,6 +25,7 @@ var preSave = function(callback) {
 
   if (!link.isModified('url')) return callback();
 
+  link.posts++;
   var parsed = parseDomain(link.url);
 
   if(parsed == null) {
@@ -34,20 +34,25 @@ var preSave = function(callback) {
 
   var domainName = parsed.domain + '.' + parsed.tld;
 
-  Domain.findOne({ name: domainName }, function(err, domain) {
-    if(err) {
-      return callback(err);
-    }
+  Domain
+    .findOne({ name: domainName })
+    .exec()
+    .then(function(domain) {
+      if(domain == null) {
+        domain = new Domain({ name: domainName })
+      }
 
-    if(domain == null) {
-      domain = new Domain();
-    }
-
-    domain.posts++;
-    domain.save(function(err2) {
-      return callback(err2);
+      domain.posts++;
+      return domain.save();
+    })
+    .then(function(domain) {
+      link.domain = domain._id
+      callback();
+    })
+    .catch(function(err) {
+      console.log(err);
+      callback(err);
     });
-  });
 };
 
 LinkSchema.pre('save', function(callback) {

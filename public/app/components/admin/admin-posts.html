@@ -56,6 +56,8 @@
   	  <th st-sort="type.name">Type</th>
   	  <th st-sort="title">Title</th>
   	  <th st-sort="date">Date</th>
+  	  <th st-sort="linkInfo.domain.posts">D</th>
+  	  <th st-sort="linkInfo.posts">L</th>
   	  <th st-sort="link">URL</th>
   	  <th st-sort="published">Publish</th>
   	  <th st-sort="promoted">Promoted</th>
@@ -77,6 +79,8 @@
       <td>{{post.type.name}}</td>
       <td>{{post.title}}</td>
       <td>{{post.date | date:'dd/MM/yyyy'}}</td>
+      <td>{{post.linkInfo.domain.posts}}</td>
+      <td>{{post.linkInfo.posts}}</td>
       <td>{{post.link | short_url}}</td>
       <td>{{(post.published?'yes':'no')}}</td>
       <td>{{(post.promoted?'yes':'no')}}</td>
