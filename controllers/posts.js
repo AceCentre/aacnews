@@ -39,7 +39,7 @@ exports.addPost = function(req, res){
 			.sort({'date_creation': -1})
 			.limit(1)
 			.exec(function(postHistory){
-				
+
 				var aPostH = new PostHistory(post);
 				if(postHistory)
 					postHistory.version = postHistory.version + 1;
@@ -47,25 +47,25 @@ exports.addPost = function(req, res){
 					aPostH.id_post = aPost._id;
 				aPostH.save(function(err){
 					console.log(err);
-					res.json({ 
+					res.json({
 						message: 'Post added to the system!',
-			            status: 1, 
+			            status: 1,
 			            data: post });
 				});
-			    
+
 		});
     });
 }
 
 // Update post - method /api/posts/:post_id (PUT)
 exports.updatePost = function(req, res){
-	
+
 	var aPost = new Post(req.body);
 	if(req.body.type)
 		aPost.type = req.body.type._id;
 	console.log("aPost");
 	console.log(aPost);
-	Post.findByIdAndUpdate(req.params.post_id, {$set : 
+	Post.findByIdAndUpdate(req.params.post_id, {$set :
 			{"title":aPost.title,
 			 "text":aPost.text,
 			 "type":aPost.type,
@@ -99,30 +99,30 @@ exports.updatePost = function(req, res){
 						 "priority":aPost.priority,
 						 "author":aPost.author
 					}
-					
+
 					var aPostH = new PostHistory(postData);
 
 					if(postHistory){
 						aPostH.version = postHistory.version + 1;
 					}
 					aPostH.id_post = aPost._id;
-					
+
 					aPostH.save(function(err){
 						console.log(err);
 						res.send(aPost);
 					});
-				    
+
 		  });
-		  
+
 	});
 }
 
 // Get all posts - method /api/posts (GET)
 exports.getPosts = function(req, res){
-	
+
 	Post.find({}).
 		populate("type").
-		populate("link").
+		populate("linkInfo.domain").
       sort({'date':'desc'}).
 	    sort({'name':'asc'}).
 	    exec(
@@ -149,7 +149,6 @@ exports.getPostsPublished = function(req, res){
 
 	Post.find({"published":1,"date": {"$gte": minDate, "$lt": today}}).
 		populate("type").
-		populate("link").
 	    sort({'name':'asc'}).
 	    exec(
 	  		function(err,posts){
@@ -161,7 +160,7 @@ exports.getPostsPublished = function(req, res){
 
 // Get one post - method /api/posts/:post_id (GET)
 exports.getPost = function(req, res){
-	
+
 	Post.findById(req.params.post_id).
 			populate("type").
 			exec(function(err,aPost){
@@ -174,7 +173,7 @@ exports.getPost = function(req, res){
 // Remove post - method /api/posts/:post_id (DELETE)
 exports.deletePost = function(req, res){
 
-	Post.findByIdAndRemove(req.params.post_id, 
+	Post.findByIdAndRemove(req.params.post_id,
 		function (err, aPost) {
 		  if (err) return res.send(err);
 		  PostHistory.remove({"id_post":req.params.post_id},function(err){
@@ -186,7 +185,7 @@ exports.deletePost = function(req, res){
 
 // Get history about a post - method /api/posts/history/:post_id (GET)
 exports.getHistoryPost = function(req, res){
-	
+
 	PostHistory.find({"id_post":req.params.post_id}).
 			populate("type").
 			sort({'date_creation': -1}).
@@ -199,7 +198,7 @@ exports.getHistoryPost = function(req, res){
 
 // Get history about a post - method /api/posts/history/:post_id/:version (GET)
 exports.getHistoryPostbyVersion = function(req, res){
-	
+
 	PostHistory.findOne({"id_post":req.params.post_id,"version":req.params.version}).
 			populate("type").
 			exec(function(err,posts){
@@ -238,4 +237,3 @@ exports.putBulkPromotePosts = function(req, res) {
     return res.json({});
   });
 }
-

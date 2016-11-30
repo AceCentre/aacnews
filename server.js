@@ -21,6 +21,7 @@ var configuration = JSON.parse(
   fs.readFileSync("configuration.json")
 );
 var urlMongo = process.env.MONGO_DB_URL || configuration.MONGO_DB_URL;
+mongoose.Promise = require('bluebird');
 mongoose.connect('mongodb://' + urlMongo);
 
 // set MailChimp API key here

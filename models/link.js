@@ -1,5 +1,6 @@
 // Load required packages
 var mongoose = require('mongoose');
+mongoose.Promise = require('bluebird');
 var parseDomain = require('parse-domain');
 var Domain = require('./domain');
 
@@ -50,12 +51,12 @@ var preSave = function(callback) {
 };
 
 LinkSchema.pre('save', function(callback) {
-  console.log('Entradno em SAVE');
+  console.log('Entradno em SAVE link');
   preSave.bind(this)(callback);
 });
 
 LinkSchema.pre('update', function(callback) {
-  console.log('Entradno em UPDATE');
+  console.log('Entradno em UPDATE link');
   preSave.bind(this)(callback);
 });
 

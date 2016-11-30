@@ -1,5 +1,8 @@
 // Load required packages
 var mongoose = require('mongoose');
+mongoose.Promise = require('bluebird');
+var Link = require('./link');
+var parseDomain = require('parse-domain');
 
 // Define type schema
 var PostSchema   = new mongoose.Schema({
@@ -12,10 +15,14 @@ var PostSchema   = new mongoose.Schema({
     required: true
   },
   date: {
-  	type: Date, 
-  	default: Date.now 
+  	type: Date,
+  	default: Date.now
   },
   link: {
+    type: String,
+    required: true
+  },
+  linkInfo: {
     type: String,
     ref: 'Link'
   },
@@ -35,23 +42,52 @@ var PostSchema   = new mongoose.Schema({
     type: String,
     default: ""
   },
-  type: { 
-  	type: String, 
-  	ref: 'Type' 
+  type: {
+  	type: String,
+  	ref: 'Type'
   }
 });
+
+var preSave = function(callback) {
+  var post = this;
+
+  if (!post.isModified('link')) return callback();
+
+  Link
+    .findOne({ url: post.link })
+    .exec()
+    .then(function(link) {
+      if(link == null) {
+        link = new Link({
+          _id: 0, url: post.link
+        });
+      }
+
+      console.log("callbacking 2");
+      return link.save();
+    })
+    .then(function(link) {
+      post.linkInfo = link._id;
+      console.log("callbacking");
+      callback();
+    })
+    .catch(function(err) {
+      console.log(err);
+    });
+
+};
 
 PostSchema.pre('save', function(callback) {
   console.log('Entradno em SAVE posts');
   console.log(this.link);
-  callback();
+  preSave.bind(this)(callback);
 });
 
 PostSchema.pre('update', function(callback) {
   console.log('Entradno em UPDATE posts');
   console.log(this.link);
-  callback();
+  preSave.bind(this)(callback);
 });
-  
+
 // Export the Mongoose model
 module.exports = mongoose.model('Post', PostSchema);
