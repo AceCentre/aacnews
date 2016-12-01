@@ -1,3 +1,4 @@
+var Promise = require('bluebird');
 var Link = require('../models/link');
 var Post = require('../models/post');
 var PostHistory = require('../models/postHistory');
@@ -243,4 +244,16 @@ exports.putBulkPromotePosts = function(req, res) {
   function() {
     return res.json({});
   });
+}
+
+exports.updateLinksCount = function(req, res) {
+	Promise.each(
+		Post.find().exec(),
+		function(post) {
+			post._forceUpdateLink = true;
+			return post.save();
+		}
+	).then(function() {
+		res.json({ data: 'Finalized!' });
+	});
 }

@@ -16,7 +16,7 @@ routerApp.controller('loginController', ['$scope', '$location', '$rootScope','au
                 $rootScope.auth = {
                   isAdmin: response.role === 'admin',
                   isPublisher: response.role === 'publisher' || response.role === 'admin',
-                  isEditor: response.role === 'editor' || response.role === 'admin'
+                  isEditor: response.role === 'editor' || response.role === 'publisher' || response.role === 'admin'
                 };
                 console.log($scope.auth)
             }

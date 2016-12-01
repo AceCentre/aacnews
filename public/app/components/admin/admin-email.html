@@ -6,7 +6,7 @@
 	<div ng-show="!builder && !message && !message_err" style="display:inline-block;" class="pull-right">
 		<a class="btn btn-danger " ng-click="back()">Cancel</a><span>&nbsp;</span>
     <a ng-disabled="isSaving || isSending" class="btn btn-default" ng-click="saveDraft(draft_id)">&nbsp;Save Draft&nbsp;</a>
-    <a ng-disabled="isSending" class="btn btn-success" ng-click="send()">&nbsp;Send&nbsp;</a>
+    <a ng-disabled="isSending" class="btn btn-success" ng-show="auth.isPublisher" ng-click="send()">&nbsp;Send&nbsp;</a>
 	</div>
 
 	<div dynamic="html" id="content" ng-show="!builder && !message && !message_err"></div>
@@ -129,7 +129,7 @@
                 <!-- The dropzone also uses the list template -->
                 <h3>2. Newsletter structure</h3>
                 <div>
-                  <ul dnd-list="post_types_pub" 
+                  <ul dnd-list="post_types_pub"
                       dnd-allowed-types="['postTypes']">
                       <li ng-repeat="type_item in post_types_pub"
                           dnd-draggable="type_item"
@@ -141,7 +141,7 @@
                         <div class="container-element box box-blue">
                             <h3>{{type_item.name}}</h3>
                             <div class="column" ng-repeat="post_list_pub in type_item.columns">
-                              <ul dnd-list="post_list_pub" 
+                              <ul dnd-list="post_list_pub"
                                   dnd-disabled-if="true"
                                   dnd-allowed-types="type_item.allowedTypes">
                                   <li ng-repeat="post_item in post_list_pub"
