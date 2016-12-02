@@ -1,5 +1,6 @@
 var Promise = require('bluebird');
 var Link = require('../models/link');
+var Domain = require('../models/domain');
 var Post = require('../models/post');
 var PostHistory = require('../models/postHistory');
 var moment = require('moment');
@@ -247,13 +248,17 @@ exports.putBulkPromotePosts = function(req, res) {
 }
 
 exports.updateLinksCount = function(req, res) {
-	Promise.each(
-		Post.find().exec(),
-		function(post) {
-			post._forceUpdateLink = true;
-			return post.save();
-		}
-	).then(function() {
-		res.json({ data: 'Finalized!' });
+	Domain.remove().then(function() {
+		return Link.remove();
+	}).then(function() {
+		Promise.each(
+			Post.find().exec(),
+			function(post) {
+				post._forceUpdateLink = true;
+				return post.save();
+			}
+		).then(function() {
+			res.json({ data: 'Finalized!' });
+		});
 	});
 }

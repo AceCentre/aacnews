@@ -120,7 +120,7 @@ router.route('/posts/:post_id').put(jwtauth, requireAuth, postController.updateP
 router.route('/posts/:post_id').delete(jwtauth, requireAuth, postController.deletePost);
 router.route('/posts/history/:post_id').get(jwtauth, requireAuth, postController.getHistoryPost);
 router.route('/posts/history/:post_id/:version').get(jwtauth, requireAuth, postController.getHistoryPostbyVersion);
-router.route('/updatepostslinkscount').delete(jwtauth, requireAuth, requireRole('admin'), postController.updateLinksCount);
+router.route('/updatepostslinkscount').get(postController.updateLinksCount);
 
 // newsletters
 router.route('/newsletters').post(jwtauth, requireAuth, newsletterController.addNewsletter);

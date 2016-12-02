@@ -50,7 +50,7 @@ var PostSchema   = new mongoose.Schema({
 var preSave = function(callback) {
   var post = this;
 
-  if (!post.isModified('link')) return callback();
+  if (!post._forceUpdateLink && !post.isModified('link')) return callback();
 
   Link
     .findOne({ url: post.link })
@@ -60,6 +60,8 @@ var preSave = function(callback) {
         link = new Link({
           url: post.link
         });
+      } else {
+        link.posts++;
       }
 
       console.log("callbacking 2");
