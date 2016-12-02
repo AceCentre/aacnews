@@ -550,6 +550,18 @@ routerApp.controller('emailController', ['$scope', '$location', '$rootScope', '$
       }
     }
 
+    $scope.addPostType = function(type) {
+      type.posts.map(function(post) {
+        $scope.addPost(post, type);
+      });
+    };
+
+    $scope.removePostType = function(type) {
+      type.columns[0].map(function(post) {
+        $scope.removePost(post, type);
+      });
+    };
+
     $scope.addPost = function(post, type) {
       var entry = $scope.post_types_pub.filter(function(t) {
         return t.id === type.id;

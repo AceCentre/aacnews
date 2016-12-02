@@ -50,6 +50,7 @@ var PostSchema   = new mongoose.Schema({
 var preSave = function(callback) {
   var post = this;
 
+  if(post._noLink) return callback();
   if (!post._forceUpdateLink && !post.isModified('link')) return callback();
 
   Link
@@ -87,7 +88,8 @@ PostSchema.pre('save', function(callback) {
 PostSchema.pre('update', function(callback) {
   console.log('Entradno em UPDATE posts');
   console.log(this.link);
-  preSave.bind(this)(callback);
+  callback();
+  //preSave.bind(this)(callback);
 });
 
 // Export the Mongoose model

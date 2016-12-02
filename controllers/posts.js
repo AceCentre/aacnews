@@ -223,7 +223,7 @@ exports.putBulkPublishPosts = function(req, res) {
   Post.update({
     _id: { $in: req.body.ids }
   }, {
-    $set: { published: published }
+    $set: { published: published, _noLink: true }
   }, {
     multi: true
   },
@@ -238,7 +238,7 @@ exports.putBulkPromotePosts = function(req, res) {
   Post.update({
     _id: { $in: req.body.ids }
   }, {
-    $set: { promoted: promoted }
+    $set: { promoted: promoted, _noLink: true }
   }, {
     multi: true
   },
