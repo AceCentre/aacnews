@@ -122,8 +122,8 @@ routerApp.controller('postController', ['$scope', '$location', '$rootScope','adm
 
     $scope.bulkSelect = true;
     $scope.filters = {
-      published: true,
-      notPublished: true,
+      published: false,
+      notPublished: false,
       interval: ''
     };
     $scope.posts = [];
