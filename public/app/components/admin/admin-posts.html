@@ -1,13 +1,87 @@
 <div >
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <div class="row" style="margin-right: 5px">
+        <div class="col-md-8">
+          <div class="form-inline">
+            <div class="form-group">
+      		    <label class="control-label">Period:</label>
+    		      <select class="form-control" ng-model="filters.interval" ng-change="applyFilters()">
+                <option value="">All</option>
+                <option value="1 week">1 week</option>
+                <option value="2 week">2 weeks</option>
+                <option value="3 week">3 weeks</option>
+                <option value="4 week">4 weeks</option>
+                <option value="1 month">1 month</option>
+                <option value="2 month">2 months</option>
+                <option value="3 month">3 months</option>
+                <option value="4 month">4 months</option>
+                <option value="5 month">5 months</option>
+                <option value="6 month">6 months</option>
+                <option value="1 year">1 year</option>
+                <option value="2 year">2 years</option>
+                <option value="3 year">3 years</option>
+    			    </select>
+      		  </div>
+            <div class="form-group">
+              <input id="filterPublished" type="checkbox" ng-model="filters.published" ng-change="applyFilters()">
+  		        <label for="filterPublished" class="control-label">
+  		          Published
+  		        </label>
+      		  </div>
+      		  <div class="form-group">
+              <input id="filterNotPublished" type="checkbox" ng-model="filters.notPublished" ng-change="applyFilters()">
+              <label for="filterNotPublished" class="control-label">
+                Not published
+              </label>
+      		  </div>
+          </div>
+        </div>
+        <div class="pull-right">
+          <div class="dropdown pull-right" style="margin: 1px;">
+            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+              Bulk Actions
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+              <li ng-show="auth.isEditor">
+                <a href="#" ng-click="setSelectedPublished(true)">
+                  <i class="glyphicon glyphicon-share-alt icon-white"></i>&nbsp;Publish selected
+                </a>
+              </li>
+              <li ng-show="auth.isEditor">
+                <a href="#" ng-click="setSelectedPublished(false)">
+                  <i class="glyphicon glyphicon-arrow-left icon-white"></i>&nbsp;Unpublish selected
+                </a>
+              </li>
+              <li role="separator" class="divider"></li>
+              <li ng-show="auth.isEditor">
+                <a href="#" ng-click="setSelectedPromoted(true)">
+                  <i class="glyphicon glyphicon-arrow-up icon-white"></i>&nbsp;Promote selected
+                </a>
+              </li>
+            </ul>
+          </div>
+          <button ng-show="auth.isEditor" class="btn btn-success pull-right" ng-click="editPost('new')" data-toggle="modal" href="#editModal" style="margin: 1px;">
+            <i class="glyphicon glyphicon-plus icon-white"></i>&nbsp;Create New Post
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <h3>List of Posts</h3>
-<button class="btn btn-primary pull-right" ng-click="editPost('new')" data-toggle="modal" href="#editModal">
-	<i class="icon-calendar icon-white"></i>&nbsp;Create New Post</button>
+
 <table st-table="displayedCollection" st-safe-src="posts" class='table table-striped'>
   <thead>
   	<tr>
+      <th ng-show="bulkSelect"></th>
   	  <th st-sort="type.name">Type</th>
   	  <th st-sort="title">Title</th>
   	  <th st-sort="date">Date</th>
+  	  <th st-sort="linkInfo.domain.posts">D</th>
+  	  <th st-sort="linkInfo.posts">L</th>
   	  <th st-sort="link">URL</th>
   	  <th st-sort="published">Publish</th>
   	  <th st-sort="promoted">Promoted</th>
@@ -16,16 +90,21 @@
   	  <th>&nbsp;</th>
   	</tr>
   	<tr>
-		<th colspan="9">
+		<th colspan="13">
 			<input st-search placeholder="global search" class="input-sm form-control" type="search"/>
 		</th>
 	</tr>
   </thead>
   <tbody>
     <tr ng-repeat='post in displayedCollection'>
+      <td ng-show="bulkSelect">
+        <input type="checkbox" ng-model="post.selected" />
+      </td>
       <td>{{post.type.name}}</td>
       <td>{{post.title}}</td>
       <td>{{post.date | date:'dd/MM/yyyy'}}</td>
+      <td>{{post.linkInfo.domain.posts}}</td>
+      <td>{{post.linkInfo.posts}}</td>
       <td>{{post.link | short_url}}</td>
       <td>{{(post.published?'yes':'no')}}</td>
       <td>{{(post.promoted?'yes':'no')}}</td>
@@ -36,12 +115,12 @@
   </tbody>
    <tfoot>
 		<tr>
-			<td colspan="8" class="text-center">
+			<td colspan="11" class="text-center">
 				<div st-pagination="" st-items-by-page="10" st-displayed-pages="7"></div>
 			</td>
 		</tr>
 	</tfoot>
-</table>	
+</table>
 </div>
 <!-- Modal -->
 <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -71,9 +150,9 @@
 		      <p ng-show="form.$submitted && form.post_title.$error.required" class="help-block">Title is required.</p>
 		    </div>
 		  </div>
-		  
+
 		  <div class="form-group" ng-class="{ 'has-error' : form.$submitted && form.post_text.$invalid}">
-			
+
 
 		    <label ng-show="markdown" for="post_text" class="col-lg-2 control-label">Content (Markdown)</label>
 		    <div ng-show="markdown" class="col-lg-10">
@@ -95,12 +174,12 @@
 		  <div class="form-group">
 		    <label for="post_date" class="col-lg-2 control-label">Date</label>
 		    <div class="col-lg-3">
-		    	  <p class="input-group">		    	  
+		    	  <p class="input-group">
 			      <input type="text" class="form-control" datepicker-popup="dd/MM/yyyy" ng-model="post.date" is-open="opened"  datepicker-options="dateOptions" ng-required="true" close-text="Close" />
 	              <span class="input-group-btn">
 	                <button type="button" class="btn btn-default" ng-click="open($event)"><i class="fa fa-calendar"></i></button>
 	              </span>
-	              </p>
+            </p>
 		    </div>
 		  </div>
 		  <div class="form-group" ng-class="{ 'has-error' : form.$submitted && form.post_url.$invalid}">
@@ -115,7 +194,7 @@
 		    <div class="col-lg-offset-2 col-lg-10">
 		    	<div class="checkbox">
 			        <label>
-			          <input type="checkbox" ng-model="post.published"> Publish
+			          <input type="checkbox" ng-model="post.published" ng-disabled="!(auth.isPublisher)"> Publish
 			        </label>
 		      	</div>
 		    </div>
@@ -155,11 +234,11 @@
 		    </div>
 		  </div>
 		  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary">Save changes</button>	
+          <button type="submit" class="btn btn-primary">Save changes</button>
 		</form>
       </div>
       <div class="modal-footer">
-        
+
       </div>
     </div>
   </div>

@@ -85,6 +85,11 @@ routerApp.config(function($stateProvider, $urlRouterProvider, $httpProvider, $lo
             url: '/admin/email',
             templateUrl: '../app/components/admin/admin-email.html',
             controller: 'emailController'
+        })
+        .state('admin.users', {
+            url: '/admin/users',
+            templateUrl: '../app/components/admin/admin-users.html',
+            controller: 'adminUsersController'
         });
 
         $httpProvider.interceptors.push('authInterceptorService');

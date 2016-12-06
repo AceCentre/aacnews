@@ -5,15 +5,45 @@
 	<div ng-show="message_err" class="alert alert-success" role="alert">Some errors occured during notification sending.</div>
 	<div ng-show="!builder && !message && !message_err" style="display:inline-block;" class="pull-right">
 		<a class="btn btn-danger " ng-click="back()">Cancel</a><span>&nbsp;</span>
-        <a ng-disabled="isSending" class="btn btn-success" ng-click="send()">&nbsp;Send&nbsp;</a>
-	</div>	
+    <a ng-disabled="isSaving || isSending" class="btn btn-default" ng-click="saveDraft(draft_id)">&nbsp;Save Draft&nbsp;</a>
+    <a ng-disabled="isSending" class="btn btn-success" ng-show="auth.isPublisher" ng-click="send()">&nbsp;Send&nbsp;</a>
+	</div>
 
 	<div dynamic="html" id="content" ng-show="!builder && !message && !message_err"></div>
 
 	<span us-spinner spinner-key="spinner-1" spinner-start-active="false"></span>
 	<form class="form-horizontal" role="form" ng-show="builder && !message && !message_err" name="form" novalidate ng-submit="form.$valid && preview()" >
-		<button class="btn btn-primary pull-right" type="submit">
-	<i class="icon-calendar icon-white"></i>&nbsp;Preview</button>
+		<div>
+			<div class="pull-right" style="margin: 5px;">
+				<button class="btn btn-primary pull-right" type="submit" >
+					<i class="icon-calendar icon-white"></i>&nbsp;Preview
+				</button>
+			</div>
+			<div class="dropdown pull-right" style="margin: 5px;">
+				<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+					Actions
+					<span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+					<li ng-class="{'disabled': !draft_id}" ng-show="auth.isEditor">
+						<a href="#" ng-click="newDraft()">
+							<i class="glyphicon glyphicon-file icon-white"></i>&nbsp;New Email
+						</a>
+					</li>
+					<li ng-show="auth.isEditor">
+						<a data-toggle="modal" href="#openModal">
+							<i class="glyphicon glyphicon-folder-open icon-white"></i>&nbsp;Open Draft
+						</a>
+					</li>
+					<li ng-class="{'disabled': isSaving}" ng-show="auth.isEditor">
+						<a  ng-click="saveDraft(draft_id)" href="#">
+							<i class="glyphicon glyphicon-floppy-disk icon-white"></i>&nbsp;Save Draft
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+
 			<br>
 			<br>
 		  <div class="form-group" ng-class="{ 'has-error' : form.$submitted && form.email_title.$invalid}">
@@ -23,7 +53,7 @@
 		             placeholder="Title" name="email_title" ng-model="email.title" required="">
 		        <p ng-show="form.$submitted && form.email_title.$error.required" class="help-block">Title is required.</p>
 		    </div>
-		    
+
 		  </div>
 		  <div ng-show="markdown" class="form-group" ng-class="{ 'has-error' : form.$submitted && form.email_preamble.$invalid}">
 		    <label for="newsletter_preamble" class="col-lg-2 control-label">Preamble (Markdown)</label>
@@ -78,57 +108,136 @@
 	-->
 </div>
 <div class="nestedPosts row" ng-show="builder && !message && !message_err">
-<!-- Markup for lists inside the dropzone. It's inside a seperate template
-     because it will be used recursively. The dnd-list directive enables
-     to drop elements into the referenced array. The dnd-draggable directive
-     makes an element draggable and will transfer the object that was
-     assigned to it. If an element was dragged away, you have to remove
-     it from the original list yourself using the dnd-moved attribute -->
-<script type="text/ng-template" id="list.html">
-    <ul dnd-list="list">
-        <li ng-repeat="item in list"
-            dnd-draggable="item"
-            dnd-effect-allowed="move"
-            dnd-moved="list.splice($index, 1)"
-            dnd-selected="models.selected = item"
-            ng-class="{selected: models.selected === item}"
-            ng-include="item.type + '.html'">
-        </li>
-    </ul>
-</script>
-
-<!-- This template is responsible for rendering a container element. It uses
-     the above list template to render each container column -->
-<script type="text/ng-template" id="container.html">
-    <div class="container-element box box-blue">
-        <h3>{{item.name}}</h3>
-        <div class="column" ng-repeat="list in item.columns" ng-include="'list.html'" ></div>
-        <div class="clearfix"></div>
-    </div>
-</script>
-
-<!-- Template for a normal list item -->
-<script type="text/ng-template" id="item.html">
-    <div class="item">{{item.title}}</div>
-</script>
 
 	<!-- Main area with dropzones and source code -->
 	<div class="col-md-12">
-	    <div class="row">
-	        <div ng-repeat="(zone, list) in models_post.dropzones" class="col-md-6">
-	            <div class="dropzone box box-yellow">
-	                <!-- The dropzone also uses the list template -->
-	                <h3>{{zone}}</h3>
-	                <div ng-include="'list.html'"></div>
-	            </div>
-	        </div>
-	    </div>
-		<!-- only for debugging -->
-		<div ng-show="show_json">
-		    <div view-source="nested"  highlight-lines="{markup: '1-18, 20-28, 40-42, 57-68, 78-82'}"></div>
-
-		    <h2>Generated Model</h2>
-		    <pre>{{modelAsJson}}</pre>
-		</div>
+		<h3>Posts</h3>
+    <div class="row form-inline" style="margin: 10px">
+			<div class="form-group">
+        <label class="control-label">Period:</label>
+        <select class="form-control" ng-model="postFilters.period" ng-change="applyPostFilters()">
+          <option value="">All</option>
+          <option value="1 week">1 week</option>
+          <option value="2 week">2 weeks</option>
+          <option value="3 week">3 weeks</option>
+          <option value="4 week">4 weeks</option>
+          <option value="1 month">1 month</option>
+          <option value="2 month">2 months</option>
+          <option value="3 month">3 months</option>
+          <option value="4 month">4 months</option>
+          <option value="5 month">5 months</option>
+          <option value="6 month">6 months</option>
+          <option value="1 year">1 year</option>
+          <option value="2 year">2 years</option>
+          <option value="3 year">3 years</option>
+       </select>
+		 </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+          <div class="box box-yellow">
+              <h3>1. Posts to be published</h3>
+              <ul class="list-group">
+                <div class="list-group-item" ng-repeat="type in post_types">
+                  <h4 class="list-group-item-heading">
+										{{type.name}}
+										<span class="pull-right">
+											<a href="#" ng-click="addPostType(type)">
+												<i class="glyphicon glyphicon-forward"></i>
+											</a>
+										</span>
+									</h4>
+                  <div class="list-group">
+                    <a href="#" ng-click="addPost(post, type)" class="list-group-item" ng-repeat="post in type.posts">
+                      {{post.title}}
+                    </a>
+                  </div>
+                </li>
+              </ul>
+          </div>
+      </div>
+      <div class="col-md-6">
+          <div class="dropzone box box-yellow">
+              <!-- The dropzone also uses the list template -->
+              <h3>2. Newsletter structure</h3>
+              <div>
+                <ul dnd-list="post_types_pub"
+                    dnd-allowed-types="['postTypes']">
+                    <li ng-repeat="type_item in post_types_pub"
+                        dnd-draggable="type_item"
+                        dnd-effect-allowed="move"
+                        dnd-type="type_item.type"
+                        dnd-moved="post_types_pub.splice($index, 1)"
+                        dnd-selected="models.selected = type_item"
+                        ng-class="{selected: models.selected === type_item}">
+                      <div class="container-element box box-blue">
+                          <h3>
+														<span>
+															<a href="#" ng-click="removePostType(type_item)">
+																<i class="glyphicon glyphicon-backward"></i>
+															</a>
+														</span>
+														{{type_item.name}}
+													</h3>
+                          <div class="column" ng-repeat="post_list_pub in type_item.columns">
+                            <ul dnd-list="post_list_pub"
+                                dnd-disabled-if="true"
+                                dnd-allowed-types="type_item.allowedTypes">
+                                <li ng-repeat="post_item in post_list_pub"
+                                    dnd-draggable="post_item"
+                                    dnd-effect-allowed="move"
+                                    dnd-type="post_item.type"
+                                    dnd-moved="post_list_pub.splice($index, 1)"
+                                    dnd-selected="models.selected = post_item"
+                                    ng-class="{selected: models.selected === post_item}">
+                                  <div class="item">
+																		{{post_item.title}}
+																		<span class="pull-right">
+																			<a href="javascript:void(0)" ng-click="removePost(post_item, type_item)">
+																				<i class="glyphicon glyphicon-remove"></i>
+																			</a>
+																		</span>
+																	</div>
+                                </li>
+                            </ul>
+                          </div>
+                          <div class="clearfix"></div>
+                      </div>
+                    </li>
+                </ul>
+              </div>
+          </div>
+      </div>
+    </div>
 	</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="openModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+      	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h4>Open Draft</h4>
+      </div>
+      <div class="modal-body">
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th>Title</th>
+							<th>Updated</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-click="openDraft(draft)" data-dismiss="modal" ng-repeat="draft in drafts">
+							<td>{{draft.title}}</td>
+							<td>{{draft.updated}}</td>
+						</tr>
+					</tbody>
+				</table>
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div>
+  </div>
 </div>

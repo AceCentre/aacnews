@@ -1,6 +1,6 @@
 'use strict';
 routerApp.controller('typeController', ['$scope', '$location', '$rootScope','adminService', function ($scope, $location, $rootScope, adminService) {
- 
+
     $scope.type = {
         id: null,
         name: "",
@@ -79,7 +79,7 @@ routerApp.controller('typeController', ['$scope', '$location', '$rootScope','adm
 }]);
 
 routerApp.controller('postController', ['$scope', '$location', '$rootScope','adminService', '$stateParams', function ($scope, $location, $rootScope, adminService, $stateParams) {
-    
+
     if($stateParams.post_id){
         getHistoryPost($stateParams.post_id);
     }
@@ -120,10 +120,16 @@ routerApp.controller('postController', ['$scope', '$location', '$rootScope','adm
         priority: 0
     };
 
+    $scope.bulkSelect = true;
+    $scope.filters = {
+      published: false,
+      notPublished: false,
+      interval: ''
+    };
     $scope.posts = [];
     $scope.posts_history = [];
     $scope.message = "";
-    $scope.types = []; 
+    $scope.types = [];
     $scope.posted = false;
     $scope.markdown = true;
     $scope.markdown_hist = true;
@@ -142,8 +148,8 @@ routerApp.controller('postController', ['$scope', '$location', '$rootScope','adm
     }
 
     $scope.editPost = function(postId){
-        $scope.types = []; 
-        
+        $scope.types = [];
+
         adminService.getTypes().then(function (response) {
             $scope.types = response.data;
         });
@@ -207,16 +213,82 @@ routerApp.controller('postController', ['$scope', '$location', '$rootScope','adm
              $scope.message = err;
          });
     }
-    $scope.removePost = function(postId){
 
+    $scope.removePost = function(postId){
         adminService.removePost(postId).then(function (response) {
             $scope.posts = [];
             $scope.displayedCollection = [];
             getPosts();
         },
          function (err) {
-             $scope.message = err;
+            $scope.message = err;
         });
+    }
+
+    $scope.applyFilters = function() {
+      var filters = $scope.filters;
+      var filterPublish = -1;
+      var minDate = -1;
+
+      if(filters.published && !filters.notPublished) {
+        filterPublish = 1;
+      }
+      else if(!filters.published && filters.notPublished) {
+        filterPublish = 0;
+      }
+
+      if(filters.interval !== '') {
+        var parsed = filters.interval.split(' ');
+        var value = parseInt(parsed[0]);
+        minDate = moment().subtract(value, parsed[1])
+      }
+
+      adminService.getPosts().then(function (response) {
+          $scope.posts = response.data.filter(function(post) {
+            var pred = true;
+            if(filterPublish != -1) {
+              pred = pred && (post.published == filterPublish);
+            }
+
+            if(minDate != -1) {
+              pred = pred && (moment(post.date) >= minDate);
+            }
+
+            return pred;
+          });
+      });
+    }
+
+    function getSelectedPostsIds() {
+      return $scope.displayedCollection.filter(function(post) {
+        return post.selected;
+      }).map(function(post) {
+        return post._id;
+      });
+    }
+
+    $scope.setSelectedPublished = function (published) {
+      var ids = getSelectedPostsIds();
+
+      adminService.bulkPublishPosts(ids, published).then(function (response) {
+          $scope.displayedCollection = [];
+          getPosts();
+      },
+       function (err) {
+           $scope.message = err;
+       });
+    }
+
+    $scope.setSelectedPromoted = function (promoted) {
+      var ids = getSelectedPostsIds();
+
+      adminService.bulkPromotePosts(ids, promoted).then(function (response) {
+          $scope.displayedCollection = [];
+          getPosts();
+      },
+       function (err) {
+           $scope.message = err;
+       });
     }
 
     function getHistoryPost(postId){
@@ -264,7 +336,7 @@ routerApp.controller('postController', ['$scope', '$location', '$rootScope','adm
 
 
 routerApp.controller('newsletterController', ['$scope', '$location', '$rootScope','adminService', function ($scope, $location, $rootScope, adminService) {
-    
+
     $scope.newsletter = {
         title:"",
         preamble:"",
@@ -314,7 +386,7 @@ routerApp.controller('newsletterController', ['$scope', '$location', '$rootScope
     }
 
     $scope.editNewsletter = function(newsletterId){
-        
+
         if(newsletterId==="new")
             $scope.newsletter = {
                 title:"",
@@ -326,7 +398,7 @@ routerApp.controller('newsletterController', ['$scope', '$location', '$rootScope
         else
         {
             adminService.getNewsletter(newsletterId).then(function (response) {
-                
+
                 $scope.newsletter = {
                     id: response.data._id,
                     title:response.data.title,
@@ -343,7 +415,7 @@ routerApp.controller('newsletterController', ['$scope', '$location', '$rootScope
     $scope.saveNewsletter = function () {
         if($scope.newsletter.date)
             $scope.newsletter.date = getDate($scope.newsletter.date);
-       
+
         adminService.saveNewsletter($scope.newsletter).then(function (response) {
             $scope.newsletters = [];
             $scope.displayedCollection = [];
@@ -375,7 +447,7 @@ routerApp.controller('newsletterController', ['$scope', '$location', '$rootScope
 }]);
 
 routerApp.controller('emailController', ['$scope', '$location', '$rootScope', '$filter', 'filterFilter', 'adminService', '$sce', 'usSpinnerService', '$compile', '$window', function ($scope, $location, $rootScope, $filter, filterFilter, adminService,$sce, usSpinnerService, $compile, $window) {
-    
+
     $scope.email = {
         title:"",
         preamble:"",
@@ -391,88 +463,186 @@ routerApp.controller('emailController', ['$scope', '$location', '$rootScope', '$
     }
 
     $scope.posts = [];
+    $scope.drafts = [];
+    $scope.draft_id = null;
     $scope.message = null;
     $scope.message_err = null;
     $scope.posted = false;
     $scope.markdown = true;
     $scope.isSending = false;
+    $scope.isSaving = false;
     $scope.show_json = false;
+    $scope.postFilters = {
+      interval: ''
+    };
 
     getPosts();
+    getDrafts();
+
+    function processPosts(response) {
+      $scope.posts = response.data;
+
+      // ordering by categories
+      // creating unique types/groups
+      var groups = {};
+
+      // adding posts foreach type
+      angular.forEach(response.data,function(aPost,index){
+
+          if(!groups[aPost.type.name]){
+              groups[aPost.type.name] = {
+                  group_priority : aPost.type.priority,
+                  id : aPost.type._id,
+                  posts : []
+              }
+          }
+
+          var typeName = aPost.type.name;
+          aPost.type = aPost.type._id;
+          aPost.ttype = 'item';
+          aPost.id = aPost._id;
+          aPost.text = marked(aPost.text);
+          aPost.text = aPost.text.replace(/(<p>|<\/p>)/g, "");
+          if(aPost.link)
+              aPost.link_name = getHostName(aPost.link);
+
+          aPost.author_original = aPost.author;
+          if(aPost.author.indexOf("@") == 0) // twitter user
+              aPost.author='Shared by ' + addTwitterLinks(aPost.author);
+          else{
+              if(aPost.author.match("\w[\w\.-]*@\w[\w\.-]+\.\w+")) // email
+                  aPost.author = 'Shared by <a href="mailto:' + aPost.author + '">' + aPost.author + '</a>';
+              else
+                  aPost.author = 'Shared by ' + aPost.author;
+          }
+          groups[typeName].posts.push(aPost);
+      });
+
+      // creating group array
+      var types = []
+      for (var k in groups) {
+          groups[k].name = k;
+          types.push(groups[k]);
+      }
+      // sorting by type priority
+      types.sort(function (a, b) {
+        return parseInt(b.group_priority) - parseInt(a.group_priority);
+      });
+
+      $scope.posts_builder = [];
+
+      console.log($scope.posts_builder);
+      $scope.post_types_pub = $scope.posts_builder;
+      $scope.post_types = types;
+      $scope.post_types_saved = [].concat(types);
+
+      $scope.models_post = {
+          selected: null,
+          templates: [
+              {type: "item", id: 2},
+              {type: "container", id: 1, columns: [[]]}
+          ],
+          dropzones: {
+              "1. Posts to be published": $scope.posts_builder
+              ,
+              "2. Newsletter structure": $scope.posts_builder
+          }
+      }
+    }
+
+    $scope.addPostType = function(type) {
+      type.posts.map(function(post) {
+        $scope.addPost(post, type);
+      });
+    };
+
+    $scope.removePostType = function(type) {
+      type.columns[0].map(function(post) {
+        $scope.removePost(post, type);
+      });
+    };
+
+    $scope.addPost = function(post, type) {
+      var entry = $scope.post_types_pub.filter(function(t) {
+        return t.id === type.id;
+      })[0];
+
+      if(entry == null) {
+        entry = {}
+        entry['allowedTypes'] = [type.id];
+        entry['type'] = "postTypes";
+        entry['id'] = type.id;
+        entry['name'] = type.name;
+        entry['columns'] = [];
+        //entry['columns'].push(aType.posts);
+        $scope.post_types_pub.push(entry)
+      }
+
+      if(entry.columns.length===0) {
+        entry.columns.push([post]);
+      } else {
+        entry.columns[0].push(post);
+      }
+
+      $scope.post_types.filter(function(t) {
+        return t.id === type.id;
+      }).map(function(t) {
+        t.posts = t.posts.filter(function(p) {
+          return p._id != post._id;
+        });
+
+        if(t.posts.length === 0) {
+          $scope.post_types = $scope.post_types.filter(function(t2) {
+            return t.id !== t2.id;
+          });
+        }
+      });
+    };
+
+    $scope.removePost = function(post, type) {
+      var entry = $scope.post_types_pub.filter(function(t) {
+        return t.id === type.id;
+      })[0];
+
+      entry.columns[0] = entry.columns[0].filter(function(p) {
+        return p._id !== post._id;
+      });
+
+      if(entry.columns[0].length === 0) {
+        $scope.post_types_pub = $scope.post_types_pub.filter(function(t) {
+          return t.id !== type.id;
+        });
+      }
+
+      var type2 = $scope.post_types.filter(function(t) {
+        return t.id === type.id;
+      })[0];
+
+      if(type2 == null) {
+        type2 = $scope.post_types_saved.filter(function(pts) {
+          return pts.id === type.id;
+        })[0];
+
+        type2 = Object.assign({}, type2, {posts: [post]})
+        $scope.post_types.push(type2);
+
+        $scope.post_types.sort(function (a, b) {
+          return parseInt(b.group_priority) - parseInt(a.group_priority);
+        });
+      } else {
+        type2.posts.push(post);
+      }
+    };
 
     function getPosts(){
         adminService.getPostsPublished().then(function (response) {
-            $scope.posts = response.data;
+          processPosts(response);
+        });
+    }
 
-            // ordering by categories
-            // creating unique types/groups
-            var groups = {};
-        
-            // adding posts foreach type
-            angular.forEach(response.data,function(aPost,index){
-
-                if(!groups[aPost.type.name]){
-                    groups[aPost.type.name] = {
-                        group_priority : aPost.type.priority,
-                        id : aPost.type._id,
-                        posts : []
-                    }
-                }
-
-                var typeName = aPost.type.name;
-                aPost.type = "item";
-                aPost.id = aPost._id;
-                aPost.text = marked(aPost.text);
-                aPost.text = aPost.text.replace(/(<p>|<\/p>)/g, "");
-                if(aPost.link)
-                    aPost.link_name = getHostName(aPost.link);
-                
-                aPost.author_original = aPost.author;
-                if(aPost.author.indexOf("@") == 0) // twitter user
-                    aPost.author='Shared by ' + addTwitterLinks(aPost.author);
-                else{
-                    if(aPost.author.match("\w[\w\.-]*@\w[\w\.-]+\.\w+")) // email
-                        aPost.author = 'Shared by <a href="mailto:' + aPost.author + '">' + aPost.author + '</a>';
-                    else
-                        aPost.author = 'Shared by ' + aPost.author;
-                }
-                groups[typeName].posts.push(aPost);
-            });
-
-            // creating group array
-            var types = []
-            for (var k in groups) {
-                groups[k].name = k;
-                types.push(groups[k]);
-            }
-            // sorting by type priority
-            types.sort(function (a, b) {
-              return parseInt(b.group_priority) - parseInt(a.group_priority);
-            });
-            
-            $scope.posts_builder = [];
-            angular.forEach(types,function(aType){
-                var entry = {}
-                entry['type'] = "container";
-                entry['id'] = aType.id;
-                entry['name'] = aType.name;
-                entry['columns'] = [];
-                entry['columns'].push(aType.posts);
-                $scope.posts_builder.push(entry)
-            }); 
-            $scope.models_post = {
-                selected: null,
-                templates: [
-                    {type: "item", id: 2},
-                    {type: "container", id: 1, columns: [[]]}
-                ],
-                dropzones: {
-                    "1. Posts to be published": $scope.posts_builder
-                    ,
-                    "2. Newsletter structure": [
-                    ]
-                }
-            }
+    function getDrafts(){
+        adminService.getDrafts().then(function (response) {
+            $scope.drafts = response.data;
         });
     }
 
@@ -499,7 +669,7 @@ routerApp.controller('emailController', ['$scope', '$location', '$rootScope', '$
         $scope.unsuscribe_modify_preferences_mark = "*|UPDATE_PROFILE|*";
         $scope.email_addr = "*|EMAIL|*";
         $scope.archive_url = "*|ARCHIVE|*";
-        $scope.posts_selected = $scope.models_post.dropzones["2. Newsletter structure"];
+        $scope.posts_selected = $scope.post_types_pub; // $scope.models_post.dropzones["2. Newsletter structure"];
         adminService.getTemplate().then(function(aHTML){
             $scope.html = aHTML.data;
             usSpinnerService.stop('spinner-1');
@@ -532,11 +702,11 @@ routerApp.controller('emailController', ['$scope', '$location', '$rootScope', '$
     }
 
     $scope.send = function(){
-        
+
         $scope.isSending = true;
         var htmlCompiled =  document.getElementById("content").innerHTML;
- 
-        adminService.sendNewsletter(htmlCompiled,$scope.title).then(function(response){
+
+        adminService.sendNewsletter(htmlCompiled, $scope.title, $scope.draft_id).then(function(response){
             // adding newsletter
             $scope.newsletter = {
                 title:$scope.email.title,
@@ -545,6 +715,9 @@ routerApp.controller('emailController', ['$scope', '$location', '$rootScope', '$
                 html:htmlCompiled,
                 campaign_id:response.campaign_id
             }
+
+            getDrafts();
+
             adminService.saveNewsletter($scope.newsletter).then(function (response) {
                 adminService.addPostDelicious($scope.posts_selected);
                 adminService.addPostSlack($scope.posts_selected);
@@ -557,16 +730,136 @@ routerApp.controller('emailController', ['$scope', '$location', '$rootScope', '$
         });
     }
 
+    $scope.saveDraft = function(draft_id) {
+        var emailData = {
+            _id: draft_id,
+            title:$scope.email.title,
+            preamble:$scope.email.preamble,
+            spoiler:$scope.email.spoiler
+        };
+
+        $scope.isSaving = true;
+
+        adminService.saveDraft(emailData).then(function(response){
+          getDrafts();
+          $scope.draft_id = response.data._id;
+          $scope.isSaving = false;
+        });
+    }
+
+    $scope.newDraft = function(){
+      $scope.draft_id = null;
+      $scope.email.title = '';
+      $scope.email.preamble = '';
+      $scope.email.spoiler = '';
+    }
+
+    $scope.openDraft = function(draft){
+      $scope.draft_id = draft._id;
+      $scope.email.title = draft.title;
+      $scope.email.preamble = draft.preamble;
+      $scope.email.spoiler = draft.spoiler;
+    }
+
+    $scope.applyPostFilters = function() {
+      var filters = $scope.postFilters;
+
+      adminService.getPostsPublished(filters.period).then(function (response) {
+          processPosts(response);
+      });
+    }
+
     $scope.changeToHTML = function() {
         $scope.markdown = false;
     }
     $scope.changeToMarkdown = function() {
         $scope.markdown = true;
     }
-    
+
     $scope.$watch('models_post.dropzones', function(model) {
         $scope.modelAsJson = angular.toJson(model, true);
     }, true);
+
+}]);
+
+routerApp.controller('adminUsersController', ['$scope', '$location', '$rootScope','adminService', '$stateParams', function ($scope, $location, $rootScope, adminService, $stateParams) {
+
+    $scope.post = {
+        username:"",
+        role:""
+    }
+
+    $scope.open = function($event) {
+        $event.preventDefault();
+        $event.stopPropagation();
+        $scope.opened = true;
+    };
+
+    $scope.users = [];
+    getUsers();
+
+    function getUsers(){
+        adminService.getUsers().then(function (response) {
+            $scope.users = response.data;
+            $scope.displayedCollection = [].concat($scope.users);
+        });
+    }
+
+    $scope.editUser = function(userId){
+        $scope.roles = ['publisher', 'editor', 'admin'];
+
+        if(userId==="new")
+            $scope.user = {
+                username:"",
+                role:"",
+                password:""
+            }
+        else
+        {
+            adminService.getUser(userId).then(function (response) {
+              console.log(response)
+                $scope.user = {
+                    id: response.data._id,
+                    username:response.data.username,
+                    role:response.data.role,
+                    password: ""
+                }
+            });
+        }
+    }
+
+    $scope.saveUser = function () {
+        adminService.saveUser($scope.user).then(function (response) {
+            $('.modal').modal('hide');
+            $scope.displayedCollection = [];
+            getUsers();
+            if($stateParams.user_id){
+                $location.path("/admin/users");
+            }
+        },
+         function (err) {
+             $scope.message = err;
+         });
+    }
+
+    $scope.removeUser = function(userId){
+
+        adminService.removeUser(userId).then(function (response) {
+            $scope.users = [];
+            $scope.displayedCollection = [];
+            getUsers();
+        },
+         function (err) {
+             $scope.message = err;
+        });
+    }
+
+    angular.element(document).ready(function () {
+        if($("#nav").find('.activemenu').length > 0){
+            $(".nav_inner").css("left","-200px");
+            $("#nav").find('.activemenu').removeClass("activemenu");
+        }
+    });
 
 }]);
 

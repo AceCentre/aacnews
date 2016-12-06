@@ -7,7 +7,7 @@ routerApp.factory('adminService', ['$http', '$q', 'localStorageService', '$rootS
         var authData = localStorageService.get('authorizationData');
         if(authData)
             $http.defaults.headers.common['X-Access-Token'] = authData.token;
-        
+
         return $http.get('api/types');
     }
 
@@ -15,7 +15,7 @@ routerApp.factory('adminService', ['$http', '$q', 'localStorageService', '$rootS
         var authData = localStorageService.get('authorizationData');
         if(authData)
             $http.defaults.headers.common['X-Access-Token'] = authData.token;
-        
+
         return $http.get('api/types/' + typeId);
     }
 
@@ -23,13 +23,13 @@ routerApp.factory('adminService', ['$http', '$q', 'localStorageService', '$rootS
         var authData = localStorageService.get('authorizationData');
         if(authData)
             $http.defaults.headers.common['X-Access-Token'] = authData.token;
-        
+
         return $http.delete('api/types/' + typeId);
     }
 
     var _saveType = function (typeData) {
         var deferred = $q.defer();
-        
+
         if(typeData.id)
             $http.put('api/types/' + typeData.id, typeData).success(function (response) {
                 deferred.resolve(response);
@@ -51,16 +51,16 @@ routerApp.factory('adminService', ['$http', '$q', 'localStorageService', '$rootS
         var authData = localStorageService.get('authorizationData');
         if(authData)
             $http.defaults.headers.common['X-Access-Token'] = authData.token;
-        
+
         return $http.get('api/posts');
     }
 
-    var _getPostsPublished = function() {
+    var _getPostsPublished = function(period) {
         var authData = localStorageService.get('authorizationData');
         if(authData)
             $http.defaults.headers.common['X-Access-Token'] = authData.token;
-        
-        return $http.get('api/posts/published');
+
+        return $http.get('api/posts/published', { params: { period: period } });
     }
 
     var _savePost = function (postData) {
@@ -82,11 +82,76 @@ routerApp.factory('adminService', ['$http', '$q', 'localStorageService', '$rootS
 
     };
 
+    var _bulkPublishPosts = function (ids, published) {
+      var deferred = $q.defer();
+      var data = {
+        ids: ids,
+        published: published ? 1 : 0
+      };
+
+      $http.put('api/posts/published', data).success(function (response) {
+          deferred.resolve(response);
+      }).error(function (err, status) {
+          deferred.reject(err);
+      });
+
+      return deferred.promise;
+    };
+
+    var _bulkPromotePosts = function (ids, promoted) {
+      var deferred = $q.defer();
+      var data = {
+        ids: ids,
+        promoted: promoted ? 1 : 0
+      };
+
+      $http.put('api/posts/promoted', data).success(function (response) {
+          deferred.resolve(response);
+      }).error(function (err, status) {
+          deferred.reject(err);
+      });
+
+      return deferred.promise;
+    };
+
+    var _saveDraft = function (data) {
+      var deferred = $q.defer();
+
+      if (data._id) {
+        $http.put('api/campaigns/drafts/' + data._id, data).success(function (response) {
+            deferred.resolve(response);
+        }).error(function (err, status) {
+            deferred.reject(err);
+        });
+      }
+      else {
+        $http.post('api/campaigns/drafts', data).success(function (response) {
+            deferred.resolve(response);
+        }).error(function (err, status) {
+            deferred.reject(err);
+        });
+      }
+
+      return deferred.promise;
+    };
+
+    var _getDrafts = function (data) {
+      var deferred = $q.defer();
+
+      $http.get('api/campaigns/drafts').success(function (response) {
+          deferred.resolve(response);
+      }).error(function (err, status) {
+          deferred.reject(err);
+      });
+
+      return deferred.promise;
+    };
+
     var _getPost = function(postId) {
         var authData = localStorageService.get('authorizationData');
         if(authData)
             $http.defaults.headers.common['X-Access-Token'] = authData.token;
-        
+
         return $http.get('api/posts/' + postId);
     }
 
@@ -94,7 +159,7 @@ routerApp.factory('adminService', ['$http', '$q', 'localStorageService', '$rootS
         var authData = localStorageService.get('authorizationData');
         if(authData)
             $http.defaults.headers.common['X-Access-Token'] = authData.token;
-        
+
         return $http.delete('api/posts/' + postId);
     }
 
@@ -102,13 +167,13 @@ routerApp.factory('adminService', ['$http', '$q', 'localStorageService', '$rootS
         var authData = localStorageService.get('authorizationData');
         if(authData)
             $http.defaults.headers.common['X-Access-Token'] = authData.token;
-        
+
         return $http.get('api/newsletters');
     }
 
     var _saveNewsletter = function (newsletterData) {
         var deferred = $q.defer();
-        
+
         if(newsletterData.id)
             $http.put('api/newsletters/' + newsletterData.id, newsletterData).success(function (response) {
                 deferred.resolve(response);
@@ -130,7 +195,7 @@ routerApp.factory('adminService', ['$http', '$q', 'localStorageService', '$rootS
         var authData = localStorageService.get('authorizationData');
         if(authData)
             $http.defaults.headers.common['X-Access-Token'] = authData.token;
-        
+
         return $http.get('api/newsletters/' + newsletterId);
     }
 
@@ -138,7 +203,7 @@ routerApp.factory('adminService', ['$http', '$q', 'localStorageService', '$rootS
         var authData = localStorageService.get('authorizationData');
         if(authData)
             $http.defaults.headers.common['X-Access-Token'] = authData.token;
-        
+
         return $http.delete('api/newsletters/' + newsletterId);
     }
 
@@ -150,11 +215,11 @@ routerApp.factory('adminService', ['$http', '$q', 'localStorageService', '$rootS
         return $http.get('api/template');
     }
 
-    var _sendNewsletter = function (newsletterHTML,aTitle) {
+    var _sendNewsletter = function (newsletterHTML, aTitle, draftId) {
         var deferred = $q.defer();
-        
+
          $http.defaults.headers.common['Content-Type'] = 'text/html';
-         $http.post('api/send', {"html":newsletterHTML,"title":aTitle}).success(function (response) {
+         $http.post('api/send', {"html":newsletterHTML, "title":aTitle, "draftId": draftId}).success(function (response) {
                 deferred.resolve(response);
             }).error(function (err, status) {
                 deferred.reject(err);
@@ -168,7 +233,7 @@ routerApp.factory('adminService', ['$http', '$q', 'localStorageService', '$rootS
         var authData = localStorageService.get('authorizationData');
         if(authData)
             $http.defaults.headers.common['X-Access-Token'] = authData.token;
-        
+
         return $http.get('api/posts/history/' + postId);
     }
 
@@ -176,7 +241,7 @@ routerApp.factory('adminService', ['$http', '$q', 'localStorageService', '$rootS
         var authData = localStorageService.get('authorizationData');
         if(authData)
             $http.defaults.headers.common['X-Access-Token'] = authData.token;
-        
+
         return $http.get('api/posts/history/' + postId + "/" + version);
     }
 
@@ -197,7 +262,7 @@ routerApp.factory('adminService', ['$http', '$q', 'localStorageService', '$rootS
             })
         });
         var deferred = $q.defer();
-        
+
         $http.post('api/diigo/posts', {"posts":arrPosts}).success(function (response) {
                 deferred.resolve(response);
             }).error(function (err, status) {
@@ -224,7 +289,7 @@ routerApp.factory('adminService', ['$http', '$q', 'localStorageService', '$rootS
             })
         });
         var deferred = $q.defer();
-        
+
         // disabled because is published when a new post is created
         /*
         $http.post('api/slack/posts', {"posts":arrPosts}).success(function (response) {
@@ -236,6 +301,49 @@ routerApp.factory('adminService', ['$http', '$q', 'localStorageService', '$rootS
         return deferred.promise;
     }
 
+    var _getUsers = function() {
+        var authData = localStorageService.get('authorizationData');
+        if(authData)
+            $http.defaults.headers.common['X-Access-Token'] = authData.token;
+
+        return $http.get('api/users');
+    }
+
+    var _saveUser = function (userData) {
+        var deferred = $q.defer();
+        if(userData.id)
+            $http.put('api/users/' + userData.id, userData).success(function (response) {
+                deferred.resolve(response);
+            }).error(function (err, status) {
+                deferred.reject(err);
+            });
+        else
+            $http.post('api/users', userData).success(function (response) {
+                deferred.resolve(response);
+            }).error(function (err, status) {
+                deferred.reject(err);
+            });
+
+        return deferred.promise;
+
+    };
+
+    var _getUser = function(userId) {
+        var authData = localStorageService.get('authorizationData');
+        if(authData)
+            $http.defaults.headers.common['X-Access-Token'] = authData.token;
+
+        return $http.get('api/users/' + userId);
+    }
+
+    var _removeUser = function(userId) {
+        var authData = localStorageService.get('authorizationData');
+        if(authData)
+            $http.defaults.headers.common['X-Access-Token'] = authData.token;
+
+        return $http.delete('api/users/' + userId);
+    }
+
     adminServiceFactory.saveType = _saveType;
     adminServiceFactory.getTypes = _getTypes;
     adminServiceFactory.getType = _getType;
@@ -243,6 +351,10 @@ routerApp.factory('adminService', ['$http', '$q', 'localStorageService', '$rootS
     adminServiceFactory.getPosts = _getPosts;
     adminServiceFactory.getPostsPublished = _getPostsPublished;
     adminServiceFactory.savePost = _savePost;
+    adminServiceFactory.bulkPublishPosts = _bulkPublishPosts;
+    adminServiceFactory.bulkPromotePosts = _bulkPromotePosts;
+    adminServiceFactory.getDrafts = _getDrafts;
+    adminServiceFactory.saveDraft = _saveDraft;
     adminServiceFactory.getPost = _getPost;
     adminServiceFactory.removePost = _removePost;
     adminServiceFactory.getHistoryPost = _getHistoryPost;
@@ -255,6 +367,10 @@ routerApp.factory('adminService', ['$http', '$q', 'localStorageService', '$rootS
     adminServiceFactory.getTemplate = _getTemplate;
     adminServiceFactory.addPostDelicious = _addPostDelicious;
     adminServiceFactory.addPostSlack = _addPostSlack;
+    adminServiceFactory.getUsers = _getUsers;
+    adminServiceFactory.saveUser = _saveUser;
+    adminServiceFactory.getUser = _getUser;
+    adminServiceFactory.removeUser = _removeUser;
 
     return adminServiceFactory;
 }]);

@@ -4,3 +4,5 @@ assets/pdfs/*
 bower_components/*
 node_modules/*
 configuration.live.json
+config.sh
+yarn.lock

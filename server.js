@@ -1,5 +1,6 @@
 require('pmx').init();
 var express = require('express');
+var expressSession = require('express-session');
 var mongoose = require('mongoose');
 var app = express();
 var path = require('path');
@@ -14,11 +15,13 @@ var typeController = require('./controllers/types');
 var postController = require('./controllers/posts');
 var newsletterController = require('./controllers/newsletters');
 var mailchimpController = require('./controllers/mailchimp');
+var draftController = require('./controllers/drafts');
 
 var configuration = JSON.parse(
   fs.readFileSync("configuration.json")
 );
 var urlMongo = process.env.MONGO_DB_URL || configuration.MONGO_DB_URL;
+mongoose.Promise = require('bluebird');
 mongoose.connect('mongodb://' + urlMongo);
 
 // set MailChimp API key here
@@ -43,7 +46,7 @@ global.SLACK_HOOK = process.env.SLACK_HOOK || configuration.SLACK_HOOK;
 
 var allowCrossDomain = function(req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
-	res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Access-Token");
+    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Access-Token");
     next();
 }
 
@@ -54,10 +57,16 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 app.use(allowCrossDomain);
+app.use(expressSession({
+  secret: 'secret',
+  resave: false,
+  saveUninitialized: false
+}));
 
 
 // Use the passport package in our application
 app.use(passport.initialize());
+app.use(passport.session());
 
 var requireAuth = function(req, res, next) {
 	if (!req.user) {
@@ -65,6 +74,17 @@ var requireAuth = function(req, res, next) {
 	}	else {
 		next()
 	}
+}
+
+var requireRole = function(role) {
+  return function (req, res, next) {
+    if (req.user && req.user.role === role) {
+      next();
+    }
+    else {
+      res.end('Not authorized', 401)
+    }
+  };
 }
 
 var multipart = require('connect-multiparty')
@@ -76,6 +96,11 @@ var router = express.Router();
 // users
 router.route('/users/signup').post(userController.signupUser);
 router.route('/login').post(authController.login);
+router.route('/users').get(jwtauth, requireAuth, requireRole('admin'), userController.getUsers);
+router.route('/users').post(jwtauth, requireAuth, requireRole('admin'), userController.postUser);
+router.route('/users/:user_id').get(jwtauth, requireAuth, requireRole('admin'), userController.getUser);
+router.route('/users/:user_id').put(jwtauth, requireAuth, requireRole('admin'), userController.putUser);
+router.route('/users/:user_id').delete(jwtauth, requireAuth, requireRole('admin'), userController.deleteUser);
 
 // types
 router.route('/types').post(jwtauth, requireAuth, typeController.addType);
@@ -88,11 +113,14 @@ router.route('/types/:type_id').delete(jwtauth, requireAuth, typeController.dele
 router.route('/posts').post(postController.addPost);
 router.route('/posts').get(jwtauth, requireAuth, postController.getPosts);
 router.route('/posts/published').get(jwtauth, requireAuth, postController.getPostsPublished);
+router.route('/posts/published').put(jwtauth, requireAuth, postController.putBulkPublishPosts);
+router.route('/posts/promoted').put(jwtauth, requireAuth, postController.putBulkPromotePosts);
 router.route('/posts/:post_id').get(jwtauth, requireAuth, postController.getPost);
 router.route('/posts/:post_id').put(jwtauth, requireAuth, postController.updatePost);
 router.route('/posts/:post_id').delete(jwtauth, requireAuth, postController.deletePost);
 router.route('/posts/history/:post_id').get(jwtauth, requireAuth, postController.getHistoryPost);
 router.route('/posts/history/:post_id/:version').get(jwtauth, requireAuth, postController.getHistoryPostbyVersion);
+router.route('/updatepostslinkscount').get(postController.updateLinksCount);
 
 // newsletters
 router.route('/newsletters').post(jwtauth, requireAuth, newsletterController.addNewsletter);
@@ -104,6 +132,9 @@ router.route('/newsletters/:newsletter_id').delete(jwtauth, requireAuth, newslet
 // mailchimp
 router.route('/subscribe').post(mailchimpController.subscribe);
 router.route('/campaigns').get(mailchimpController.getCampaigns);
+router.route('/campaigns/drafts').get(jwtauth, requireAuth, draftController.getDrafts);
+router.route('/campaigns/drafts/:draft_id').put(jwtauth, requireAuth, draftController.putDraft);
+router.route('/campaigns/drafts').post(jwtauth, requireAuth, draftController.postDraft);
 router.route('/template').get(mailchimpController.getTemplate);
 router.route('/send').post(mailchimpController.sendNewsletter);
 

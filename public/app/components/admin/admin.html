@@ -19,6 +19,7 @@
         <li ng-class="getClassMenu('newsletters')"><a ui-sref="admin.newsletters">Newsletter</a></li>
         <li ng-class="getClassMenu('posts')"><a ui-sref="admin.posts">Post</a></li>
         <li ng-class="getClassMenu('email')"><a ui-sref="admin.email">Email</a></li>
+        <li ng-show="auth.isAdmin" ng-class="getClassMenu('users')"><a ui-sref="admin.users">Users</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li class="dropdown">
@@ -33,7 +34,7 @@
   </div>
 </nav>
 <div class="row-fluid">
-    
+
     <!--Body content-->
     <div class="span10">
         <div ui-view></div>
