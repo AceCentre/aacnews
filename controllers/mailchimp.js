@@ -127,45 +127,35 @@ exports.getTemplate = function(req, res){
 exports.sendNewsletter = function(req, res){
 	var campaigns = [];
 
-	// mc.campaigns.list({"filters":{ 'title' : global.MAILCHIMP_BACKUP_CAMPAIGN_NAME, 'exact' : true}},
-	// 	function(response){
-	// 		if(response.data.length > 0){ //Backup exists
-	// 			var backup_id = response.data[0].id;
-	// 			var groupInterest = 'interests-' + global.MAILCHIMP_GROUPING_ID;
-	// 			var conditions = {'match': 'all','conditions':[{'field':groupInterest,'op':'all','value':global.MAILCHIMP_GROUP_AACINFO}]};
-	// 			mc.campaigns.create({
-	// 					'type':"regular",
-	// 					'options':{'list_id':response.data[0].list_id,
-	// 								'subject': '[' + global.MAILCHIMP_CAMPAIGN_NAME + "] - " + req.body.title,
-	// 								'title' :  '[' + global.MAILCHIMP_CAMPAIGN_NAME + "] - " + req.body.title,
-	// 							    'from_email':response.data[0].from_email,
-	// 								'from_name':response.data[0].from_name,
-	// 							    'to_name':response.data[0].to_name},
-	// 					'segment_opts':conditions,
-	// 					'content':{'html':req.body.html}},
-	// 				function(response){
-	// 					var campaign_id = response.id;
-	// 					var web_id = response.web_id;
-	// 					mc.campaigns.content({'cid':campaign_id},function(response){
-	// 						mc.campaigns.send({'cid':campaign_id});
-							var response = { html: "Lemol" };
-							var web_id = "frida";
+	mc.campaigns.list({"filters":{ 'title' : global.MAILCHIMP_BACKUP_CAMPAIGN_NAME, 'exact' : true}},
+		function(response){
+			if(response.data.length > 0){ //Backup exists
+				var backup_id = response.data[0].id;
+				var groupInterest = 'interests-' + global.MAILCHIMP_GROUPING_ID;
+				var conditions = {'match': 'all','conditions':[{'field':groupInterest,'op':'all','value':global.MAILCHIMP_GROUP_AACINFO}]};
+				mc.campaigns.create({
+						'type':"regular",
+						'options':{'list_id':response.data[0].list_id,
+									'subject': '[' + global.MAILCHIMP_CAMPAIGN_NAME + "] - " + req.body.title,
+									'title' :  '[' + global.MAILCHIMP_CAMPAIGN_NAME + "] - " + req.body.title,
+								    'from_email':response.data[0].from_email,
+									'from_name':response.data[0].from_name,
+								    'to_name':response.data[0].to_name},
+						'segment_opts':conditions,
+						'content':{'html':req.body.html}},
+					function(response){
+						var campaign_id = response.id;
+						var web_id = response.web_id;
+						mc.campaigns.content({'cid':campaign_id},function(response){
+							mc.campaigns.send({'cid':campaign_id});
+							res.json({"html":response.html,"campaign_id":web_id});
+						});
 
-							if (req.body.draftId) {
-								Draft.remove({ _id: req.body.draftId }, function() {
-									res.json({"html":response.html,"campaign_id":web_id});
-								});
-							}
-							else {
-								res.json({"html":response.html,"campaign_id":web_id});
-							}
-		// 				});
-		// 		});
-		// 	}
-		// 	else
-		// 		return res.json({"error":"Newsletter can't be sent"});
-		// });
-
+				});
+			}
+			else
+				return res.json({"error":"Newsletter can't be sent"});
+	});
 }
 
 exports.addPostSlack = function(req,res){
