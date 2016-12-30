@@ -20,7 +20,7 @@
     "mongoose": "^4.7.0",
     "parse-domain": "^1.0.0",
     "passport": "^0.2.1",
-    "passport-http": "^0.2.2",
+    "passport-local": "^1.0.0",
     "path": "^0.4.9",
     "pmx": "^0.5.3",
     "slack-node": "0.1.0",

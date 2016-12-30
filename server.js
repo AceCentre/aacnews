@@ -95,7 +95,7 @@ var router = express.Router();
 
 // users
 router.route('/users/signup').post(userController.signupUser);
-router.route('/login').post(authController.login);
+router.route('/login').post(passport.authenticate('local', { failureRedirect: '/login' }), authController.jwtLogin);
 router.route('/users').get(jwtauth, requireAuth, requireRole('admin'), userController.getUsers);
 router.route('/users').post(jwtauth, requireAuth, requireRole('admin'), userController.postUser);
 router.route('/users/:user_id').get(jwtauth, requireAuth, requireRole('admin'), userController.getUser);
