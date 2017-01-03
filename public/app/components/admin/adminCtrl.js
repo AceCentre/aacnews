@@ -204,7 +204,8 @@ routerApp.controller('postController', ['$scope', '$location', '$rootScope','adm
             $scope.posted = true;
             $scope.posts = [];
             $scope.displayedCollection = [];
-            getPosts();
+            //getPosts();
+            $scope.applyFilters();
             if($stateParams.post_id){
                 $location.path("/admin/posts");
             }

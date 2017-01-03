@@ -142,13 +142,13 @@
                   <h4 class="list-group-item-heading">
 										{{type.name}}
 										<span class="pull-right">
-											<a href="#" ng-click="addPostType(type)">
+											<a href="javascript:void(0)" ng-click="addPostType(type)">
 												<i class="glyphicon glyphicon-forward"></i>
 											</a>
 										</span>
 									</h4>
                   <div class="list-group">
-                    <a href="#" ng-click="addPost(post, type)" class="list-group-item" ng-repeat="post in type.posts">
+                    <a href="javascript:void(0)" ng-click="addPost(post, type)" class="list-group-item" ng-repeat="post in type.posts">
                       {{post.title}}
                     </a>
                   </div>
