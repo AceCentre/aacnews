@@ -699,7 +699,7 @@
                             <span ng-bind-html="post.text"></span><br>
 <a ng-href="{{post.link}}" target="_blank">{{post.link_name}}</a><br>
 <span ng-bind-html="post.author"></span>
-		<span ng-style="!post.promoted ? 'display: none' : 'vertical-align: middle;border-radius: 3px;border: 1px solid #333;background: #ddd;font-size: 10px;text-transform: uppercase;font-weight: regular;color: #3399CC;padding: 1px 5px;display: inline-block;text-decoration: none;word-wrap: break-word;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;'">Promoted</span>
+		<span ng-if="post.promoted" style="vertical-align: middle;border-radius: 3px;border: 1px solid #333;background: #ddd;font-size: 10px;text-transform: uppercase;font-weight: regular;color: #3399CC;padding: 1px 5px;display: inline-block;text-decoration: none;word-wrap: break-word;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">Promoted</span>
                         </td>
                     </tr>
                 </tbody></table>
