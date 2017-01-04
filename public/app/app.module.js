@@ -2,10 +2,10 @@
 var routerApp = angular.module('routerApp', ['ui.router','routeApp.controllers','LocalStorageModule','ui.bootstrap','hc.marked','angular.filter','ngSanitize','angularSpinner','smart-table','dndLists']);
 
 routerApp.config(function($stateProvider, $urlRouterProvider, $httpProvider, $locationProvider) {
-    
+
 
     $urlRouterProvider.otherwise('/');
-    
+
 
     $stateProvider
         .state('root', {
@@ -52,6 +52,11 @@ routerApp.config(function($stateProvider, $urlRouterProvider, $httpProvider, $lo
             templateUrl: '../app/components/login/login.html',
             controller: 'loginController'
         })
+        .state('logout', {
+            url: '/logout',
+            templateUrl: '',
+            controller: 'logoutController'
+        })
         .state('admin', {
             url: '',
             templateUrl: '../app/components/admin/admin.html',
@@ -95,7 +100,7 @@ routerApp.config(function($stateProvider, $urlRouterProvider, $httpProvider, $lo
         $httpProvider.interceptors.push('authInterceptorService');
 
         $locationProvider.html5Mode(true);
-       
+
 });
 
 
