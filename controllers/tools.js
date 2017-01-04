@@ -3,8 +3,6 @@ var Slack = require('slack-node');
 var exports = module.exports = {};
 
 exports.addPostSlack = function(aPost){
-	
-  return;
 	slack = new Slack();
 	slack.setWebhook(global.SLACK_HOOK);
 
