@@ -158,6 +158,12 @@ app.use(function(req, res, next) {
     next();
 });
 
+app.get('/logout', function(req, res){
+  req.session.destroy(function (err) {
+    res.redirect('/');
+  });
+});
+
 app.get('/*', function (req, res) {
   res.sendfile(__dirname + '/public/index.html');
 });

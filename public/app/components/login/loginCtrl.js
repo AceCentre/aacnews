@@ -18,7 +18,6 @@ routerApp.controller('loginController', ['$scope', '$location', '$rootScope','au
                   isPublisher: response.role === 'publisher' || response.role === 'admin',
                   isEditor: response.role === 'editor' || response.role === 'publisher' || response.role === 'admin'
                 };
-                console.log($scope.auth)
             }
             else
                 $scope.message = "Incorrect user or password";
@@ -27,4 +26,10 @@ routerApp.controller('loginController', ['$scope', '$location', '$rootScope','au
              $scope.message = "Incorrect user or password";
          });
     }
+}]);
+
+routerApp.controller('logoutController', ['$scope', '$location', '$rootScope','authService', function ($scope, $location, $rootScope, authService) {
+  authService.logOut();
+  $rootScope.auth = null;
+  $location.path('/login');
 }]);
