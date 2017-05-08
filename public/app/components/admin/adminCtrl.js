@@ -146,15 +146,17 @@ routerApp.controller('postController', ['$scope', '$location', '$rootScope','adm
             $scope.posts = response.data;
         });
     }
-
+    function showEditPost() {
+      $('#editModal').modal('show')
+    }
     $scope.editPost = function(postId){
         $scope.types = [];
 
         adminService.getTypes().then(function (response) {
             $scope.types = response.data;
         });
-
-        if(postId==="new")
+      
+        if(postId==="new") {
             $scope.post = {
                 title:"",
                 text:"",
@@ -166,6 +168,8 @@ routerApp.controller('postController', ['$scope', '$location', '$rootScope','adm
                 author:"",
                 priority:0
             }
+            showEditPost()
+        }
         else
         {
             adminService.getPost(postId).then(function (response) {
@@ -181,6 +185,7 @@ routerApp.controller('postController', ['$scope', '$location', '$rootScope','adm
                     author:response.data.author,
                     priority:response.data.priority
                 }
+                showEditPost()
             });
         }
     }
