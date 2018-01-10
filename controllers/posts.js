@@ -119,9 +119,12 @@ exports.updatePost = function(req, res){
 	});
 }
 
+var dbg_next_id = 1;
 // Get all posts - method /api/posts (GET)
 exports.getPosts = function(req, res){
-
+  var dbg_id = dbg_next_id++;
+  var dbg_exec_called = false;
+  var dbg_exec_args = null;
 	Post.find({}).
 		populate("type").
     populate({
@@ -136,6 +139,11 @@ exports.getPosts = function(req, res){
     sort({'name':'asc'}).
     exec(
       function(err,posts){
+        if(dbg_exec_called) {
+          console.log("DEBUG: getPosts called twice", dbg_id, dbg_exec_args, [err,posts]);
+        }
+        dbg_exec_args = [err,posts]
+        dbg_exec_called = true
         if(err) return res.send(err);
         res.json(posts);
       }
