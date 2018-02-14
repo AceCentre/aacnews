@@ -229,7 +229,8 @@ exports.addPostsDiigo = function(req,res){
 			   function(aPost,callback){
 			   	extended = (aPost.text + ' (' + aPost.author + ')').replace(/[^\x00-\x7F]/g, "");
 			   	var text = htmlToText.fromString(extended, false);
-			   	var saveOptions = {'key':global.KEY_DIIGO,'title':aPost.title,'url':aPost.link,'shared': 'yes','desc': text, 'readLater': 'yes'};
+			   	var tags = 'AACInfo,'+ aPost.type.name.replace(/\s/g, '');
+			   	var saveOptions = {'key':global.KEY_DIIGO,'title':aPost.title,'url':aPost.link,'tags':tags,'shared': 'yes','desc': text, 'readLater': 'yes'};
 			   	diigo.saveDiigo(saveOptions, auth, function(err, results) {
     				//do stuff with results
     				if( err ) {
