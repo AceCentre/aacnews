@@ -22,7 +22,7 @@ var configuration = JSON.parse(
 );
 var urlMongo = process.env.MONGO_DB_URL || configuration.MONGO_DB_URL;
 mongoose.Promise = require('bluebird');
-mongoose.connect('mongodb://' + urlMongo);
+mongoose.connect('mongodb://' + urlMongo, { poolSize: 10 });
 
 // set MailChimp API key here
 var mailchimp_key = process.env.MAILCHIMP_API_KEY || configuration.MAILCHIMP_API_KEY;
