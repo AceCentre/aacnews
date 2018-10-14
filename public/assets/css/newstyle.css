@@ -4658,3 +4658,11 @@ html {
 #content .rightbar .top_c {
   border-bottom: none;
 }
+
+
+@media (max-width: 767px) {
+
+  #nav {
+    /* override width to auto */
+    width: auto;
+  }
