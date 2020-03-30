@@ -183,15 +183,14 @@ exports.addPostSlack = function(req,res){
 			         ]
 			      }
 			   	  ]
-				}, function(err, response) {
-				  console.log("All posts have been processed successfully");
-				});
+				  }, callback);
 			   },
 			   function(err){
 			   	if( err ) {
+            console.error(err)
 			      res.json({"message":'Failed to post in Slack'});
 			    } else {
-			       res.json({"message":'All posts have been processed successfully'});
+			      res.json({"message":'All posts have been processed successfully'});
 			    }
 			});
 }
@@ -201,20 +200,17 @@ exports.addPostDelicious = function(req,res){
 	var posts = req.body.posts;
 
 	eggtart = new Eggtart(global.USER_DELICIOUS, global.PWD_DELICIOUS);
-
 	async.each(posts,
 			   function(aPost,callback){
 			   	extended = (aPost.text + ' (' + aPost.author + ')').replace(/[^\x00-\x7F]/g, "");
-			   	eggtart.posts().add({"url":aPost.link,"description":aPost.title,"extended":extended,"tags":("aacnews,"+aPost.type.name),"replace":"yes"},function(err,result){
-			   		if(err)
-			   			console.log(err);
-			   	});
+			   	 eggtart.posts().add({"url":aPost.link,"description":aPost.title,"extended":extended,"tags":("aacnews,"+aPost.type.name),"replace":"yes"}, callback);
 			   },
 			   function(err){
 			   	if( err ) {
-			      console.log('Failed to post in Delicious');
+			      console.error(err)
+            res.send({'error':'Failed to post in Delicious'});
 			    } else {
-			      console.log('All posts have been processed successfully');
+			      res.json({"message":'All posts have been processed successfully'});
 			    }
 			   });
 }
@@ -224,25 +220,20 @@ exports.addPostsDiigo = function(req,res){
 	var posts = req.body.posts;
 
 	var auth = {'password':global.PWD_DIIGO,'username':global.USER_DIIGO}
-
 	async.each(posts,
 			   function(aPost,callback){
 			   	extended = (aPost.text + ' (' + aPost.author + ')').replace(/[^\x00-\x7F]/g, "");
 			   	var text = htmlToText.fromString(extended, false);
 			   	var tags = 'AACInfo,'+ aPost.type.name.replace(/\s/g, '');
 			   	var saveOptions = {'key':global.KEY_DIIGO,'title':aPost.title,'url':aPost.link,'tags':tags,'shared': 'yes','desc': text, 'readLater': 'yes'};
-			   	diigo.saveDiigo(saveOptions, auth, function(err, results) {
-    				//do stuff with results
-    				if( err ) {
-				      res.send({'error':'Failed to post in Diigo'});
-				      return;
-				    }
-    			});
+			   	diigo.saveDiigo(saveOptions, auth, callback);
 			   },
 			   function(err){
-			   	if( err ) {
-			      res.send({'error':'Failed to post in Diigo'});
-			      return;
-			    }
+           if( err ) {
+             console.error(err);
+             res.send({'error':'Failed to post in Diigo'});
+           } else {
+			       res.json({"message":'All posts have been processed successfully'});
+           }
 			   });
 }

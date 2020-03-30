@@ -1,6 +1,21 @@
 var app= angular.module('routeApp.controllers',[]);
 
-app.controller('HomeController', ['$scope', '$location', function($scope,$location) {
+app.controller('HomeController', ['$scope', '$location', '$rootScope', 'authService', function($scope, $location, $rootScope, authService) {
+
+  try {
+    var userId = authService.getUserId();
+    var role = authService.getRole();
+    if (!!userId && !!role) {
+      $rootScope.auth = {
+        isAdmin: role === 'admin',
+        isPublisher: role === 'publisher' || role === 'admin',
+        isEditor: role === 'editor' || role === 'publisher' || role === 'admin'
+      };
+    }
+  } catch (err) {
+    // pass
+  }
+
 
 	$scope.getClassMenu = function(path) {
 		if($location.path() == "/" && path == "home")
