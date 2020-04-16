@@ -36,7 +36,9 @@ exports.addPost = function(req, res){
 		}
 		// add post in slack
 		tools.addPostSlack(aPost);
-
+		// add post to teams
+		tools.addPostTeams(aPost);
+		
 		PostHistory.find({"id_post":post._id})
 			.sort({'date_creation': -1})
 			.limit(1)
